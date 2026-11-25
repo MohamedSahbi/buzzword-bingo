@@ -60,7 +60,8 @@
             <div class="divider"></div>
             <div class="field"><label for="joinCode">Room code</label><input id="joinCode" maxlength="6" autocomplete="off" placeholder="ABC234" style="text-transform:uppercase"></div>
             <button id="joinRoom" class="btn">Join room</button>
-            <button id="leaveRoom" class="btn danger hidden">Leave room</button>
+            <button id="leaveRoom" class="btn hidden">Leave room</button>
+            <button id="endRoom" class="btn danger hidden">End room for everyone</button>
             <p id="firebaseNotice" class="notice hidden">Multiplayer needs your Firebase configuration. See README.md.</p>
           </div>
         </section>
@@ -87,6 +88,10 @@
     </div><div class="modal-actions"><button id="cancelCreate" class="btn">Cancel</button><button id="createRoom" class="btn primary">Create room</button></div></div>
   </div>
 
+  <div id="hostModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="hostModalTitle">
+    <div class="modal-card"><h2 id="hostModalTitle"></h2><div id="hostModalBody" class="stack"></div><div id="hostModalActions" class="modal-actions"></div></div>
+  </div>
+
 <script type="module">
   import { firebaseConfig } from './firebase-config.js';
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
@@ -109,9 +114,13 @@
   TOPICS.mixed.words = [...new Set(Object.entries(TOPICS).filter(([k])=>k!=='mixed').flatMap(([,v])=>v.words))];
 
   const $ = id => document.getElementById(id);
-  const els = ['topic','newCard','resetMarks','print','board','win','status','soloTab','multiTab','soloControls','multiControls','playerName','openCreate','joinCode','joinRoom','leaveRoom','players','playerCount','feed','roomBanner','roomCode','roomMode','roomHost','copyInvite','createModal','createTopic','createMode','cancelCreate','createRoom','startSolo','connectionDot','connectionText','firebaseNotice'].reduce((o,id)=>(o[id]=$(id),o),{});
+  const els = ['topic','newCard','resetMarks','print','board','win','status','soloTab','multiTab','soloControls','multiControls','playerName','openCreate','joinCode','joinRoom','leaveRoom','players','playerCount','feed','roomBanner','roomCode','roomMode','roomHost','copyInvite','createModal','createTopic','createMode','cancelCreate','createRoom','startSolo','connectionDot','connectionText','firebaseNotice','endRoom','hostModal','hostModalTitle','hostModalBody','hostModalActions'].reduce((o,id)=>(o[id]=$(id),o),{});
   const configured = firebaseConfig.apiKey && !firebaseConfig.apiKey.includes('REPLACE_ME');
   let app, auth, db, uid = null, roomCode = null, room = null, unsubscribers = [], soloBoard = [], soloMarks = {}, soloSeed = Date.now().toString();
+  // Room lifecycle: hosts can end or hand over a room; if the host is away for HOST_GRACE_MS the
+  // longest-present online player takes over. meta/lastActive feeds the nightly idle-room cleanup.
+  const HOST_GRACE_MS = 2 * 60 * 1000, TOUCH_EVERY_MS = 60 * 1000;
+  let hostTimer = null, lastTouch = 0, claimingHost = false, endedByMe = false;
 
   function hash(str){ let h=2166136261; for(let i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,16777619)} return h>>>0 }
   function rng(seed){ let a=hash(seed); return ()=>{a+=0x6D2B79F5;let t=a;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296} }
@@ -146,7 +155,7 @@
       }else{
         const p=ref(db,`rooms/${roomCode}/players/${uid}/marks/${i}`); wasMarked?await remove(p):await set(p,true);
       }
-      await addActivity(wasMarked?`${name} unmarked “${currentBoard()[i]}”`:`${name} marked “${currentBoard()[i]}”`);
+      await addActivity(wasMarked?`${name} unmarked “${currentBoard()[i]}”`:`${name} marked “${currentBoard()[i]}”`); touchRoom();
       const prospective={...marks}; if(wasMarked)delete prospective[i]; else prospective[i]=true;
       if(!wasMarked && winnerLines(prospective).length) await claimWin();
     }catch(e){ setStatus(friendlyError(e),'error') }
@@ -162,6 +171,7 @@
   function showTab(multi){ els.soloTab.classList.toggle('active',!multi);els.multiTab.classList.toggle('active',multi);els.soloControls.classList.toggle('hidden',multi);els.multiControls.classList.toggle('hidden',!multi);if(multi&&!configured)els.firebaseNotice.classList.remove('hidden') }
   function syncRoomUi(){
     const active=!!room; els.roomBanner.classList.toggle('show',active); els.leaveRoom.classList.toggle('hidden',!active); els.joinRoom.classList.toggle('hidden',active); els.openCreate.classList.toggle('hidden',active); els.joinCode.parentElement.classList.toggle('hidden',active);
+    els.endRoom.classList.toggle('hidden',!active||room.meta.hostId!==uid);
     els.connectionDot.classList.toggle('on',active);els.connectionText.textContent=active?`Live · ${roomCode}`:'Solo mode'; els.topic.disabled=active;
     if(active){els.roomCode.textContent=roomCode;els.roomMode.textContent=room.meta.mode==='shared'?'Shared board':'Individual cards';els.roomHost.textContent=`Hosted by ${room.meta.hostName}`;els.topic.value=room.meta.topic;showTab(true)}
     else{els.players.innerHTML='<p class="help">Create or join a room to see players.</p>';els.playerCount.textContent='';els.feed.innerHTML='<p class="help">Marks and wins will appear here.</p>'}
@@ -180,30 +190,73 @@
   async function createRoom(){
     if(!await requireFirebase())return; const name=cleanName(); if(!name){setStatus('Enter your name first.','error');return} localStorage.setItem('bingoName',name);els.createRoom.disabled=true;
     try{ let code, snap; do{code=randomCode();snap=await get(ref(db,`rooms/${code}/meta`))}while(snap.exists()); const seed=crypto.randomUUID(); const now=Date.now();
-      await set(ref(db,`rooms/${code}/meta`),{hostId:uid,hostName:name,topic:els.createTopic.value,mode:els.createMode.value,seed,createdAt:now,version:1});
+      await set(ref(db,`rooms/${code}/meta`),{hostId:uid,hostName:name,topic:els.createTopic.value,mode:els.createMode.value,seed,createdAt:now,lastActive:serverTimestamp(),version:1});
       await set(ref(db,`rooms/${code}/players/${uid}`),{name,online:true,joinedAt:now,marks:{}}); els.createModal.classList.remove('show'); await connectRoom(code); await addActivity(`${name} created the room`)
     }catch(e){setStatus(friendlyError(e),'error')}finally{els.createRoom.disabled=false}
   }
   async function joinRoom(codeInput){
     if(!await requireFirebase())return; const name=cleanName(),code=cleanCode(codeInput||els.joinCode.value);if(!name){setStatus('Enter your name first.','error');return}if(code.length!==6){setStatus('Enter the six-character room code.','error');return}localStorage.setItem('bingoName',name);
-    try{const snap=await get(ref(db,`rooms/${code}/meta`));if(!snap.exists()){setStatus('Room not found. Check the code and try again.','error');return}await update(ref(db,`rooms/${code}/players/${uid}`),{name,online:true,joinedAt:Date.now()});await connectRoom(code);await addActivity(`${name} joined the room`)}catch(e){setStatus(friendlyError(e),'error')}
+    try{const snap=await get(ref(db,`rooms/${code}/meta`));if(!snap.exists()){setStatus('Room not found. Check the code and try again.','error');return}await update(ref(db,`rooms/${code}/players/${uid}`),{name,online:true,joinedAt:Date.now()});await connectRoom(code);await addActivity(`${name} joined the room`);touchRoom(true)}catch(e){setStatus(friendlyError(e),'error')}
   }
   async function connectRoom(code){
-    disconnectListeners();roomCode=code; const roomRef=ref(db,`rooms/${code}`); const playerRef=ref(db,`rooms/${code}/players/${uid}`); await onDisconnect(playerRef).update({online:false});
-    unsubscribers.push(onValue(roomRef,s=>{if(!s.exists()){setStatus('This room has ended.','error');leaveRoom(false);return}room=s.val();syncRoomUi();renderBoard();renderPlayers();renderFeed();setStatus(`Connected to room ${code}.`,'success')}));
+    disconnectListeners();roomCode=code;endedByMe=false; const roomRef=ref(db,`rooms/${code}`); const playerRef=ref(db,`rooms/${code}/players/${uid}`);
+    // Re-arm presence on every (re)connect so a host who drops and comes back is "Online" again.
+    unsubscribers.push(onValue(ref(db,'.info/connected'),async s=>{ if(s.val()!==true||roomCode!==code)return; try{await onDisconnect(playerRef).update({online:false,lastSeen:serverTimestamp()});await update(playerRef,{online:true})}catch{} }));
+    let first=true;
+    unsubscribers.push(onValue(roomRef,s=>{if(!s.exists()){const mine=endedByMe;leaveRoom(false,mine?'You ended the room.':'This room has ended.',mine?'success':'error');return}room=s.val();syncRoomUi();renderBoard();renderPlayers();renderFeed();if(first){setStatus(`Connected to room ${code}.`,'success');first=false}maybeClaimHost()}));
+    clearInterval(hostTimer);hostTimer=setInterval(maybeClaimHost,15000);
     const url=new URL(location.href);url.searchParams.set('room',code);history.replaceState(null,'',url)
   }
-  function disconnectListeners(){unsubscribers.forEach(off=>off());unsubscribers=[]}
-  async function leaveRoom(removeSelf=true){ const old=roomCode;disconnectListeners();if(removeSelf&&db&&old&&uid){try{await remove(ref(db,`rooms/${old}/players/${uid}`))}catch{}}room=null;roomCode=null;history.replaceState(null,'',location.pathname);syncRoomUi();renderBoard();setStatus('Left multiplayer room.','success') }
-  async function hostNewGame(){ if(!room||room.meta.hostId!==uid)return;try{await update(ref(db,`rooms/${roomCode}`),{'meta/seed':crypto.randomUUID(),sharedMarks:null,winners:null,activity:null});const players=room.players||{};await Promise.all(Object.keys(players).map(id=>remove(ref(db,`rooms/${roomCode}/players/${id}/marks`))));await addActivity(`${cleanName()} started a new game`)}catch(e){setStatus(friendlyError(e),'error')} }
-  async function hostReset(){ if(!room||room.meta.hostId!==uid)return;try{await update(ref(db,`rooms/${roomCode}`),{sharedMarks:null,winners:null});await Promise.all(Object.keys(room.players||{}).map(id=>remove(ref(db,`rooms/${roomCode}/players/${id}/marks`))));await addActivity(`${cleanName()} reset all marks`)}catch(e){setStatus(friendlyError(e),'error')} }
+  function disconnectListeners(){unsubscribers.forEach(off=>off());unsubscribers=[];clearInterval(hostTimer);hostTimer=null}
+  async function leaveRoom(removeSelf=true,msg='Left multiplayer room.',type='success'){ const old=roomCode;disconnectListeners();closeModal();if(db&&old&&uid){const pRef=ref(db,`rooms/${old}/players/${uid}`);try{await onDisconnect(pRef).cancel()}catch{}if(removeSelf){try{await remove(pRef)}catch{}}}room=null;roomCode=null;history.replaceState(null,'',location.pathname);syncRoomUi();renderBoard();setStatus(msg,type) }
+  async function hostNewGame(){ if(!room||room.meta.hostId!==uid)return;try{await update(ref(db,`rooms/${roomCode}`),{'meta/seed':crypto.randomUUID(),sharedMarks:null,winners:null,activity:null});const players=room.players||{};await Promise.all(Object.keys(players).map(id=>remove(ref(db,`rooms/${roomCode}/players/${id}/marks`))));await addActivity(`${cleanName()} started a new game`);touchRoom(true)}catch(e){setStatus(friendlyError(e),'error')} }
+  async function hostReset(){ if(!room||room.meta.hostId!==uid)return;try{await update(ref(db,`rooms/${roomCode}`),{sharedMarks:null,winners:null});await Promise.all(Object.keys(room.players||{}).map(id=>remove(ref(db,`rooms/${roomCode}/players/${id}/marks`))));await addActivity(`${cleanName()} reset all marks`);touchRoom(true)}catch(e){setStatus(friendlyError(e),'error')} }
+
+  // Keeps meta/lastActive fresh (at most once a minute) so the nightly cleanup only removes idle rooms.
+  function touchRoom(force=false){ if(!roomCode||!db)return; const n=Date.now(); if(!force&&n-lastTouch<TOUCH_EVERY_MS)return; lastTouch=n; update(ref(db,`rooms/${roomCode}/meta`),{lastActive:serverTimestamp()}).catch(()=>{}) }
+
+  function closeModal(){ els.hostModal.classList.remove('show') }
+  function para(text){ const p=document.createElement('p');p.className='help';p.textContent=text;return p }
+  function openModal(title,body,actions){
+    els.hostModalTitle.textContent=title; els.hostModalBody.replaceChildren(...body);
+    els.hostModalActions.replaceChildren(...actions.map(([label,cls,fn])=>{const b=document.createElement('button');b.type='button';b.className=`btn ${cls}`.trim();b.textContent=label;b.addEventListener('click',async()=>{b.disabled=true;try{await fn()}finally{b.disabled=false}});return b}));
+    els.hostModal.classList.add('show');
+  }
+  // Other players, online first, then whoever joined earliest.
+  function otherPlayers(){ return Object.entries(room?.players||{}).filter(([id,p])=>id!==uid&&p?.name).sort((a,b)=>((b[1].online!==false)-(a[1].online!==false))||((a[1].joinedAt||0)-(b[1].joinedAt||0))) }
+  function openEndRoom(){ openModal('End room for everyone?',[para('This deletes the room with its marks and activity. Everyone in it goes back to solo mode.')],[['Cancel','',closeModal],['End room','danger',endRoom]]) }
+  async function endRoom(){ if(!room||room.meta.hostId!==uid)return; endedByMe=true; try{await remove(ref(db,`rooms/${roomCode}`));closeModal()}catch(e){endedByMe=false;setStatus(friendlyError(e),'error')} }
+  function openLeave(){
+    if(!room||room.meta.hostId!==uid){leaveRoom(true);return}
+    const others=otherPlayers();
+    if(!others.length){ openModal('Leave the room?',[para('You are the only player. End the room to delete it now, or just leave: an idle room is deleted automatically after 24 hours.')],[['Cancel','',closeModal],['Just leave','',()=>leaveRoom(true)],['End room','danger',endRoom]]); return }
+    const field=document.createElement('div');field.className='field';const label=document.createElement('label');label.htmlFor='handoverTo';label.textContent='Hand over host to';const sel=document.createElement('select');sel.id='handoverTo';
+    others.forEach(([id,p])=>{const o=document.createElement('option');o.value=id;o.textContent=`${p.name}${p.online===false?' (away)':''}`;sel.append(o)}); field.append(label,sel);
+    openModal('You are the host',[para('Hand the room over so the game can go on without you, or end it for everyone.'),field],[['Cancel','',closeModal],['End room for everyone','danger',endRoom],['Hand over & leave','primary',()=>handOver(sel.value)]]);
+  }
+  async function handOver(toId){
+    const p=room?.players?.[toId]; if(!p?.name||room.meta.hostId!==uid)return;
+    try{ await update(ref(db,`rooms/${roomCode}/meta`),{hostId:toId,hostName:p.name}); await addActivity(`${cleanName()} handed host to ${p.name}`); await leaveRoom(true) }catch(e){setStatus(friendlyError(e),'error')}
+  }
+  // If the host left without handing over, or has been away for HOST_GRACE_MS, the online player who
+  // joined first takes over. The database rules enforce the same condition, so races are harmless.
+  async function maybeClaimHost(){
+    if(!room||!uid||claimingHost)return; const hostId=room.meta.hostId; if(hostId===uid)return;
+    const players=room.players||{}, h=players[hostId], me=players[uid];
+    if(!me?.name||me.online===false)return;
+    const gone=!h?.name||(h.online===false&&Date.now()-(h.lastSeen||0)>HOST_GRACE_MS+10000);
+    if(!gone)return;
+    const next=Object.entries(players).filter(([id,p])=>p?.name&&p.online!==false&&id!==hostId).sort((a,b)=>((a[1].joinedAt||0)-(b[1].joinedAt||0))||a[0].localeCompare(b[0]))[0];
+    if(next?.[0]!==uid)return;
+    claimingHost=true; try{ await update(ref(db,`rooms/${roomCode}/meta`),{hostId:uid,hostName:me.name}); await addActivity(`${me.name} is now the host`) }catch{} finally{claimingHost=false}
+  }
   function friendlyError(e){ const code=e?.code||'';if(code.includes('permission-denied'))return 'Permission denied. Publish database.rules.json in Firebase.';if(code.includes('auth'))return 'Anonymous sign-in failed. Enable it in Firebase Authentication.';return e?.message||'Something went wrong.' }
 
   populateTopics();els.playerName.value=localStorage.getItem('bingoName')||'';loadSolo();renderBoard();syncRoomUi();
   els.topic.addEventListener('change',freshSolo);els.newCard.addEventListener('click',()=>room?hostNewGame():freshSolo());els.resetMarks.addEventListener('click',()=>room?hostReset():resetSoloMarks());els.print.addEventListener('click',()=>print());
   els.soloTab.addEventListener('click',()=>showTab(false));els.multiTab.addEventListener('click',()=>showTab(true));els.startSolo.addEventListener('click',freshSolo);
   els.openCreate.addEventListener('click',async()=>{if(await requireFirebase()){els.createTopic.value=els.topic.value;els.createModal.classList.add('show')}});els.cancelCreate.addEventListener('click',()=>els.createModal.classList.remove('show'));els.createModal.addEventListener('click',e=>{if(e.target===els.createModal)els.createModal.classList.remove('show')});els.createRoom.addEventListener('click',createRoom);
-  els.joinCode.addEventListener('input',e=>e.target.value=cleanCode(e.target.value));els.joinRoom.addEventListener('click',()=>joinRoom());els.leaveRoom.addEventListener('click',()=>leaveRoom(true));
+  els.joinCode.addEventListener('input',e=>e.target.value=cleanCode(e.target.value));els.joinRoom.addEventListener('click',()=>joinRoom());els.leaveRoom.addEventListener('click',openLeave);els.endRoom.addEventListener('click',openEndRoom);els.hostModal.addEventListener('click',e=>{if(e.target===els.hostModal)closeModal()});
   els.copyInvite.addEventListener('click',async()=>{const u=new URL(location.href);u.searchParams.set('room',roomCode);await navigator.clipboard.writeText(u.href);setStatus('Invite link copied.','success')});
 
   if(configured){ initFirebase().then(async ok=>{if(!ok)return;const q=new URLSearchParams(location.search).get('room');if(q){showTab(true);els.joinCode.value=cleanCode(q);setStatus(`Invite detected for room ${cleanCode(q)}. Enter your name and select Join room.`)}}) } else { els.firebaseNotice.classList.remove('hidden') }

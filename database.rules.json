@@ -5,10 +5,23 @@
     "rooms": {
       "$roomCode": {
         ".read": "auth != null",
+        ".write": "auth != null && !newData.exists() && data.child('meta/hostId').val() === auth.uid",
         ".validate": "$roomCode.matches(/^[A-Z2-9]{6}$/)",
         "meta": {
           ".write": "auth != null && ((!data.exists() && newData.child('hostId').val() === auth.uid) || data.child('hostId').val() === auth.uid)",
-          ".validate": "newData.hasChildren(['hostId','hostName','topic','mode','seed','createdAt'])"
+          ".validate": "newData.hasChildren(['hostId','hostName','topic','mode','seed','createdAt'])",
+          "hostId": {
+            ".write": "auth != null && newData.val() === auth.uid && root.child('rooms/' + $roomCode + '/players/' + auth.uid + '/name').exists() && (!root.child('rooms/' + $roomCode + '/players/' + data.val() + '/name').exists() || (root.child('rooms/' + $roomCode + '/players/' + data.val() + '/online').val() === false && (!root.child('rooms/' + $roomCode + '/players/' + data.val() + '/lastSeen').exists() || root.child('rooms/' + $roomCode + '/players/' + data.val() + '/lastSeen').val() < now - 120000)))",
+            ".validate": "newData.isString()"
+          },
+          "hostName": {
+            ".write": "auth != null && newData.parent().child('hostId').val() === auth.uid",
+            ".validate": "newData.isString() && newData.val().length <= 24"
+          },
+          "lastActive": {
+            ".write": "auth != null && root.child('rooms/' + $roomCode + '/players/' + auth.uid + '/name').exists()",
+            ".validate": "newData.isNumber() && newData.val() <= now"
+          }
         },
         "players": {
           "$uid": {

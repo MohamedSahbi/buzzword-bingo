@@ -69,6 +69,15 @@ When prompted, use the current directory (or a folder containing these files) as
 5. Invitees open the link, enter a name, and select **Join room**.
 6. Click phrases as they are heard. The host can reset marks or start a new game.
 
+## Room lifecycle and cleanup
+
+- **End room:** the host can delete the room for everyone (**End room for everyone**). Players drop back to solo mode.
+- **Host leaves:** clicking **Leave room** as host offers to hand the host role to another player or end the room.
+- **Host disappears:** if the host closes the tab or loses connection for more than 2 minutes, the online player who joined first becomes host automatically. The database rules enforce the same condition.
+- **Idle rooms:** every room keeps `meta/lastActive` up to date. The nightly workflow `.github/workflows/cleanup-rooms.yml` deletes rooms idle for more than 24 hours (the Spark plan has no Cloud Functions, so the cleanup runs on GitHub Actions).
+
+The workflow needs a repository secret named `FIREBASE_SERVICE_ACCOUNT` containing a Firebase service account key (Firebase Console → Project settings → Service accounts → Generate new private key). That key is a real secret: never commit it. Run the workflow manually from the **Actions** tab with **dry run** ticked to preview what it would delete. GitHub disables scheduled workflows in public repositories after 60 days without repository activity; re-enable it from the Actions tab if that happens.
+
 ## Local testing
 
 ES modules must be served over HTTP; do not double-click `index.html` for multiplayer testing.
