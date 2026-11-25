@@ -110,6 +110,7 @@ export default {
     "boss.back": "Torna al gioco: B o Esc",
     "boss.file": "Forecast_Q3_finale_v7.xlsx",
     "boss.rows": "Ricavi|Costi operativi|Investimenti|Organico|Licenze|Trasferte|Cloud|Totale",
+    "advent.open": "Calendario dell’Avvento",
   },
   topics: {
     meeting: {

@@ -38,13 +38,36 @@
         },
         "winners": {
           ".write": "auth != null && root.child('rooms').child($roomCode).child('meta').child('hostId').val() === auth.uid",
-          "$uid": { ".write": "auth != null && auth.uid === $uid" }
+          "$uid": {
+            ".write": "auth != null && auth.uid === $uid"
+          }
         },
         "activity": {
           ".write": "auth != null && root.child('rooms').child($roomCode).child('meta').child('hostId').val() === auth.uid",
           "$event": {
             ".write": "auth != null && newData.child('uid').val() === auth.uid",
             ".validate": "!newData.exists() || (newData.child('text').isString() && newData.child('text').val().length <= 160)"
+          }
+        }
+      }
+    },
+    "teams": {
+      "$code": {
+        ".read": "auth != null",
+        ".validate": "$code.matches(/^[A-Z2-9]{6}$/)",
+        "meta": {
+          ".write": "auth != null && !data.exists() && newData.child('createdBy').val() === auth.uid",
+          ".validate": "newData.hasChildren(['name','lang','createdBy','createdAt','expiresAt']) && newData.child('name').isString() && newData.child('name').val().length <= 30 && newData.child('lang').isString() && newData.child('lang').val().length <= 3 && newData.child('expiresAt').isNumber() && newData.child('expiresAt').val() <= now + 5184000000"
+        },
+        "members": {
+          "$uid": {
+            ".write": "auth != null && auth.uid === $uid && root.child('teams/' + $code + '/meta').exists()",
+            ".validate": "!newData.exists() || (newData.child('name').isString() && newData.child('name').val().length <= 24)",
+            "doors": {
+              "$door": {
+                ".validate": "$door.matches(/^([1-9]|[12][0-9]|3[01])$/) && newData.isNumber() && newData.val() >= 0 && newData.val() <= 500"
+              }
+            }
           }
         }
       }

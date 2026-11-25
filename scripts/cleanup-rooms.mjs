@@ -39,6 +39,20 @@ try {
   const count = Object.keys(stale).length;
   if (count && !dryRun) await db.ref('rooms').update(stale);
   console.log(`${codes.length} room(s) checked, ${count} ${dryRun ? 'would be ' : ''}deleted (idle > ${idleHours}h).`);
+
+  // Advent team calendars carry their own expiry date (a couple of weeks after the season ends).
+  const teams = (await db.ref('teams').get()).val() || {};
+  const expired = {};
+  for (const [code, team] of Object.entries(teams)) {
+    const exp = team?.meta?.expiresAt;
+    if (!exp || exp < Date.now()) {
+      expired[code] = null;
+      console.log(`${dryRun ? 'Would delete' : 'Deleting'} team ${code} (${exp ? 'expired' : 'no metadata'})`);
+    }
+  }
+  const teamCount = Object.keys(expired).length;
+  if (teamCount && !dryRun) await db.ref('teams').update(expired);
+  console.log(`${Object.keys(teams).length} team calendar(s) checked, ${teamCount} ${dryRun ? 'would be ' : ''}deleted (expired).`);
 } finally {
   await app.delete();
 }

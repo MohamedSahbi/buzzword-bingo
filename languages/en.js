@@ -110,6 +110,7 @@ export default {
     "boss.back": "Press B or Esc to go back to the game",
     "boss.file": "Q3_forecast_final_v7.xlsx",
     "boss.rows": "Revenue|Operating costs|Investments|Headcount|Licences|Travel|Cloud spend|Total",
+    "advent.open": "Advent calendar",
   },
   topics: {
     meeting: {

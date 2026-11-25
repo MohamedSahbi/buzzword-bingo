@@ -110,6 +110,7 @@ export default {
     "boss.back": "Volver al juego: B o Esc",
     "boss.file": "Prevision_T3_final_v7.xlsx",
     "boss.rows": "Ingresos|Gastos operativos|Inversiones|Plantilla|Licencias|Viajes|Nube|Total",
+    "advent.open": "Calendario de Adviento",
   },
   topics: {
     meeting: {

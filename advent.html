@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Advent calendar · Buzzword Bingo</title>
+<style>
+  :root{--night:#0d2236;--night2:#143552;--fir:#0f5132;--berry:#b3261e;--gold:#f2b84b;--snow:#f7fbff;--ink:#132433;--muted:#5a6b7b;--card:#ffffff;--line:#d8e2ea}
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;color:var(--snow);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:radial-gradient(1200px 600px at 50% -10%,#1d4a70 0%,var(--night2) 40%,var(--night) 100%);overflow-x:hidden}
+  .snow{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+  .snow i{position:absolute;top:-10px;width:6px;height:6px;border-radius:50%;background:#fff;opacity:.75;animation:fall linear infinite}
+  @keyframes fall{to{transform:translate3d(var(--dx),105vh,0)}}
+  @media (prefers-reduced-motion:reduce){.snow{display:none}}
+  .shell{position:relative;z-index:1;max-width:1100px;margin:auto;padding:20px}
+  header{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+  header a{color:#cfe3f5;text-decoration:none;font-size:14px}
+  h1{font-family:Georgia,'Times New Roman',serif;font-weight:700;font-size:clamp(28px,5vw,44px);margin:0;letter-spacing:.01em}
+  h1 span{color:var(--gold)}
+  .grow{flex:1}
+  .pill{display:inline-flex;align-items:center;gap:6px;border:1px solid #ffffff33;background:#ffffff14;color:var(--snow);border-radius:999px;padding:7px 12px;font:inherit;font-size:13px;cursor:pointer}
+  select.pill{appearance:auto}
+  select.pill option{color:#111}
+  .banner{background:#ffffff14;border:1px solid #ffffff2a;border-radius:14px;padding:10px 14px;margin-bottom:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:14px}
+  .layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px;align-items:start}
+  .doors{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:12px}
+  .door{position:relative;aspect-ratio:1/1.08;border-radius:14px;border:0;cursor:pointer;color:#fff;font:inherit;overflow:hidden;box-shadow:0 6px 18px #0006;transition:transform .15s}
+  .door:hover:not(:disabled){transform:translateY(-3px) rotate(-.5deg)}
+  .door:disabled{cursor:default}
+  .door.p0{background:repeating-linear-gradient(45deg,#b3261e 0 14px,#c8392f 14px 28px)}
+  .door.p1{background:repeating-linear-gradient(-45deg,#0f5132 0 12px,#176b44 12px 24px)}
+  .door.p2{background:radial-gradient(#ffffff2e 2px,transparent 2.5px) 0 0/16px 16px,#1f4f8a}
+  .door.p3{background:repeating-linear-gradient(90deg,#7a2f8f 0 10px,#8d3ea3 10px 20px)}
+  .door::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:12px;margin-left:-6px;background:var(--gold);opacity:.9}
+  .door::after{content:"";position:absolute;top:50%;left:0;right:0;height:12px;margin-top:-6px;background:var(--gold);opacity:.9}
+  .door .num{position:absolute;z-index:2;left:50%;top:50%;transform:translate(-50%,-50%);width:54px;height:54px;border-radius:50%;background:var(--snow);color:var(--berry);display:grid;place-items:center;font-family:Georgia,serif;font-weight:700;font-size:24px;box-shadow:0 2px 6px #0004}
+  .door .lab{position:absolute;z-index:2;left:6px;right:6px;bottom:6px;text-align:center;font-size:11px;font-weight:700;background:#0008;border-radius:8px;padding:3px 4px}
+  .door .tag{position:absolute;z-index:2;top:6px;right:6px;font-size:16px}
+  .door.locked{filter:grayscale(.75) brightness(.7)}
+  .door.today{outline:3px solid var(--gold);animation:glow 1.8s ease-in-out infinite}
+  @keyframes glow{50%{box-shadow:0 0 22px var(--gold)}}
+  .door.done .num{background:var(--gold);color:#3a2500}
+  .side{display:flex;flex-direction:column;gap:14px}
+  .panel{background:var(--card);color:var(--ink);border-radius:16px;padding:16px;box-shadow:0 10px 30px #0005}
+  .panel h2{margin:0 0 8px;font-size:17px;font-family:Georgia,serif}
+  .muted{color:var(--muted);font-size:13px;margin:0}
+  .field{display:flex;flex-direction:column;gap:4px;margin-top:8px}
+  .field label{font-size:12px;font-weight:700;color:var(--muted)}
+  input,select{border:1px solid var(--line);border-radius:10px;padding:9px 10px;font:inherit;color:var(--ink);background:#fbfdff;width:100%}
+  .btn{border:1px solid var(--line);background:#f4f7fa;color:var(--ink);border-radius:10px;padding:9px 12px;font:inherit;font-weight:700;cursor:pointer}
+  .btn.primary{background:var(--berry);border-color:var(--berry);color:#fff}
+  .btn.gold{background:var(--gold);border-color:var(--gold);color:#3a2500}
+  .btn:disabled{opacity:.5;cursor:default}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px}
+  .board{list-style:none;margin:8px 0 0;padding:0}
+  .board li{display:flex;justify-content:space-between;gap:8px;padding:6px 0;border-bottom:1px solid var(--line);font-size:14px}
+  .board li.me{font-weight:700}
+  .err{color:var(--berry);font-size:13px;min-height:18px;margin:6px 0 0}
+  .hidden{display:none!important}
+  /* play view */
+  .play{background:var(--card);color:var(--ink);border-radius:18px;padding:18px;box-shadow:0 10px 30px #0005}
+  .play h2{font-family:Georgia,serif;margin:0;font-size:24px}
+  .kind{display:inline-block;font-size:12px;font-weight:700;background:#fde9c4;color:#6b4300;border-radius:999px;padding:3px 10px;margin-bottom:6px}
+  .split{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:16px;margin-top:12px}
+  .feed{height:360px;overflow-y:auto;background:#eef3f7;border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:6px}
+  .msg{max-width:90%;background:#fff;border:1px solid var(--line);border-radius:14px;padding:7px 11px;font-size:14px}
+  .msg b{display:block;font-size:11px;color:var(--muted)}
+  .cap{font-size:16px;line-height:1.5;padding:4px 6px;border-radius:8px}
+  .cap.now{background:#fff4d6}
+  .riddle{align-self:center;text-align:center;margin:auto;font-size:64px;line-height:1.1}
+  .riddle small{display:block;font-size:13px;color:var(--muted);margin-top:8px}
+  .past{font-size:13px;color:var(--muted);text-align:center}
+  .card{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+  .sq{aspect-ratio:1;border-radius:10px;border:1px solid var(--line);background:#fbfdff;color:var(--ink);font:inherit;font-size:12.5px;font-weight:700;line-height:1.15;padding:4px;cursor:pointer;overflow:hidden}
+  .sq.ok{background:#c9efd9;border-color:#2e9d62;color:#0c3d22}
+  .sq.bad{background:#f7c9c5}
+  .sq.star{border:2px solid var(--gold);background:#fff6df}
+  .sq.star.ok{background:#f7d985}
+  .stats{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
+  .stat{background:#eef3f7;border-radius:10px;padding:6px 12px}
+  .stat small{display:block;font-size:11px;color:var(--muted)}
+  .stat b{font-size:20px}
+  .note{font-size:13px;color:var(--muted);min-height:20px;margin:8px 0 0}
+  .result{margin-top:14px;padding:14px;border-radius:14px;background:#fff6df;border:1px solid #f2d08a}
+  .result pre{white-space:pre-wrap;background:#fff;border-radius:10px;padding:10px;font-size:13px;margin:8px 0}
+  .boxes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:12px 0}
+  .box{min-height:96px;border-radius:12px;border:2px dashed #b9c7d3;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:8px;position:relative;color:var(--muted);font-size:26px;overflow:hidden}
+  .box.done{border:0;color:var(--fg)}
+  .box.done::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:10px;margin-left:-5px;background:var(--rib)}
+  .box.done::after{content:"";position:absolute;top:50%;left:0;right:0;height:10px;margin-top:-5px;background:var(--rib)}
+  .box .tagx{position:relative;z-index:1;background:#fff;color:var(--ink);border-radius:8px;padding:3px 8px;font-size:12px;font-weight:700;margin-bottom:4px}
+  .box .inx{position:relative;z-index:1;font-size:11px;line-height:1.3;background:#ffffffcc;border-radius:6px;padding:2px 4px}
+  .items{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
+  .item{min-height:54px;border-radius:10px;border:1px solid var(--line);background:#fbfdff;color:var(--ink);font:inherit;font-size:13px;font-weight:700;cursor:pointer;padding:4px;transition:transform .12s}
+  .item.sel{background:#c9efd9;border-color:#2e9d62;transform:translateY(-3px)}
+  .shake{animation:sh .35s}@keyframes sh{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+  .toggle{display:inline-flex;gap:6px;align-items:center;font-size:13px;color:var(--muted)}
+  .toggle input{width:auto}
+  @media (max-width:860px){.layout{grid-template-columns:1fr}.split{grid-template-columns:1fr}.feed{height:260px}}
+  @media (max-width:520px){.doors{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.door .num{width:40px;height:40px;font-size:18px}.door .lab{display:none}.items,.boxes{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+<div class="snow" id="snow" aria-hidden="true"></div>
+<div class="shell">
+  <header>
+    <a href="./" id="backLink"></a>
+    <div class="grow"></div>
+    <label class="pill"><span id="cultureLabel"></span> <select id="culture" class="pill" style="padding:2px 6px;border:0;background:transparent"></select></label>
+    <button id="soundBtn" class="pill" type="button"></button>
+  </header>
+  <h1 id="title"></h1>
+  <p class="muted" style="color:#cfe3f5;margin:4px 0 16px" id="subtitle"></p>
+  <div id="banner" class="banner hidden"></div>
+
+  <div id="calendarView" class="layout">
+    <section><div id="doors" class="doors"></div></section>
+    <aside class="side">
+      <div class="panel">
+        <h2 id="soloTitle"></h2>
+        <div style="font-size:30px;font-weight:800;font-family:Georgia,serif" id="soloTotal">0</div>
+        <p class="muted" id="soloDetail"></p>
+      </div>
+      <div class="panel" id="teamPanel">
+        <h2 id="teamTitle"></h2>
+        <div id="teamNone">
+          <p class="muted" id="teamIntro"></p>
+          <div class="field"><label for="pName" id="lblName"></label><input id="pName" maxlength="24" autocomplete="nickname"></div>
+          <div class="field"><label for="tName" id="lblTeamName"></label><input id="tName" maxlength="30"></div>
+          <div class="row"><button class="btn primary" id="createTeam"></button></div>
+          <div class="field"><label for="tCode" id="lblTeamCode"></label><input id="tCode" maxlength="6" placeholder="ABC234" style="text-transform:uppercase"></div>
+          <div class="row"><button class="btn" id="joinTeam"></button></div>
+        </div>
+        <div id="teamSome" class="hidden">
+          <div style="font-weight:800" id="teamHead"></div>
+          <ol class="board" id="teamBoard"></ol>
+          <div class="row"><button class="btn gold" id="copyTeam"></button><button class="btn" id="leaveTeam"></button></div>
+        </div>
+        <p class="err" id="teamErr"></p>
+      </div>
+    </aside>
+  </div>
+
+  <section id="playView" class="play hidden"></section>
+</div>
+
+<script type="module">
+  import { ADVENT_UI } from './advent/ui.js';
+  import { CALENDARS } from './advent/index.js';
+  import { firebaseConfig } from './firebase-config.js';
+
+  // ---------- setup ----------
+  const $ = id => document.getElementById(id);
+  const params = new URLSearchParams(location.search);
+  const pickCal = c => (CALENDARS[c] ? c : null);
+  let cal = pickCal(params.get('lang')) || pickCal(localStorage.getItem('bingoAdventLang')) || pickCal(localStorage.getItem('bingoSiteLang')) || pickCal((navigator.language || 'en').slice(0, 2)) || 'en';
+  let preview = params.get('preview') === '1';
+  const C = () => CALENDARS[cal];
+  const t = (k, v = {}) => (ADVENT_UI[cal]?.[k] ?? ADVENT_UI.en[k] ?? k).replace(/\{(\w+)\}/g, (_, x) => v[x] ?? '');
+  const esc = s => String(s).replace(/[&<>'"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[c]));
+
+  // Season: December of this year (or of last year while it's January).
+  const now = () => new Date();
+  const seasonYear = (() => { const d = now(); return d.getMonth() === 0 ? d.getFullYear() - 1 : d.getFullYear(); })();
+  const doorDate = n => { const [m, d] = C().dates[n]; return new Date(m === 1 ? seasonYear + 1 : seasonYear, m - 1, d); };
+  const sameDay = (a, b) => a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+  const unlocked = n => preview || now() >= doorDate(n);
+  const isToday = n => sameDay(now(), doorDate(n));
+  const fmtDate = n => doorDate(n).toLocaleDateString(C().locale, { day: 'numeric', month: 'long' });
+
+  // ---------- scores (browser) ----------
+  const scoreKey = () => `bingoAdvent:${cal}:${seasonYear}`;
+  const loadScores = () => { try { return JSON.parse(localStorage.getItem(scoreKey())) || {} } catch { return {} } };
+  const saveScore = (n, pts, onDay) => { const s = loadScores(); if (s[n]) return false; s[n] = { pts, onDay, at: Date.now() }; localStorage.setItem(scoreKey(), JSON.stringify(s)); return true; };
+
+  // ---------- sound ----------
+  let soundOn = localStorage.getItem('bingoSound') !== 'off', actx = null;
+  function tone(f, d, delay = 0, type = 'triangle', vol = 0.12) { if (!soundOn) return; try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); const at = actx.currentTime + delay, o = actx.createOscillator(), g = actx.createGain(); o.type = type; o.frequency.value = f; g.gain.setValueAtTime(0.0001, at); g.gain.exponentialRampToValueAtTime(vol, at + 0.01); g.gain.exponentialRampToValueAtTime(0.0001, at + d); o.connect(g).connect(actx.destination); o.start(at); o.stop(at + d + 0.02); } catch {} }
+  const sfx = { ok: () => tone(660, .09), bad: () => tone(200, .12, 0, 'sawtooth', .06), star: () => [880, 1175].forEach((f, i) => tone(f, .14, i * .08, 'sine', .1)), bingo: () => [523, 659, 784, 1047].forEach((f, i) => tone(f, .18, i * .11, 'square', .08)), bell: () => [1319, 1568, 1319].forEach((f, i) => tone(f, .25, i * .18, 'sine', .07)), msg: () => tone(990, .04, 0, 'sine', .04) };
+  function syncSound() { $('soundBtn').textContent = (soundOn ? '🔊 ' : '🔇 ') + t('sound'); }
+
+  // ---------- snow ----------
+  for (let i = 0; i < 45; i++) { const f = document.createElement('i'); const s = 3 + Math.random() * 5; f.style.cssText = `left:${Math.random() * 100}%;width:${s}px;height:${s}px;--dx:${(Math.random() * 80 - 40).toFixed(0)}px;animation-duration:${(8 + Math.random() * 10).toFixed(1)}s;animation-delay:-${(Math.random() * 18).toFixed(1)}s`; $('snow').appendChild(f); }
+
+  // ---------- calendar view ----------
+  const PAPER = ['p0', 'p1', 'p2', 'p3'];
+  function renderAll() {
+    document.documentElement.lang = cal;
+    document.title = `${t('title')} · Buzzword Bingo`;
+    $('backLink').textContent = t('back'); $('cultureLabel').textContent = t('culture');
+    $('title').innerHTML = `🎄 <span>${esc(t('title'))}</span>`;
+    $('subtitle').textContent = C().tagline;
+    syncSound(); renderBanner(); renderDoors(); renderSolo(); renderTeamStatic(); renderTeam();
+  }
+  function renderBanner() {
+    const b = $('banner'); b.classList.add('hidden');
+    if (preview) { b.innerHTML = `<span>👀 ${esc(t('previewOn'))}</span><button class="pill" id="exitPreview">${esc(t('previewExit'))}</button>`; b.classList.remove('hidden'); $('exitPreview').onclick = () => { preview = false; history.replaceState(null, '', location.pathname); renderAll(); }; }
+    else if (now() < doorDate(1)) { b.innerHTML = `<span>⏳ ${esc(t('opensOn'))}</span><button class="pill" id="goPreview">${esc(t('previewBtn'))}</button>`; b.classList.remove('hidden'); $('goPreview').onclick = () => { preview = true; const u = new URL(location.href); u.searchParams.set('preview', '1'); history.replaceState(null, '', u); renderAll(); }; }
+  }
+  function renderDoors() {
+    const scores = loadScores(), wrap = $('doors'); wrap.replaceChildren();
+    Object.keys(C().dates).map(Number).sort((a, b) => a - b).forEach(n => {
+      const d = C().doors[n], open = unlocked(n), done = !preview && scores[n];
+      const b = document.createElement('button'); b.type = 'button';
+      b.className = `door ${PAPER[n % 4]}${open ? '' : ' locked'}${!preview && isToday(n) ? ' today' : ''}${done ? ' done' : ''}`;
+      b.innerHTML = `<span class="num">${n}</span>${d.type === 'predict' ? '<span class="tag">⭐</span>' : ''}<span class="lab">${esc(open ? (done ? t('done', { pts: scores[n].pts }) : (!preview && isToday(n) ? t('today') : t('t_' + d.type))) : '🔒 ' + fmtDate(n))}</span>`;
+      b.disabled = !open; b.title = open ? t('t_' + d.type) : t('locked', { date: fmtDate(n) });
+      b.onclick = () => openDoor(n);
+      wrap.appendChild(b);
+    });
+  }
+  function renderSolo() {
+    const s = loadScores(), vals = Object.values(s);
+    $('soloTitle').textContent = t('soloScore');
+    $('soloTotal').textContent = preview ? '—' : vals.reduce((a, v) => a + v.pts, 0);
+    $('soloDetail').textContent = preview ? t('previewOn') : `${vals.length} / ${Object.keys(C().dates).length}`;
+  }
+
+  // ---------- play view ----------
+  let stopGame = () => {};
+  function openDoor(n) {
+    stopGame(); stopGame = () => {};
+    let door = C().doors[n], predictNote = '';
+    if (door.type === 'predict') { predictNote = `<p class="note">⭐ ${esc(t('h_predict'))}</p>`; door = door.alt; }
+    const v = $('playView'); $('calendarView').classList.add('hidden'); v.classList.remove('hidden');
+    const played = !preview && loadScores()[n];
+    v.innerHTML = `<div class="row" style="margin:0 0 10px"><button class="btn" id="backCal">${esc(t('backToCal'))}</button><div class="grow"></div><span class="muted">${esc(fmtDate(n))}</span></div>
+      <span class="kind">${n}. · ${esc(t('t_' + door.type))}</span><h2>${esc(door.title)}</h2><p class="muted" style="margin-top:6px">${esc(t('h_' + door.type))}</p>${predictNote}
+      ${played ? `<p class="note">${esc(t('firstOnly'))}</p>` : ''}<div id="game"></div><div id="result"></div>`;
+    $('backCal').onclick = closeDoor;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    const finish = pts => finishDoor(n, pts, door);
+    if (door.type === 'wrap') stopGame = playWrap(door, $('game'), finish, n);
+    else stopGame = playReveal(door, $('game'), finish, n);
+  }
+  function closeDoor() { stopGame(); stopGame = () => {}; $('playView').classList.add('hidden'); $('calendarView').classList.remove('hidden'); renderDoors(); renderSolo(); renderTeam(); }
+  function finishDoor(n, pts, door) {
+    const onDay = !preview && isToday(n), total = Math.min(500, pts + (onDay ? 20 : 0));
+    const first = !preview && saveScore(n, total, onDay);
+    if (first) pushTeamScore(n, total);
+    sfx.bell();
+    const share = `${t('title')} · ${C().label} · ${n}.\n${door.shareLine}\n⭐ ${total}\n${location.origin}${location.pathname}`;
+    $('result').innerHTML = `<div class="result"><b style="font-size:18px">${esc(t('result', { n, pts: total }))}</b>${onDay ? `<div class="muted">${esc(t('onDayBonus'))}</div>` : ''}${!first && !preview ? `<div class="muted">${esc(t('firstOnly'))}</div>` : ''}<pre>${esc(share)}</pre><div class="row"><button class="btn gold" id="copyRes">${esc(t('share'))}</button><button class="btn" id="again">${esc(t('replay'))}</button><button class="btn" id="back2">${esc(t('backToCal'))}</button></div></div>`;
+    $('copyRes').onclick = async () => { try { await navigator.clipboard.writeText(share); $('copyRes').textContent = t('copied'); } catch {} };
+    $('again').onclick = () => openDoor(n); $('back2').onclick = closeDoor;
+    $('result').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  // ---------- engine 1: timed reveal (chat, listening, emoji riddles) ----------
+  // Content marks card phrases with [[...]]. The card is 12 phrases that appear + 4 decoys, 4×4.
+  function seeded(seed) { let h = 2166136261; for (const c of seed) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return () => { h += 0x6D2B79F5; let x = h; x = Math.imul(x ^ x >>> 15, x | 1); x ^= x + Math.imul(x ^ x >>> 7, x | 61); return ((x ^ x >>> 14) >>> 0) / 4294967296; }; }
+  function shuffle(a, rnd = Math.random) { a = [...a]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+  const marks = s => [...s.matchAll(/\[\[(.+?)\]\]/g)].map(m => m[1]);
+  const plain = s => s.replace(/\[\[(.+?)\]\]/g, '$1');
+
+  function playReveal(door, root, done, n) {
+    const segs = door.type === 'emoji' ? door.riddles.map(([e, a]) => ({ emoji: e, phrases: [a] }))
+      : door.type === 'chat' ? door.lines.map(([who, txt]) => ({ who, text: plain(txt), phrases: marks(txt) }))
+      : door.text.map(txt => ({ text: plain(txt), phrases: marks(txt) }));
+    const appearing = [...new Set(segs.flatMap(s => s.phrases))];
+    const cardPhrases = shuffle([...appearing, ...door.decoys], seeded(`${cal}:${n}`)).slice(0, 16);
+    const star = door.star && appearing.includes(door.star) ? door.star : appearing[Math.floor(appearing.length / 2)];
+    const appearedAt = {}, found = new Set(); let pts = 0, bingo = false, full = false, idx = 0, timer = null, running = false, ended = false;
+    const speedDiv = door.type === 'emoji' ? 350 : door.type === 'listen' ? 260 : 200;
+
+    const voiceOk = door.type === 'listen' && 'speechSynthesis' in window;
+    root.innerHTML = `<div class="split"><div>
+        <div class="feed" id="feed"></div>
+        <div class="row">${door.type === 'listen' ? `<label class="toggle"><input type="checkbox" id="useVoice" ${voiceOk ? 'checked' : 'disabled'}> ${esc(t('voice'))}</label>` : ''}<button class="btn primary" id="go">▶ ${esc(t('start'))}</button><span class="muted" id="status"></span></div>
+      </div><div>
+        <div class="card" id="card"></div>
+        <div class="stats"><div class="stat"><small>${esc(t('points'))}</small><b id="pts">0</b></div><div class="stat"><small>${esc(t('found'))}</small><b id="fnd">0/${appearing.length}</b></div></div>
+        <p class="note" id="note"></p></div></div>`;
+    const card = $('card'), feed = $('feed'), note = msg => { $('note').textContent = msg; };
+    function drawCard() {
+      card.replaceChildren();
+      cardPhrases.forEach(p => { const b = document.createElement('button'); b.type = 'button'; b.className = `sq${p === star ? ' star' : ''}${found.has(p) ? ' ok' : ''}`; b.textContent = (p === star ? '★ ' : '') + p; b.onclick = () => tap(p, b); card.appendChild(b); });
+    }
+    function lines() { const L = []; for (let r = 0; r < 4; r++) { L.push([0, 1, 2, 3].map(c => r * 4 + c)); L.push([0, 1, 2, 3].map(x => x * 4 + r)); } L.push([0, 5, 10, 15], [3, 6, 9, 12]); return L; }
+    function tap(p, el) {
+      if (!running && !ended || found.has(p) || ended) return;
+      const at = appearedAt[p];
+      if (at === undefined) { pts = Math.max(0, pts - 5); sfx.bad(); el.classList.add('bad', 'shake'); setTimeout(() => el.classList.remove('bad', 'shake'), 400); note(t('notYet')); }
+      else {
+        found.add(p); const s = Math.max(5, 30 - Math.round((Date.now() - at) / speedDiv)); pts += s; let msg = t('speed', { pts: s });
+        if (p === star) { pts += 25; msg = t('star') + ' · ' + msg; sfx.star(); } else sfx.ok();
+        const idxs = cardPhrases.map((q, i) => found.has(q) ? i : -1).filter(i => i >= 0);
+        if (!bingo && lines().some(l => l.every(i => idxs.includes(i)))) { bingo = true; pts += 50; msg = t('bingo'); sfx.bingo(); }
+        if (!full && found.size === appearing.length) { full = true; pts += 30; msg = t('fullCard'); }
+        note(msg); drawCard();
+      }
+      $('pts').textContent = pts; $('fnd').textContent = `${found.size}/${appearing.length}`;
+    }
+    function show(seg) {
+      seg.phrases.forEach(p => { if (appearedAt[p] === undefined) appearedAt[p] = Date.now(); });
+      if (door.type === 'chat') { const m = document.createElement('div'); m.className = 'msg'; m.innerHTML = `<b>${esc(seg.who)}</b>${esc(seg.text)}`; feed.appendChild(m); sfx.msg(); }
+      else if (door.type === 'emoji') {
+        const prev = segs[idx - 2]; feed.innerHTML = `<div class="riddle">${seg.emoji}<small>${idx} / ${segs.length}</small></div>${prev ? `<div class="past">${prev.emoji} = ${esc(prev.phrases[0])}</div>` : ''}`;
+      } else { feed.querySelectorAll('.cap.now').forEach(c => c.classList.remove('now')); const c = document.createElement('div'); c.className = 'cap now'; c.textContent = seg.text; feed.appendChild(c); }
+      feed.scrollTop = feed.scrollHeight;
+    }
+    function end() {
+      if (ended) return; ended = true; running = false; clearTimeout(timer); try { speechSynthesis.cancel(); } catch {}
+      if (door.type === 'emoji') { const last = segs[segs.length - 1]; feed.insertAdjacentHTML('beforeend', `<div class="past">${last.emoji} = ${esc(last.phrases[0])}</div>`); }
+      $('status').textContent = '';
+      const grid = [0, 1, 2, 3].map(r => [0, 1, 2, 3].map(c => { const p = cardPhrases[r * 4 + c]; return found.has(p) ? (p === star ? '⭐' : '🎄') : '❄️'; }).join('')).join('\n');
+      door.shareLine = `${t('t_' + door.type)} · ${found.size}/${appearing.length}${bingo ? ' · BINGO' : ''}\n${grid}`;
+      done(pts);
+    }
+    // Pacing: chat lines every ~2.6s, emoji riddles every ~7s, listening follows the speech (or reading time).
+    function next() {
+      if (!running) return;
+      if (idx >= segs.length) { timer = setTimeout(end, door.type === 'emoji' ? 7000 : 5000); return; }
+      const seg = segs[idx++]; show(seg);
+      if (door.type === 'chat') timer = setTimeout(next, 2200 + Math.min(1800, seg.text.length * 25));
+      else if (door.type === 'emoji') timer = setTimeout(next, 7000);
+      else speakOrRead(seg.text);
+    }
+    function speakOrRead(text) {
+      const useVoice = $('useVoice')?.checked;
+      const readTime = Math.max(2400, text.length * 65);
+      if (!useVoice) { timer = setTimeout(next, readTime); return; }
+      try {
+        const u = new SpeechSynthesisUtterance(text); u.lang = C().locale;
+        const v = speechSynthesis.getVoices().find(v => C().voice.some(l => v.lang.replace('_', '-').toLowerCase().startsWith(l.toLowerCase())));
+        if (v) u.voice = v; u.rate = 0.98;
+        let moved = false; const go = () => { if (!moved) { moved = true; clearTimeout(timer); setTimeout(next, 350); } };
+        u.onend = go; u.onerror = go; timer = setTimeout(go, readTime + 4000);
+        speechSynthesis.speak(u); $('status').textContent = t('listenNow');
+      } catch { timer = setTimeout(next, readTime); }
+    }
+    if (door.type === 'listen' && voiceOk) {
+      const checkVoice = () => { const has = speechSynthesis.getVoices().some(v => C().voice.some(l => v.lang.replace('_', '-').toLowerCase().startsWith(l.toLowerCase()))); if (!has && speechSynthesis.getVoices().length) { $('useVoice').checked = false; $('useVoice').disabled = true; $('status').textContent = t('noVoice'); } };
+      checkVoice(); speechSynthesis.onvoiceschanged = checkVoice;
+    }
+    $('go').onclick = () => { if (running || ended) return; running = true; $('go').disabled = true; feed.replaceChildren(); next(); };
+    drawCard();
+    return () => { running = false; ended = true; clearTimeout(timer); try { speechSynthesis.cancel(); } catch {} };
+  }
+
+  // ---------- engine 2: Gift Wrap ----------
+  const RIB = [['#fde3dd', '#c8392f'], ['#dff3e8', '#1d8a55'], ['#fbe3ee', '#c2477a'], ['#e7e4fb', '#5b4fc4']];
+  function playWrap(door, root, done) {
+    let items = shuffle(door.groups.flatMap((g, i) => g.w.map(w => ({ w, g: i })))), sel = [], tape = 4, boxes = [], log = [], over = false;
+    root.innerHTML = `<div class="boxes" id="boxes"></div><div class="items" id="items"></div>
+      <div class="row"><span class="muted">${esc(t('tapeLeft'))}</span><b id="tape"></b><div class="grow"></div><button class="btn" id="shuf">${esc(t('shuffle'))}</button><button class="btn primary" id="wrapBtn">🎁 ${esc(t('wrapBtn'))}</button></div><p class="note" id="note"></p>`;
+    function draw() {
+      $('boxes').innerHTML = [0, 1, 2, 3].map(k => { const gi = boxes[k]; if (gi === undefined) return '<div class="box">🎁</div>'; const g = door.groups[gi], [bg, rib] = RIB[k]; return `<div class="box done" style="background:${bg};--rib:${rib};--fg:#222"><span class="tagx">${esc(g.n)}</span><span class="inx">${g.w.map(esc).join(' · ')}</span></div>`; }).join('');
+      const it = $('items'); it.replaceChildren();
+      items.forEach(x => { const b = document.createElement('button'); b.type = 'button'; b.className = 'item' + (sel.includes(x) ? ' sel' : ''); b.textContent = x.w; b.onclick = () => { if (over) return; if (sel.includes(x)) sel = sel.filter(y => y !== x); else if (sel.length < 4) sel.push(x); draw(); }; it.appendChild(b); });
+      $('tape').textContent = '🧻'.repeat(tape) + '·'.repeat(4 - tape);
+    }
+    function finish(win) {
+      over = true; $('wrapBtn').disabled = $('shuf').disabled = true;
+      if (!win) { door.groups.forEach((_, i) => { if (!boxes.includes(i)) boxes.push(i); }); items = []; draw(); }
+      const pts = boxes.length && win ? 100 + tape * 15 : log.filter(x => x === '🎁').length * 20;
+      door.shareLine = `${t('t_wrap')} · ${log.join('')}`;
+      done(pts);
+    }
+    $('wrapBtn').onclick = () => {
+      if (sel.length !== 4) { $('note').textContent = t('pick4'); return; }
+      const c = {}; sel.forEach(x => c[x.g] = (c[x.g] || 0) + 1); const best = Math.max(...Object.values(c));
+      if (best === 4) { const g = sel[0].g; boxes.push(g); log.push('🎁'); items = items.filter(x => x.g !== g); sel = []; $('note').textContent = t('wrapped', { tag: door.groups[g].n }); sfx.bingo(); draw(); if (boxes.length === 4) finish(true); return; }
+      tape--; log.push('✂️'); sfx.bad(); $('note').textContent = best === 3 ? t('almost') : t('noFit');
+      document.querySelectorAll('.item.sel').forEach(e => { e.classList.add('shake'); setTimeout(() => e.classList.remove('shake'), 400); });
+      setTimeout(() => { draw(); if (tape === 0) finish(false); }, 420);
+    };
+    $('shuf').onclick = () => { items = shuffle(items); draw(); };
+    draw();
+    return () => { over = true; };
+  }
+
+  // ---------- team calendars (Firebase) ----------
+  let fb = null, team = null, teamUnsub = null;
+  const teamKey = () => `bingoAdventTeam:${seasonYear}`;
+  const cleanCode = v => (v || '').toUpperCase().replace(/[^A-Z2-9]/g, '').slice(0, 6);
+  async function firebase() {
+    if (fb) return fb;
+    const [{ initializeApp }, A, D] = await Promise.all([import('https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js'), import('https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js'), import('https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js')]);
+    const app = initializeApp(firebaseConfig, 'advent'); const auth = A.getAuth(app); const cred = await A.signInAnonymously(auth);
+    fb = { D, db: D.getDatabase(app), uid: cred.user.uid }; return fb;
+  }
+  function renderTeamStatic() {
+    $('teamTitle').textContent = '👥 ' + t('team'); $('teamIntro').textContent = t('teamIntro');
+    $('lblName').textContent = t('yourName'); $('lblTeamName').textContent = t('teamName'); $('lblTeamCode').textContent = t('teamCode');
+    $('pName').placeholder = t('namePh'); $('tName').placeholder = t('teamPh');
+    $('createTeam').textContent = t('createTeam'); $('joinTeam').textContent = t('join'); $('copyTeam').textContent = t('copyLink'); $('leaveTeam').textContent = t('leaveTeam');
+    $('pName').value = $('pName').value || localStorage.getItem('bingoName') || '';
+  }
+  function renderTeam() {
+    const has = !!team?.meta; $('teamNone').classList.toggle('hidden', has); $('teamSome').classList.toggle('hidden', !has);
+    if (!has) return;
+    $('teamHead').textContent = `${team.meta.name} · ${team.code}`;
+    const rows = Object.entries(team.members || {}).map(([id, m]) => ({ id, name: m.name, total: Object.values(m.doors || {}).reduce((a, b) => a + b, 0), doors: Object.keys(m.doors || {}).length })).sort((a, b) => b.total - a.total);
+    $('teamBoard').innerHTML = rows.map((r, i) => `<li class="${r.id === fb?.uid ? 'me' : ''}"><span>${i === 0 && r.total ? '👑 ' : `${i + 1}. `}${esc(r.name)}${r.id === fb?.uid ? ` (${esc(t('you'))})` : ''}</span><span>${r.total} · ${r.doors}🚪</span></li>`).join('');
+  }
+  const teamError = e => { $('teamErr').textContent = t('teamErr', { err: e?.code || e?.message || e }); };
+  async function connectTeam(code) {
+    const { D, db, uid } = await firebase();
+    teamUnsub?.(); team = { code };
+    teamUnsub = D.onValue(D.ref(db, `teams/${code}`), s => { if (!s.exists()) { team = null; localStorage.removeItem(teamKey()); renderTeam(); return; } team = { code, ...s.val() }; renderTeam(); }, teamError);
+    // Upload scores already earned in this browser, so joining late still counts them.
+    const mine = loadScores(); const doors = Object.fromEntries(Object.entries(mine).map(([n, v]) => [n, v.pts]));
+    await D.update(D.ref(db, `teams/${code}/members/${uid}`), { name: myName(), joinedAt: Date.now(), ...(Object.keys(doors).length ? { doors } : {}) });
+    localStorage.setItem(teamKey(), code);
+    const u = new URL(location.href); u.searchParams.delete('team'); history.replaceState(null, '', u);
+  }
+  function myName() { const n = ($('pName').value || localStorage.getItem('bingoName') || 'Elf').trim().slice(0, 24); localStorage.setItem('bingoName', n); return n; }
+  async function pushTeamScore(n, pts) { if (!team?.code) return; try { const { D, db, uid } = await firebase(); await D.set(D.ref(db, `teams/${team.code}/members/${uid}/doors/${n}`), pts); } catch (e) { teamError(e); } }
+  $('createTeam').onclick = async () => {
+    $('teamErr').textContent = '';
+    try {
+      const { D, db, uid } = await firebase(); const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let code;
+      do { code = [...crypto.getRandomValues(new Uint32Array(6))].map(x => chars[x % chars.length]).join(''); } while ((await D.get(D.ref(db, `teams/${code}/meta`))).exists());
+      const last = Object.values(C().dates).map(([m, d]) => new Date(m === 1 ? seasonYear + 1 : seasonYear, m - 1, d)).sort((a, b) => b - a)[0];
+      await D.set(D.ref(db, `teams/${code}/meta`), { name: ($('tName').value || t('teamPh')).trim().slice(0, 30), lang: cal, createdBy: uid, createdAt: Date.now(), expiresAt: last.getTime() + 14 * 864e5 });
+      await connectTeam(code);
+    } catch (e) { teamError(e); }
+  };
+  $('joinTeam').onclick = async () => {
+    $('teamErr').textContent = ''; const code = cleanCode($('tCode').value); if (code.length !== 6) return;
+    try { const { D, db } = await firebase(); if (!(await D.get(D.ref(db, `teams/${code}/meta`))).exists()) { $('teamErr').textContent = t('teamNotFound'); return; } await connectTeam(code); } catch (e) { teamError(e); }
+  };
+  $('leaveTeam').onclick = async () => { try { const { D, db, uid } = await firebase(); await D.remove(D.ref(db, `teams/${team.code}/members/${uid}`)); } catch {} teamUnsub?.(); team = null; localStorage.removeItem(teamKey()); renderTeam(); };
+  $('copyTeam').onclick = async () => { const u = new URL(location.origin + location.pathname); u.searchParams.set('team', team.code); u.searchParams.set('lang', cal); try { await navigator.clipboard.writeText(u.href); $('copyTeam').textContent = t('copied'); setTimeout(() => $('copyTeam').textContent = t('copyLink'), 1500); } catch {} };
+  $('tCode').oninput = e => e.target.value = cleanCode(e.target.value);
+
+  // ---------- start ----------
+  Object.entries(CALENDARS).forEach(([k, c]) => { const o = document.createElement('option'); o.value = k; o.textContent = c.label; $('culture').append(o); });
+  $('culture').value = cal;
+  $('culture').onchange = e => { cal = e.target.value; localStorage.setItem('bingoAdventLang', cal); closeDoor(); renderAll(); };
+  $('soundBtn').onclick = () => { soundOn = !soundOn; localStorage.setItem('bingoSound', soundOn ? 'on' : 'off'); syncSound(); if (soundOn) sfx.ok(); };
+  renderAll();
+  const invited = cleanCode(params.get('team')), saved = localStorage.getItem(teamKey());
+  if (invited) { $('tCode').value = invited; $('teamPanel').scrollIntoView({ behavior: 'smooth' }); }
+  else if (saved) connectTeam(saved).catch(teamError);
+</script>
+</body>
+</html>

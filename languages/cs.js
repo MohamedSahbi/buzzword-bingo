@@ -110,6 +110,7 @@ export default {
     "boss.back": "Zpět do hry: B nebo Esc",
     "boss.file": "Rozpocet_Q3_final_v7.xlsx",
     "boss.rows": "Tržby|Provozní náklady|Investice|Počet lidí|Licence|Cestovné|Cloud|Celkem",
+    "advent.open": "Adventní kalendář",
   },
   topics: {
     meeting: {

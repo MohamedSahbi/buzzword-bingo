@@ -110,6 +110,7 @@ export default {
     "boss.back": "Zurück zum Spiel: B oder Esc",
     "boss.file": "Forecast_Q3_final_v7.xlsx",
     "boss.rows": "Umsatz|Betriebskosten|Investitionen|Mitarbeitende|Lizenzen|Reisekosten|Cloud-Kosten|Summe",
+    "advent.open": "Adventskalender",
   },
   topics: {
     meeting: {

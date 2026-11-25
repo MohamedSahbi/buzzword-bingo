@@ -33,6 +33,7 @@
   .boss-bar b{font-weight:600}.boss-menu{color:#555;display:flex;gap:14px}.boss-fx{padding:4px 12px;border-bottom:1px solid #d6d6d6;color:#555;font-family:ui-monospace,Menlo,Consolas,monospace}
   .boss-grid{overflow:auto;flex:1}.boss table{border-collapse:collapse;min-width:100%}.boss td,.boss th{border:1px solid #e1e1e1;padding:3px 8px;text-align:end;white-space:nowrap;font-variant-numeric:tabular-nums}
   .boss th{background:#f3f3f3;color:#666;font-weight:400}.boss td.lbl{text-align:start}.boss tr:last-child td{font-weight:600}.boss-hint{padding:6px 12px;color:#888;font-size:12px;border-top:1px solid #e1e1e1}
+  .topbar{flex-wrap:wrap}@media(max-width:560px){#adventLink span{display:none}}
   </style>
 </head>
 <body>
@@ -41,6 +42,7 @@
       <div class="brand"><div class="logo">▦</div><div><h1>Buzzword Bingo</h1><p class="sub" data-i18n="sub"></p></div></div>
       <div class="top-actions">
         <button id="langBtn" class="pill lang-btn" type="button" data-i18n-title="settings.open" data-i18n-aria="settings.open">🌐 <span id="langBtnText"></span></button>
+        <a id="adventLink" class="pill icon-btn" href="advent.html" style="text-decoration:none">🎄 <span data-i18n="advent.open"></span></a>
         <button id="soundBtn" class="pill icon-btn" type="button"></button>
         <button id="bossBtn" class="pill icon-btn" type="button" data-i18n-title="boss.open" data-i18n-aria="boss.open">📊</button>
         <div class="pill conn-pill"><span id="connectionDot" class="dot"></span><span id="connectionText"></span></div>

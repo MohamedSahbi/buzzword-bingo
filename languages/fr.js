@@ -110,6 +110,7 @@ export default {
     "boss.back": "Retour au jeu : B ou Échap",
     "boss.file": "Previsionnel_T3_final_v7.xlsx",
     "boss.rows": "Chiffre d’affaires|Charges|Investissements|Effectifs|Licences|Déplacements|Cloud|Total",
+    "advent.open": "Calendrier de l’Avent",
   },
   topics: {
     meeting: {

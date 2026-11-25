@@ -1,11 +1,11 @@
-name: Check languages
+name: Check languages and calendars
 
 on:
   pull_request:
-    paths: ['languages/**', 'scripts/**']
+    paths: ['languages/**', 'advent/**', 'scripts/**']
   push:
     branches: [main]
-    paths: ['languages/**', 'scripts/**']
+    paths: ['languages/**', 'advent/**', 'scripts/**']
   workflow_dispatch:
 
 permissions:
@@ -20,3 +20,4 @@ jobs:
         with:
           node-version: 22
       - run: node scripts/check-languages.mjs
+      - run: node scripts/check-advent.mjs

@@ -70,6 +70,14 @@ When prompted, use the current directory (or a folder containing these files) as
 5. Invitees open the link, enter a name, and select **Join room**.
 6. Click phrases as they are heard. The host can reset marks or start a new game.
 
+## Advent calendar
+
+`advent.html` is a Christmas calendar with one small game behind each door: chat bingo (a group chat plays and you spot the phrases), listening bingo (spoken with captions), emoji riddles and Gift Wrap (sort 16 items into 4 hidden groups). Each culture has its own calendar in `advent/<code>.js` (English: 1–25 December, Czech: 1–24 December), validated by `node scripts/check-advent.mjs`.
+
+- Doors open on their date; add `?preview=1` to open them all for testing (preview scores are not saved).
+- Solo scores are kept in the browser. A **team** (6-character code) shares one scoreboard; team calendars expire two weeks after the season and the nightly cleanup deletes them.
+- Prediction doors (⭐) fall back to a chat bingo until prediction rooms ship.
+
 ## Room lifecycle and cleanup
 
 - **End room:** the host can delete the room for everyone (**End room for everyone**). Players drop back to solo mode.
