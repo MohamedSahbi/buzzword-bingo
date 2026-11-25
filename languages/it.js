@@ -111,6 +111,10 @@ export default {
     "boss.file": "Forecast_Q3_finale_v7.xlsx",
     "boss.rows": "Ricavi|Costi operativi|Investimenti|Organico|Licenze|Trasferte|Cloud|Totale",
     "advent.open": "Calendario dell’Avvento",
+    "nav.card": "Cartella",
+    "nav.play": "Gioca insieme",
+    "nav.activity": "Attività",
+    "menu.open": "Menu",
   },
   topics: {
     meeting: {

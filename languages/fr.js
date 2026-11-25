@@ -111,6 +111,10 @@ export default {
     "boss.file": "Previsionnel_T3_final_v7.xlsx",
     "boss.rows": "Chiffre d’affaires|Charges|Investissements|Effectifs|Licences|Déplacements|Cloud|Total",
     "advent.open": "Calendrier de l’Avent",
+    "nav.card": "Carte",
+    "nav.play": "Jouer ensemble",
+    "nav.activity": "Activité",
+    "menu.open": "Menu",
   },
   topics: {
     meeting: {

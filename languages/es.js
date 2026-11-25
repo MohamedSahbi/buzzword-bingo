@@ -111,6 +111,10 @@ export default {
     "boss.file": "Prevision_T3_final_v7.xlsx",
     "boss.rows": "Ingresos|Gastos operativos|Inversiones|Plantilla|Licencias|Viajes|Nube|Total",
     "advent.open": "Calendario de Adviento",
+    "nav.card": "Cartón",
+    "nav.play": "Jugar juntos",
+    "nav.activity": "Actividad",
+    "menu.open": "Menú",
   },
   topics: {
     meeting: {

@@ -22,6 +22,7 @@ export const ADVENT_UI = {
     p_seal: 'Seal my card', p_sealed: 'Sealed ✉️', p_start: 'Start the event', p_startHint: 'Only the host can start. After that, cards can’t be changed.', p_waiting: 'Waiting for the host to start…',
     p_live: 'It’s on! Tap one of your squares when it happens. The others vote 👍 or 👎.', p_claim: '{name} says it happened:{text}', p_confirmed: 'Confirmed ✅', p_rejected: 'Rejected ❌', p_end: 'End and give awards', p_done: 'Final results',
     p_prophet: '🔮 Best prophet: {name}', p_wild: '🤯 Crowd favourite: {text}', p_soloIntro: 'Write your 9 predictions now. Tonight, come back and tick what came true.', p_tick: 'Tick what came true, then finish.', p_finish: 'Finish', p_need9: 'Fill all 9 squares first.', p_cardsOf: '{name}', b_confirmed: 'Predictions that came true', b_line: 'Lines',
+    nav_cal: 'Calendar', nav_score: 'Score & team', menu: 'Menu',
     sound: 'Sound', soloScore: 'Your score',
   },
   cs: {
@@ -46,6 +47,7 @@ export const ADVENT_UI = {
     p_seal: 'Zapečetit kartu', p_sealed: 'Zapečetěno ✉️', p_start: 'Začít událost', p_startHint: 'Začít může jen hostitel. Pak už karty nejdou měnit.', p_waiting: 'Čekáme, až hostitel začne…',
     p_live: 'Začalo to! Klepněte na své políčko, když se to stane. Ostatní hlasují 👍 nebo 👎.', p_claim: '{name} hlásí, že se stalo:{text}', p_confirmed: 'Potvrzeno ✅', p_rejected: 'Zamítnuto ❌', p_end: 'Ukončit a vyhlásit', p_done: 'Výsledky',
     p_prophet: '🔮 Nejlepší prorok: {name}', p_wild: '🤯 Největší hit večera: {text}', p_soloIntro: 'Napište svých 9 předpovědí. Večer se vraťte a odškrtněte, co se splnilo.', p_tick: 'Odškrtněte, co se splnilo, a dokončete.', p_finish: 'Dokončit', p_need9: 'Nejdřív vyplňte všech 9 políček.', p_cardsOf: '{name}', b_confirmed: 'Splněné předpovědi', b_line: 'Řady',
+    nav_cal: 'Kalendář', nav_score: 'Skóre a tým', menu: 'Menu',
     sound: 'Zvuk', soloScore: 'Vaše skóre',
   },
 };

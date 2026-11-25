@@ -111,6 +111,10 @@ export default {
     "boss.file": "Forecast_Q3_final_v7.xlsx",
     "boss.rows": "Umsatz|Betriebskosten|Investitionen|Mitarbeitende|Lizenzen|Reisekosten|Cloud-Kosten|Summe",
     "advent.open": "Adventskalender",
+    "nav.card": "Karte",
+    "nav.play": "Zusammen spielen",
+    "nav.activity": "Aktivität",
+    "menu.open": "Menü",
   },
   topics: {
     meeting: {

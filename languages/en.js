@@ -111,6 +111,10 @@ export default {
     "boss.file": "Q3_forecast_final_v7.xlsx",
     "boss.rows": "Revenue|Operating costs|Investments|Headcount|Licences|Travel|Cloud spend|Total",
     "advent.open": "Advent calendar",
+    "nav.card": "Card",
+    "nav.play": "Play together",
+    "nav.activity": "Activity",
+    "menu.open": "Menu",
   },
   topics: {
     meeting: {

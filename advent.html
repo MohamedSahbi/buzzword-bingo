@@ -121,6 +121,27 @@
   .flash{position:fixed;inset:0;z-index:55;pointer-events:none;background:radial-gradient(circle at var(--x) var(--y),#f2b84b55,transparent 60%);animation:fl .8s ease-out forwards}
   @keyframes fl{to{opacity:0}}
   @media (prefers-reduced-motion:reduce){.spark,.flash{display:none}.glow{animation:none}}
+  .menu-btn,.m-only,.tabbar{display:none}.hdr-actions{display:flex;gap:8px;align-items:center}
+  .loading{display:none}body.is-loading .loading{display:grid;place-items:center;font-size:42px;height:40vh;animation:spin 2.4s linear infinite}
+  body.is-loading #calendarView,body.is-loading #banner{visibility:hidden}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .sq{hyphens:auto;-webkit-hyphens:auto;overflow-wrap:anywhere}
+  /* ---------- phones: app bar + ☰ menu + bottom tabs ---------- */
+  @media (max-width:720px){
+    body{padding-bottom:78px}.shell{padding:0 10px 12px}
+    .appbar{position:sticky;top:0;z-index:30;margin:0 -10px 8px;padding:10px 12px;background:#0d2236e8;backdrop-filter:blur(6px);border-bottom:1px solid #ffffff1f;flex-wrap:nowrap}
+    .menu-btn{display:inline-flex;font-size:18px;padding:6px 12px}
+    .hdr-actions{display:none}
+    .hdr-actions.open{display:flex;position:absolute;top:56px;inset-inline-end:10px;flex-direction:column;align-items:stretch;background:var(--night2);border:1px solid #ffffff2a;border-radius:16px;padding:10px;box-shadow:0 18px 40px #0007;min-width:230px}
+    .hdr-actions.open .pill{width:100%;justify-content:flex-start;padding:10px 12px;font-size:15px}.hdr-actions.open .m-only{display:inline-flex}
+    h1{font-size:28px}#subtitle{font-size:13px;margin-bottom:10px!important}
+    .tabbar{display:grid;grid-template-columns:1fr 1fr;position:fixed;left:0;right:0;bottom:0;z-index:40;background:#0d2236f2;backdrop-filter:blur(6px);border-top:1px solid #ffffff1f;padding:6px 6px calc(6px + env(safe-area-inset-bottom))}
+    .tabbar button{border:0;background:transparent;color:#cfe3f5;font:inherit;font-size:12px;font-weight:700;padding:6px;border-radius:12px;display:flex;flex-direction:column;align-items:center;gap:2px}
+    .tabbar button.on{background:#ffffff1a;color:var(--gold)}
+    body.playing .tabbar{display:none}body.playing{padding-bottom:12px}
+    body[data-tab=cal] .side{display:none}
+    body[data-tab=score] #calendarView>section,body[data-tab=score] #banner{display:none}
+  }
   @media (max-width:860px){.layout{grid-template-columns:1fr}.split{grid-template-columns:1fr}.feed{height:260px}}
   @media (max-width:520px){.doors{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.door .num{width:40px;height:40px;font-size:18px}.door .lab{display:none}.items,.boxes{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
@@ -128,11 +149,15 @@
 <body>
 <div class="snow" id="snow" aria-hidden="true"></div>
 <div class="shell">
-  <header>
+  <header class="appbar">
     <a href="./" id="backLink"></a>
     <div class="grow"></div>
-    <label class="pill"><span id="cultureLabel"></span> <select id="culture" class="pill" style="padding:2px 6px;border:0;background:transparent"></select></label>
-    <button id="soundBtn" class="pill" type="button"></button>
+    <button id="menuBtn" class="pill menu-btn" type="button" aria-expanded="false">☰</button>
+    <div class="hdr-actions" id="hdrActions">
+      <label class="pill"><span id="cultureLabel"></span> <select id="culture" class="pill" style="padding:2px 6px;border:0;background:transparent"></select></label>
+      <button id="soundBtn" class="pill" type="button"></button>
+      <button id="practiceBtn" class="pill m-only" type="button"></button>
+    </div>
   </header>
   <h1 id="title"></h1>
   <p class="muted" style="color:#cfe3f5;margin:4px 0 16px" id="subtitle"></p>
@@ -167,7 +192,9 @@
   </div>
 
   <section id="playView" class="play hidden"></section>
+  <div id="loading" class="loading" aria-live="polite">❄️</div>
 </div>
+<nav class="tabbar" id="tabbar"><button type="button" data-tab="cal">🎄 <span id="navCal"></span></button><button type="button" data-tab="score">🏆 <span id="navScore"></span></button></nav>
 
 <script type="module">
   import { ADVENT_UI } from './advent/ui.js';
@@ -258,6 +285,7 @@
     $('backLink').textContent = t('back'); $('cultureLabel').textContent = t('culture');
     $('title').innerHTML = `🎄 <span>${esc(t('title'))}</span>`;
     $('subtitle').textContent = C().tagline;
+    $('navCal').textContent = t('nav_cal'); $('navScore').textContent = t('nav_score'); menuBtn.setAttribute('aria-label', t('menu')); $('practiceBtn').textContent = '🎯 ' + (preview ? t('previewExit') : t('previewBtn')); $('practiceBtn').classList.toggle('hidden', !metas[cal]);
     syncSound(); renderBanner(); renderDoors(); renderSolo(); renderTeamStatic(); renderTeam();
   }
   function renderBanner() {
@@ -306,7 +334,7 @@
     if (door.type === 'predict' && !skipPredict) { openPredict(n, door); return; }
     if (door.type === 'predict') door = door.alt;
     skipPredict = false;
-    const v = $('playView'); $('calendarView').classList.add('hidden'); v.classList.remove('hidden');
+    const v = $('playView'); $('calendarView').classList.add('hidden'); v.classList.remove('hidden'); document.body.classList.add('playing');
     const played = seasonMode() && loadScores()[n];
     v.innerHTML = `<div class="row" style="margin:0 0 10px"><button class="btn" id="backCal">${esc(t('backToCal'))}</button><div class="grow"></div><span class="muted">${esc(fmtDate(n))}</span></div>
       <span class="kind">${n}. · ${esc(t('t_' + door.type))}</span><h2>${esc(door.title)}</h2><p class="muted" style="margin-top:6px">${esc(t('h_' + door.type))}</p>${predictNote}
@@ -320,7 +348,7 @@
   // Prediction finale: can be prepared days before its door opens (room, sealed cards); scores count once the door is open.
   function openPredict(n, door = null, startCode = '') {
     stopGame(); stopGame = () => {};
-    const v = $('playView'); $('calendarView').classList.add('hidden'); v.classList.remove('hidden');
+    const v = $('playView'); $('calendarView').classList.add('hidden'); v.classList.remove('hidden'); document.body.classList.add('playing');
     v.innerHTML = `<div class="row" style="margin:0 0 10px"><button class="btn" id="backCal">${esc(t('backToCal'))}</button><div class="grow"></div><span class="muted">${esc(fmtDate(n))}</span></div>
       <span class="kind">${n}. · ⭐ ${esc(t('t_predict'))}</span><h2>${esc(door?.title || t('t_predict'))}</h2><div id="game" style="margin-top:8px"></div><div id="result"></div>`;
     $('backCal').onclick = closeDoor; window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -333,7 +361,7 @@
       onFinish: res => finishDoor(n, { parts: res.parts }, { shareLine: res.shareLine }),
     });
   }
-  function closeDoor() { stopGame(); stopGame = () => {}; $('playView').classList.add('hidden'); $('calendarView').classList.remove('hidden'); renderDoors(); renderSolo(); renderTeam(); }
+  function closeDoor() { stopGame(); stopGame = () => {}; document.body.classList.remove('playing'); $('playView').classList.add('hidden'); $('calendarView').classList.remove('hidden'); renderDoors(); renderSolo(); renderTeam(); }
   // Score = game parts + on-the-day bonus + streak bonus (10 per consecutive earlier door also played on its day, max 50).
   function finishDoor(n, res, door) {
     const onDay = isToday(n), parts = [...res.parts];
@@ -563,8 +591,20 @@
   $('copyTeam').onclick = async () => { const u = new URL(location.origin + location.pathname); u.searchParams.set('team', team.code); u.searchParams.set('lang', cal); try { await navigator.clipboard.writeText(u.href); $('copyTeam').textContent = t('copied'); setTimeout(() => $('copyTeam').textContent = t('copyLink'), 1500); } catch {} };
   $('tCode').oninput = e => e.target.value = cleanCode(e.target.value);
 
+  // ---------- phones: ☰ menu, bottom tabs ----------
+  const menuBtn = $('menuBtn'), hdr = $('hdrActions');
+  function setMenu(open) { hdr.classList.toggle('open', open); menuBtn.setAttribute('aria-expanded', String(open)); menuBtn.textContent = open ? '✕' : '☰'; }
+  menuBtn.onclick = e => { e.stopPropagation(); setMenu(!hdr.classList.contains('open')); };
+  document.addEventListener('click', e => { if (hdr.classList.contains('open') && !hdr.contains(e.target)) setMenu(false); });
+  function setTab(tab) { document.body.dataset.tab = tab; document.querySelectorAll('#tabbar [data-tab]').forEach(b => b.classList.toggle('on', b.dataset.tab === tab)); window.scrollTo({ top: 0 }); }
+  document.querySelectorAll('#tabbar [data-tab]').forEach(b => b.onclick = () => setTab(b.dataset.tab));
+  $('practiceBtn').onclick = () => { setMenu(false); preview = !preview; const u = new URL(location.href); preview ? u.searchParams.set('preview', '1') : u.searchParams.delete('preview'); history.replaceState(null, '', u); closeDoor(); renderAll(); };
+  setTab('cal');
+
   // ---------- start ----------
+  document.body.classList.add('is-loading');
   await loadMetas();
+  document.body.classList.remove('is-loading');
   cal = known(params.get('lang')) || known(localStorage.getItem('bingoAdventLang')) || known(localStorage.getItem('bingoSiteLang')) || known((navigator.language || 'en').slice(0, 2)) || 'en';
   const allCodes = [...new Set([...Object.keys(metas), ...Object.keys(CALENDARS)])];
   allCodes.forEach(k => { const o = document.createElement('option'); o.value = k; o.textContent = (metas[k] || CALENDARS[k]).label; $('culture').append(o); });

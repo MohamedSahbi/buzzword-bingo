@@ -33,24 +33,52 @@
   .boss-bar b{font-weight:600}.boss-menu{color:#555;display:flex;gap:14px}.boss-fx{padding:4px 12px;border-bottom:1px solid #d6d6d6;color:#555;font-family:ui-monospace,Menlo,Consolas,monospace}
   .boss-grid{overflow:auto;flex:1}.boss table{border-collapse:collapse;min-width:100%}.boss td,.boss th{border:1px solid #e1e1e1;padding:3px 8px;text-align:end;white-space:nowrap;font-variant-numeric:tabular-nums}
   .boss th{background:#f3f3f3;color:#666;font-weight:400}.boss td.lbl{text-align:start}.boss tr:last-child td{font-weight:600}.boss-hint{padding:6px 12px;color:#888;font-size:12px;border-top:1px solid #e1e1e1}
-  .topbar{flex-wrap:wrap}@media(max-width:560px){#adventLink span{display:none}}
+  .topbar{flex-wrap:wrap}
+  .menu-btn,.m-only,.m-label,.tabbar{display:none}
+  .cell{hyphens:auto;-webkit-hyphens:auto;overflow-wrap:anywhere}
+  /* ---------- phones: app bar + ☰ menu + bottom tabs ---------- */
+  @media(max-width:720px){
+    body{padding-bottom:76px}
+    .shell{padding:0 10px 10px}
+    .topbar{position:sticky;top:0;z-index:30;margin:0 -10px 10px;padding:10px 12px;background:#eef4fbf2;backdrop-filter:blur(6px);flex-wrap:nowrap;align-items:center;border-bottom:1px solid var(--line)}
+    .topbar h1{font-size:22px}.sub{display:none}.logo{width:38px;height:38px}
+    .menu-btn{display:inline-flex;margin-inline-start:auto;font-size:18px;padding:6px 12px}
+    .top-actions{display:none}
+    .top-actions.open{display:flex;position:absolute;top:58px;inset-inline-end:10px;flex-direction:column;align-items:stretch;gap:6px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:10px;box-shadow:0 18px 40px #0003;min-width:220px}
+    .top-actions.open .pill{justify-content:flex-start;width:100%;padding:10px 12px;font-size:15px}
+    .top-actions.open .m-only{display:inline-flex}.top-actions.open .m-label{display:inline}
+    #print{display:none}
+    .toolbar{gap:8px}.toolbar .field{width:100%}.toolbar .btn{flex:1}
+    .cell{font-size:clamp(8.5px,2.75vw,12px);padding:3px;line-height:1.12}
+    .tabbar{display:grid;grid-template-columns:repeat(3,1fr);position:fixed;left:0;right:0;bottom:0;z-index:40;background:#fff;border-top:1px solid var(--line);padding:6px 6px calc(6px + env(safe-area-inset-bottom));box-shadow:0 -6px 20px #0001}
+    .tabbar button{position:relative;border:0;background:transparent;font:inherit;font-size:12px;font-weight:700;color:var(--muted);padding:6px 2px;border-radius:12px;display:flex;flex-direction:column;align-items:center;gap:2px}
+    .tabbar button.on{color:var(--brand);background:#eaf2ff}
+    .tabbar .badge{position:absolute;top:4px;inset-inline-end:28%;width:8px;height:8px;border-radius:50%;background:#e0453a;display:none}
+    .tabbar .badge.show{display:block}
+    .side{display:block}.side .panel{margin-bottom:10px}
+    body[data-tab=card] .side{display:none}
+    body[data-tab=play] #paneCard,body[data-tab=play] #paneActivity{display:none}
+    body[data-tab=activity] #paneCard,body[data-tab=activity] #panePlay,body[data-tab=activity] #panePlayers{display:none}
+  }
   </style>
 </head>
 <body>
   <main class="shell">
     <header class="topbar">
       <div class="brand"><div class="logo">▦</div><div><h1>Buzzword Bingo</h1><p class="sub" data-i18n="sub"></p></div></div>
-      <div class="top-actions">
+      <button id="menuBtn" class="pill icon-btn menu-btn" type="button" aria-expanded="false" data-i18n-aria="menu.open">☰</button>
+      <div class="top-actions" id="topActions">
         <button id="langBtn" class="pill lang-btn" type="button" data-i18n-title="settings.open" data-i18n-aria="settings.open">🌐 <span id="langBtnText"></span></button>
         <a id="adventLink" class="pill icon-btn" href="advent.html" style="text-decoration:none">🎄 <span data-i18n="advent.open"></span></a>
         <button id="soundBtn" class="pill icon-btn" type="button"></button>
-        <button id="bossBtn" class="pill icon-btn" type="button" data-i18n-title="boss.open" data-i18n-aria="boss.open">📊</button>
+        <button id="bossBtn" class="pill icon-btn" type="button" data-i18n-title="boss.open" data-i18n-aria="boss.open">📊 <span class="m-label" data-i18n="boss.open"></span></button>
+        <button id="printMenu" class="pill icon-btn m-only" type="button">🖨️ <span data-i18n="print"></span></button>
         <div class="pill conn-pill"><span id="connectionDot" class="dot"></span><span id="connectionText"></span></div>
       </div>
     </header>
 
     <div class="layout">
-      <section class="panel game">
+      <section class="panel game" id="paneCard">
         <div class="toolbar">
           <div class="field"><label for="topic" data-i18n="topic"></label><select id="topic"></select></div>
           <button id="newCard" class="btn"></button>
@@ -65,7 +93,7 @@
       </section>
 
       <aside class="side">
-        <section class="panel">
+        <section class="panel" id="panePlay">
           <div class="tabs"><button id="soloTab" class="tab active" data-i18n="solo"></button><button id="multiTab" class="tab" data-i18n="multi"></button></div>
           <div id="soloControls" class="stack"><p class="help" data-i18n="soloHelp"></p><button id="startSolo" class="btn primary" data-i18n="startSolo"></button></div>
           <div id="multiControls" class="stack hidden">
@@ -80,12 +108,12 @@
           </div>
         </section>
 
-        <section class="panel">
+        <section class="panel" id="panePlayers">
           <h2><span data-i18n="players"></span> <span id="playerCount" class="mini"></span></h2>
           <div id="players" class="players"></div>
         </section>
 
-        <section class="panel">
+        <section class="panel" id="paneActivity">
           <h2 data-i18n="activity"></h2>
           <div id="feed" class="feed"></div>
           <details><summary data-i18n="how"></summary><ol class="steps help"><li data-i18n="how1"></li><li data-i18n="how2"></li><li data-i18n="how3"></li><li data-i18n="how4"></li><li data-i18n="how5"></li></ol></details>
@@ -93,6 +121,11 @@
       </aside>
     </div>
   </main>
+  <nav class="tabbar" id="tabbar" aria-label="Sections">
+    <button type="button" data-tab="card">🎯 <span data-i18n="nav.card"></span></button>
+    <button type="button" data-tab="play">👥 <span data-i18n="nav.play"></span></button>
+    <button type="button" data-tab="activity">💬 <span data-i18n="nav.activity"></span><i class="badge" id="actBadge"></i></button>
+  </nav>
 
   <div id="createModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="createTitle">
     <div class="modal-card"><h2 id="createTitle" data-i18n="createTitle"></h2><div class="stack">
@@ -182,7 +215,7 @@
     other: () => tone(880, 0.05, 0, 'sine', 0.05), join: () => { tone(523, 0.09, 0, 'sine', 0.07); tone(784, 0.12, 0.09, 'sine', 0.07) },
     bingo: () => [523, 659, 784, 1047].forEach((f, i) => tone(f, 0.18, i * 0.11, 'square', 0.08)),
   };
-  function syncSoundBtn(){ els.soundBtn.textContent = soundOn ? '🔊' : '🔇'; const k = soundOn ? 'sound.mute' : 'sound.unmute'; els.soundBtn.title = t(k); els.soundBtn.setAttribute('aria-label', t(k)) }
+  function syncSoundBtn(){ const k = soundOn ? 'sound.mute' : 'sound.unmute'; els.soundBtn.innerHTML = `${soundOn ? '🔊' : '🔇'} <span class="m-label">${escapeHtml(t(k))}</span>`; els.soundBtn.title = t(k); els.soundBtn.setAttribute('aria-label', t(k)) }
   function toggleSound(){ soundOn = !soundOn; localStorage.setItem('bingoSound', soundOn ? 'on' : 'off'); syncSoundBtn(); if (soundOn) sfx.mark() }
   // Plays sounds for other players' activity (marks, joins, bingo) that arrive after we connected.
   let seenActivity = null;
@@ -314,7 +347,7 @@
     // Re-arm presence on every (re)connect so a host who drops and comes back is "Online" again.
     unsubscribers.push(onValue(ref(db,'.info/connected'),async s=>{ if(s.val()!==true||roomCode!==code)return; try{await onDisconnect(playerRef).update({online:false,lastSeen:serverTimestamp()});await update(playerRef,{online:true})}catch{} }));
     let first=true;
-    unsubscribers.push(onValue(roomRef,s=>{if(!s.exists()){const mine=endedByMe;leaveRoom(false,mine?'st.youEnded':'st.ended',mine?'success':'error');return}room=s.val();activitySounds();syncRoomUi();renderBoard();renderPlayers();renderFeed();if(first){setStatus('st.connected','success',{code});first=false}maybeClaimHost()}));
+    unsubscribers.push(onValue(roomRef,s=>{if(!s.exists()){const mine=endedByMe;leaveRoom(false,mine?'st.youEnded':'st.ended',mine?'success':'error');return}room=s.val();if(seenActivity&&Object.keys(room.activity||{}).some(id=>!seenActivity.has(id))&&document.body.dataset.tab!=='activity')$('actBadge').classList.add('show');activitySounds();syncRoomUi();renderBoard();renderPlayers();renderFeed();if(first){setStatus('st.connected','success',{code});first=false;setTab('card')}maybeClaimHost()}));
     clearInterval(hostTimer);hostTimer=setInterval(maybeClaimHost,15000);
     const url=new URL(location.href);url.searchParams.set('room',code);history.replaceState(null,'',url)
   }
@@ -365,6 +398,17 @@
     claimingHost=true; try{ await update(ref(db,`rooms/${roomCode}/meta`),{hostId:uid,hostName:me.name}); await addActivity('act.nowHost',{name:me.name}) }catch{} finally{claimingHost=false}
   }
 
+  // ---- Phones: ☰ menu and bottom tabs ----
+  const menuBtn = $('menuBtn'), topActions = $('topActions');
+  function setMenu(open){ topActions.classList.toggle('open', open); menuBtn.setAttribute('aria-expanded', String(open)); menuBtn.textContent = open ? '✕' : '☰' }
+  menuBtn.addEventListener('click', e => { e.stopPropagation(); setMenu(!topActions.classList.contains('open')) });
+  topActions.addEventListener('click', e => { if (e.target.closest('button,a')) setMenu(false) });
+  document.addEventListener('click', e => { if (topActions.classList.contains('open') && !topActions.contains(e.target)) setMenu(false) });
+  $('printMenu').addEventListener('click', () => print());
+  function setTab(tab){ document.body.dataset.tab = tab; document.querySelectorAll('#tabbar [data-tab]').forEach(b => b.classList.toggle('on', b.dataset.tab === tab)); if (tab === 'activity') $('actBadge').classList.remove('show'); window.scrollTo({ top: 0 }) }
+  document.querySelectorAll('#tabbar [data-tab]').forEach(b => b.addEventListener('click', () => setTab(b.dataset.tab)));
+  setTab('card');
+
   // ---- Start ----
   populateSelects(); els.playerName.value=localStorage.getItem('bingoName')||''; loadSolo(); applyI18n();
   els.soundBtn.addEventListener('click',toggleSound); els.bossBtn.addEventListener('click',()=>toggleBoss(true)); els.boss.addEventListener('click',()=>toggleBoss(false));
@@ -375,7 +419,7 @@
   els.joinCode.addEventListener('input',e=>e.target.value=cleanCode(e.target.value)); els.joinRoom.addEventListener('click',()=>joinRoom()); els.leaveRoom.addEventListener('click',openLeave); els.endRoom.addEventListener('click',openEndRoom); els.hostModal.addEventListener('click',e=>{if(e.target===els.hostModal)closeModal()});
   els.copyInvite.addEventListener('click',async()=>{const u=new URL(location.href);u.searchParams.set('room',roomCode);await navigator.clipboard.writeText(u.href);setStatus('st.inviteCopied','success')});
 
-  if(configured){ initFirebase().then(async ok=>{if(!ok)return;const q=new URLSearchParams(location.search).get('room');if(q){showTab(true);els.joinCode.value=cleanCode(q);setStatus('st.invite','',{code:cleanCode(q)})}}) } else { els.firebaseNotice.classList.remove('hidden') }
+  if(configured){ initFirebase().then(async ok=>{if(!ok)return;const q=new URLSearchParams(location.search).get('room');if(q){showTab(true);els.joinCode.value=cleanCode(q);setStatus('st.invite','',{code:cleanCode(q)});setTab('play')}}) } else { els.firebaseNotice.classList.remove('hidden') }
 </script>
 </body>
 </html>
