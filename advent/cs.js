@@ -10,10 +10,12 @@ export default {
   tagline: '24 okének od 1. prosince do Štědrého dne. Každý den jedna malá hra, sami nebo s týmem.',
   dates: Object.fromEntries(Array.from({ length: 24 }, (_, i) => [i + 1, [12, i + 1]])),
   doors: {
-    1: chat('Rodinná skupina: Kdy se peče cukroví?', 'vosí hnízda', ['Kapr ve vaně', 'Mytí oken', 'Purpura', 'Zlaté prasátko'], [
-      ['Máma', '[[Kdy začneme péct?]] Je prosinec!'], ['Táta', '[[Vanilkové rohlíčky]] jsou moje'], ['Klára', 'Já udělám [[vosí hnízda]]'],
-      ['Babička', '[[Linecké podle babičky]], jinak ne'], ['Ondra', '[[Kolik druhů letos?]]'], ['Máma', '[[Aspoň dvanáct]]'], ['Táta', '[[To je šílenství]] 😅'],
-      ['Klára', '[[Kdo má vykrajovátka?]]'], ['Babička', '[[V krabici na půdě]]'], ['Ondra', 'Můžu [[ochutnávat]]?'], ['Máma', 'Ne, [[až na Štědrý den]]!'], ['Táta', '[[Pečeme v sobotu]] a hotovo']]),
+    1: { ...chat('Rodinná skupina: Kdy se peče cukroví?', 'vosí hnízda', ['Kapr ve vaně', 'Mytí oken', 'Purpura', 'Zlaté prasátko'], [
+      ['Máma', 'Ahoj všichni 🎄 [[kdy začneme péct?]] je prosinec!!'], ['Babička', 'Dobrý den. Tady babička.'], ['Táta', '[[vanilkový rohlíčky]] sou moje, to se ví 😎'],
+      ['Klára', 'já dělám [[vosí hnízda]] 🐝'], ['Ondra', '👍'], ['Babička', '[[Linecké podle mého receptu]], jinak nic. Babička'], ['Ondra', '[[kolik druhů letos?]]'],
+      ['Máma', '[[aspoň dvanáct]] 😅'], ['Táta', '[[to je šílenství]]'], ['Máma', '§react 🙄'], ['Táta', '§deleted'], ['Klára', 'kdo má [[vykrajovátka]]?'],
+      ['Babička', 'Jsou [[v krabici na půdě]] vedle ozdob. Babička'], ['Babička', '§voice 0:42'], ['Ondra', 'můžu [[ochutnávat]]? 😇'], ['Máma', 'ne!! [[až na Štědrý den]] 😂'],
+      ['Táta', 'tak [[v sobotu pečeme]] a hotovo']]), start: '09:02' },
     2: wrap('Pod stromečkem', [['Vánoční pohádky', 'Tři oříšky pro Popelku', 'S čerty nejsou žerty', 'Mrazík', 'Princezna ze mlejna'], ['Cukroví', 'Vanilkové rohlíčky', 'Linecké', 'Vosí hnízda', 'Pracny'], ['Štědrovečerní zvyky', 'Lití olova', 'Rozkrojené jablko', 'Lodičky ze skořápek', 'Šupina pod talířem'], ['Na sváteční stůl', 'Rybí polévka', 'Kapr', 'Bramborový salát', 'Vánočka']]),
     3: emoji('České Vánoce', 'Kapr ve vaně', ['Purpura', 'Jmelí', 'Betlém', 'Svařák'], [
       ['🐟🛁', 'Kapr ve vaně'], ['🐷✨', 'Zlaté prasátko'], ['🍎🔪⭐', 'Rozkrojené jablko'], ['🌰⛵🕯️', 'Lodičky ze skořápek'], ['🔥🥄💧', 'Lití olova'], ['🥔🥗', 'Bramborový salát'],

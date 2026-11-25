@@ -10,11 +10,11 @@ export default {
   tagline: '25 doors from 1 December to Christmas Day. One small game a day, solo or with your team.',
   dates: Object.fromEntries(Array.from({ length: 25 }, (_, i) => [i + 1, [12, i + 1]])),
   doors: {
-    1: chat('Family group: who’s hosting this year?', 'Secret Santa', ['Turkey or beef?', 'The dog ate it', 'Board game row', 'Train cancelled'], [
-      ['Mum', 'Morning all! [[Who’s hosting this year?]]'], ['Dad', 'Not us, [[the oven is broken]] again'], ['Sophie', 'Ours works but [[the flat is tiny]]'],
-      ['Gran', 'I still have [[the good tablecloth]]'], ['Tom', 'Can we do [[Secret Santa]] this time?'], ['Mum', 'Yes! [[£20 limit]], no exceptions'],
-      ['Dad', 'Last year [[someone went over budget]] 👀'], ['Sophie', 'It was a [[tiny spa voucher]]!'], ['Gran', '[[How do I mute this group]]'],
-      ['Tom', 'Gran, you just [[sent a thumbs up]] to everyone'], ['Mum', '[[Let’s do a poll]] for the date'], ['Dad', 'Or [[same as last year]]. Done.']]),
+    1: { ...chat('Family group: who’s hosting this year?', 'Secret Santa', ['Turkey or beef?', 'The dog ate it', 'Board game row', 'Train cancelled'], [
+      ['Mum', 'Morning all! [[Who’s hosting this year?]] Love Mum x'], ['Dad', 'Not us. [[The oven is broken]]. Dad'], ['Sophie', 'ours works but [[the flat is tiny]] 😅'],
+      ['Gran', 'I STILL HAVE [[THE GOOD TABLECLOTH]]'], ['Tom', 'can we do [[Secret Santa]] this year'], ['Sophie', '§react 👍'], ['Mum', 'Yes! [[£20 limit]], no exceptions x'],
+      ['Dad', 'Last year [[someone went over budget]]. Dad'], ['Sophie', 'it was a [[tiny spa voucher]] 🙄'], ['Gran', '[[HOW DO I MUTE THIS GROUP]]'], ['Gran', '👍👍👍👍'],
+      ['Tom', 'gran you just [[sent a thumbs up]] to everyone 😂'], ['Mum', '[[Let’s do a poll]] for the date x'], ['Mum', '§photo 📊'], ['Dad', 'Or [[same as last year]]. Done. Dad']]), start: '19:40' },
     2: wrap('Under the tree', [['Christmas films', 'Home Alone', 'Elf', 'The Grinch', 'Love Actually'], ['Santa’s reindeer', 'Dasher', 'Comet', 'Cupid', 'Blitzen'], ['Found in a stocking', 'Satsuma', 'Chocolate coins', 'Socks', 'Lip balm'], ['On the Christmas plate', 'Turkey', 'Sprouts', 'Stuffing', 'Gravy']]),
     3: emoji('Christmas classics', 'Boxing Day', ['Gingerbread house', 'Secret Santa', 'Ice skating', 'Christmas jumper'], [
       ['⛄🏃‍♂️☁️', 'The Snowman'], ['🦌🔴👃', 'Rudolph'], ['🥧🍖', 'Mince pies'], ['🍷🔥', 'Mulled wine'], ['🌿💋', 'Mistletoe'], ['🧦🔥', 'Stockings by the fire'],
