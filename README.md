@@ -74,7 +74,8 @@ When prompted, use the current directory (or a folder containing these files) as
 
 `advent.html` is a Christmas calendar with one small game behind each door: chat bingo (a group chat plays and you spot the phrases), listening bingo (spoken with captions), emoji riddles and Gift Wrap (sort 16 items into 4 hidden groups). Each culture has its own calendar in `advent/<code>.js` (English: 1–25 December, Czech: 1–24 December), validated by `node scripts/check-advent.mjs`.
 
-- Doors open on their date; add `?preview=1` to open them all for testing (preview scores are not saved).
+- **Real calendar (spoiler-free):** the door content lives in the private repo `buzzword-bingo-advent-content` and is published to Firebase at `/advent/<code>/<year>`. The database rules let anyone read a door only from 00:00 on its date in the calendar's own timezone, so nobody can peek ahead in this repo or in the browser. Each door is fetched once and kept in the browser.
+- **Practice calendar:** the content in `advent/*.js` here is public and every door is open (`?preview=1`); scores are not saved. It is also the fallback when no real calendar is published yet.
 - Solo scores are kept in the browser. A **team** (6-character code) shares one scoreboard; team calendars expire two weeks after the season and the nightly cleanup deletes them.
 - Prediction doors (⭐) fall back to a chat bingo until prediction rooms ship.
 

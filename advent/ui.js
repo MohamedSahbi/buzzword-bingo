@@ -2,7 +2,7 @@
 export const ADVENT_UI = {
   en: {
     title: 'Advent calendar', back: '← Buzzword Bingo', culture: 'Calendar',
-    opensOn: 'The calendar opens on 1 December.', previewBtn: 'Try a preview (all doors open)', previewOn: 'Preview mode: all doors are open and scores are not saved.', previewExit: 'Leave preview',
+    opensOn: 'The calendar opens on 1 December.', previewBtn: 'Play the practice calendar', previewOn: 'Practice calendar: every door is open and scores are not saved. The real calendar has different doors.', previewExit: 'Back to the real calendar',
     locked: 'Opens on {date}', today: 'Today', done: '{pts} pts', play: 'Play', replay: 'Play again (practice)', backToCal: '← Calendar',
     t_chat: 'Chat bingo', t_listen: 'Listening bingo', t_emoji: 'Emoji riddles', t_wrap: 'Gift Wrap', t_predict: 'Prediction bingo',
     h_chat: 'A group chat plays out. Tap a square when its phrase appears. Fast taps score more; wrong taps cost 5. The ★ square is worth +25.',
@@ -19,7 +19,7 @@ export const ADVENT_UI = {
   },
   cs: {
     title: 'Adventní kalendář', back: '← Buzzword Bingo', culture: 'Kalendář',
-    opensOn: 'Kalendář se otevře 1. prosince.', previewBtn: 'Vyzkoušet náhled (všechna okénka otevřená)', previewOn: 'Náhled: všechna okénka jsou otevřená a body se neukládají.', previewExit: 'Ukončit náhled',
+    opensOn: 'Kalendář se otevře 1. prosince.', previewBtn: 'Hrát cvičný kalendář', previewOn: 'Cvičný kalendář: všechna okénka jsou otevřená a body se neukládají. Skutečný kalendář má jiná okénka.', previewExit: 'Zpět ke skutečnému kalendáři',
     locked: 'Otevře se {date}', today: 'Dnes', done: '{pts} b.', play: 'Hrát', replay: 'Hrát znovu (trénink)', backToCal: '← Kalendář',
     t_chat: 'Chatové bingo', t_listen: 'Bingo na poslech', t_emoji: 'Emoji hádanky', t_wrap: 'Balení dárků', t_predict: 'Bingo předpovědí',
     h_chat: 'Odehraje se skupinový chat. Klepněte na políčko, jakmile se jeho fráze objeví. Rychlost = víc bodů, špatné klepnutí −5. Políčko ★ má +25.',

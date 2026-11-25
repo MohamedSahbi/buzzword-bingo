@@ -152,10 +152,15 @@
   // ---------- setup ----------
   const $ = id => document.getElementById(id);
   const params = new URLSearchParams(location.search);
-  const pickCal = c => (CALENDARS[c] ? c : null);
-  let cal = pickCal(params.get('lang')) || pickCal(localStorage.getItem('bingoAdventLang')) || pickCal(localStorage.getItem('bingoSiteLang')) || pickCal((navigator.language || 'en').slice(0, 2)) || 'en';
-  let preview = params.get('preview') === '1';
-  const C = () => CALENDARS[cal];
+  // Two modes: the real season calendar (published from the private content repo to Firebase, each door
+  // readable only from its release time) and the open practice calendar (public content in advent/*.js).
+  const DB = firebaseConfig.databaseURL;
+  let metas = {};                       // season calendars published for this year, by culture code
+  const known = c => (CALENDARS[c] || metas[c] ? c : null);
+  let cal = 'en';
+  let preview = params.get('preview') === '1';   // practice mode
+  const C = () => (!preview && metas[cal]) ? metas[cal] : CALENDARS[cal] || Object.values(CALENDARS)[0];
+  const seasonMode = () => !preview && !!metas[cal];
   const t = (k, v = {}) => (ADVENT_UI[cal]?.[k] ?? ADVENT_UI.en[k] ?? k).replace(/\{(\w+)\}/g, (_, x) => v[x] ?? '');
   const esc = s => String(s).replace(/[&<>'"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[c]));
 
@@ -163,13 +168,32 @@
   const now = () => new Date();
   const seasonYear = (() => { const d = now(); return d.getMonth() === 0 ? d.getFullYear() - 1 : d.getFullYear(); })();
   const doorDate = n => { const [m, d] = C().dates[n]; return new Date(m === 1 ? seasonYear + 1 : seasonYear, m - 1, d); };
-  const sameDay = (a, b) => a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
-  const unlocked = n => preview || now() >= doorDate(n);
-  const isToday = n => sameDay(now(), doorDate(n));
-  const fmtDate = n => doorDate(n).toLocaleDateString(C().locale, { day: 'numeric', month: 'long' });
+  const releaseAt = n => seasonMode() ? C().release[n] : doorDate(n).getTime();
+  const unlocked = n => !seasonMode() || Date.now() >= releaseAt(n);
+  const isToday = n => seasonMode() && Date.now() >= releaseAt(n) && Date.now() < releaseAt(n) + 864e5;
+  const fmtDate = n => seasonMode()
+    ? `${new Date(releaseAt(n)).toLocaleDateString(C().locale, { day: 'numeric', month: 'long', timeZone: C().timezone })}, 00:00 ${C().tzLabel}`
+    : doorDate(n).toLocaleDateString(C().locale, { day: 'numeric', month: 'long' });
+  const doorType = n => seasonMode() ? C().types[n] : C().doors[n].type;
+
+  // A released door is fetched once with a plain web request and kept in this browser.
+  async function loadDoor(n) {
+    if (!seasonMode()) return structuredClone(C().doors[n]);
+    const key = `bingoAdventDoor:${cal}:${seasonYear}:${n}`;
+    try { const c = JSON.parse(localStorage.getItem(key)); if (c) return c; } catch {}
+    const r = await fetch(`${DB}/advent/${cal}/${seasonYear}/doors/${n}.json`);
+    const d = r.ok ? await r.json() : null;
+    if (!d) throw new Error('locked');
+    localStorage.setItem(key, JSON.stringify(d));
+    return d;
+  }
+  async function loadMetas() {
+    const codes = [...new Set([...Object.keys(CALENDARS), 'de', 'fr', 'es', 'it', 'ar'])];
+    await Promise.all(codes.map(async c => { try { const r = await fetch(`${DB}/advent/${c}/${seasonYear}/meta.json`); const m = r.ok ? await r.json() : null; if (m?.release) metas[c] = m; } catch {} }));
+  }
 
   // ---------- scores (browser) ----------
-  const scoreKey = () => `bingoAdvent:${cal}:${seasonYear}`;
+  const scoreKey = () => `bingoAdventSeason:${cal}:${seasonYear}`;
   const loadScores = () => { try { return JSON.parse(localStorage.getItem(scoreKey())) || {} } catch { return {} } };
   const saveScore = (n, pts, onDay) => { const s = loadScores(); if (s[n]) return false; s[n] = { pts, onDay, at: Date.now() }; localStorage.setItem(scoreKey(), JSON.stringify(s)); return true; };
 
@@ -194,17 +218,20 @@
   }
   function renderBanner() {
     const b = $('banner'); b.classList.add('hidden');
-    if (preview) { b.innerHTML = `<span>👀 ${esc(t('previewOn'))}</span><button class="pill" id="exitPreview">${esc(t('previewExit'))}</button>`; b.classList.remove('hidden'); $('exitPreview').onclick = () => { preview = false; history.replaceState(null, '', location.pathname); renderAll(); }; }
-    else if (now() < doorDate(1)) { b.innerHTML = `<span>⏳ ${esc(t('opensOn'))}</span><button class="pill" id="goPreview">${esc(t('previewBtn'))}</button>`; b.classList.remove('hidden'); $('goPreview').onclick = () => { preview = true; const u = new URL(location.href); u.searchParams.set('preview', '1'); history.replaceState(null, '', u); renderAll(); }; }
+    if (preview || !metas[cal]) {
+      b.innerHTML = `<span>🎯 ${esc(t('previewOn'))}</span>${metas[cal] ? `<button class="pill" id="exitPreview">${esc(t('previewExit'))}</button>` : ''}`; b.classList.remove('hidden');
+      if (metas[cal]) $('exitPreview').onclick = () => { preview = false; history.replaceState(null, '', location.pathname); renderAll(); };
+    }
+    else if (Date.now() < releaseAt(1)) { b.innerHTML = `<span>⏳ ${esc(t('opensOn'))}</span><button class="pill" id="goPreview">${esc(t('previewBtn'))}</button>`; b.classList.remove('hidden'); $('goPreview').onclick = () => { preview = true; const u = new URL(location.href); u.searchParams.set('preview', '1'); history.replaceState(null, '', u); renderAll(); }; }
   }
   function renderDoors() {
     const scores = loadScores(), wrap = $('doors'); wrap.replaceChildren();
     Object.keys(C().dates).map(Number).sort((a, b) => a - b).forEach(n => {
-      const d = C().doors[n], open = unlocked(n), done = !preview && scores[n];
+      const type = doorType(n), open = unlocked(n), done = seasonMode() && scores[n];
       const b = document.createElement('button'); b.type = 'button';
-      b.className = `door ${PAPER[n % 4]}${open ? '' : ' locked'}${!preview && isToday(n) ? ' today' : ''}${done ? ' done' : ''}`;
-      b.innerHTML = `<span class="num">${n}</span>${d.type === 'predict' ? '<span class="tag">⭐</span>' : ''}<span class="lab">${esc(open ? (done ? t('done', { pts: scores[n].pts }) : (!preview && isToday(n) ? t('today') : t('t_' + d.type))) : '🔒 ' + fmtDate(n))}</span>`;
-      b.disabled = !open; b.title = open ? t('t_' + d.type) : t('locked', { date: fmtDate(n) });
+      b.className = `door ${PAPER[n % 4]}${open ? '' : ' locked'}${isToday(n) ? ' today' : ''}${done ? ' done' : ''}`;
+      b.innerHTML = `<span class="num">${n}</span>${type === 'predict' ? '<span class="tag">⭐</span>' : ''}<span class="lab">${esc(open ? (done ? t('done', { pts: scores[n].pts }) : (isToday(n) ? t('today') : t('t_' + type))) : '🔒 ' + fmtDate(n))}</span>`;
+      b.disabled = !open; b.title = open ? t('t_' + type) : t('locked', { date: fmtDate(n) });
       b.onclick = () => openDoor(n);
       wrap.appendChild(b);
     });
@@ -212,18 +239,19 @@
   function renderSolo() {
     const s = loadScores(), vals = Object.values(s);
     $('soloTitle').textContent = t('soloScore');
-    $('soloTotal').textContent = preview ? '—' : vals.reduce((a, v) => a + v.pts, 0);
-    $('soloDetail').textContent = preview ? t('previewOn') : `${vals.length} / ${Object.keys(C().dates).length}`;
+    $('soloTotal').textContent = seasonMode() ? vals.reduce((a, v) => a + v.pts, 0) : '—';
+    $('soloDetail').textContent = seasonMode() ? `${vals.length} / ${Object.keys(C().dates).length}` : t('previewOn');
   }
 
   // ---------- play view ----------
   let stopGame = () => {};
-  function openDoor(n) {
+  async function openDoor(n) {
     stopGame(); stopGame = () => {};
-    let door = C().doors[n], predictNote = '';
+    let door, predictNote = '';
+    try { door = await loadDoor(n); } catch { $('banner').innerHTML = `<span>🔒 ${esc(t('locked', { date: fmtDate(n) }))}</span>`; $('banner').classList.remove('hidden'); return; }
     if (door.type === 'predict') { predictNote = `<p class="note">⭐ ${esc(t('h_predict'))}</p>`; door = door.alt; }
     const v = $('playView'); $('calendarView').classList.add('hidden'); v.classList.remove('hidden');
-    const played = !preview && loadScores()[n];
+    const played = seasonMode() && loadScores()[n];
     v.innerHTML = `<div class="row" style="margin:0 0 10px"><button class="btn" id="backCal">${esc(t('backToCal'))}</button><div class="grow"></div><span class="muted">${esc(fmtDate(n))}</span></div>
       <span class="kind">${n}. · ${esc(t('t_' + door.type))}</span><h2>${esc(door.title)}</h2><p class="muted" style="margin-top:6px">${esc(t('h_' + door.type))}</p>${predictNote}
       ${played ? `<p class="note">${esc(t('firstOnly'))}</p>` : ''}<div id="game"></div><div id="result"></div>`;
@@ -235,12 +263,12 @@
   }
   function closeDoor() { stopGame(); stopGame = () => {}; $('playView').classList.add('hidden'); $('calendarView').classList.remove('hidden'); renderDoors(); renderSolo(); renderTeam(); }
   function finishDoor(n, pts, door) {
-    const onDay = !preview && isToday(n), total = Math.min(500, pts + (onDay ? 20 : 0));
-    const first = !preview && saveScore(n, total, onDay);
+    const onDay = isToday(n), total = Math.min(500, pts + (onDay ? 20 : 0));
+    const first = seasonMode() && saveScore(n, total, onDay);
     if (first) pushTeamScore(n, total);
     sfx.bell();
     const share = `${t('title')} · ${C().label} · ${n}.\n${door.shareLine}\n⭐ ${total}\n${location.origin}${location.pathname}`;
-    $('result').innerHTML = `<div class="result"><b style="font-size:18px">${esc(t('result', { n, pts: total }))}</b>${onDay ? `<div class="muted">${esc(t('onDayBonus'))}</div>` : ''}${!first && !preview ? `<div class="muted">${esc(t('firstOnly'))}</div>` : ''}<pre>${esc(share)}</pre><div class="row"><button class="btn gold" id="copyRes">${esc(t('share'))}</button><button class="btn" id="again">${esc(t('replay'))}</button><button class="btn" id="back2">${esc(t('backToCal'))}</button></div></div>`;
+    $('result').innerHTML = `<div class="result"><b style="font-size:18px">${esc(t('result', { n, pts: total }))}</b>${onDay ? `<div class="muted">${esc(t('onDayBonus'))}</div>` : ''}${!first && seasonMode() ? `<div class="muted">${esc(t('firstOnly'))}</div>` : ''}<pre>${esc(share)}</pre><div class="row"><button class="btn gold" id="copyRes">${esc(t('share'))}</button><button class="btn" id="again">${esc(t('replay'))}</button><button class="btn" id="back2">${esc(t('backToCal'))}</button></div></div>`;
     $('copyRes').onclick = async () => { try { await navigator.clipboard.writeText(share); $('copyRes').textContent = t('copied'); } catch {} };
     $('again').onclick = () => openDoor(n); $('back2').onclick = closeDoor;
     $('result').scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -412,8 +440,8 @@
     try {
       const { D, db, uid } = await firebase(); const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let code;
       do { code = [...crypto.getRandomValues(new Uint32Array(6))].map(x => chars[x % chars.length]).join(''); } while ((await D.get(D.ref(db, `teams/${code}/meta`))).exists());
-      const last = Object.values(C().dates).map(([m, d]) => new Date(m === 1 ? seasonYear + 1 : seasonYear, m - 1, d)).sort((a, b) => b - a)[0];
-      await D.set(D.ref(db, `teams/${code}/meta`), { name: ($('tName').value || t('teamPh')).trim().slice(0, 30), lang: cal, createdBy: uid, createdAt: Date.now(), expiresAt: last.getTime() + 14 * 864e5 });
+      const last = Math.max(...Object.keys(C().dates).map(releaseAt));
+      await D.set(D.ref(db, `teams/${code}/meta`), { name: ($('tName').value || t('teamPh')).trim().slice(0, 30), lang: cal, createdBy: uid, createdAt: Date.now(), expiresAt: Math.min(last + 14 * 864e5, Date.now() + 59 * 864e5) });
       await connectTeam(code);
     } catch (e) { teamError(e); }
   };
@@ -426,7 +454,10 @@
   $('tCode').oninput = e => e.target.value = cleanCode(e.target.value);
 
   // ---------- start ----------
-  Object.entries(CALENDARS).forEach(([k, c]) => { const o = document.createElement('option'); o.value = k; o.textContent = c.label; $('culture').append(o); });
+  await loadMetas();
+  cal = known(params.get('lang')) || known(localStorage.getItem('bingoAdventLang')) || known(localStorage.getItem('bingoSiteLang')) || known((navigator.language || 'en').slice(0, 2)) || 'en';
+  const allCodes = [...new Set([...Object.keys(metas), ...Object.keys(CALENDARS)])];
+  allCodes.forEach(k => { const o = document.createElement('option'); o.value = k; o.textContent = (metas[k] || CALENDARS[k]).label; $('culture').append(o); });
   $('culture').value = cal;
   $('culture').onchange = e => { cal = e.target.value; localStorage.setItem('bingoAdventLang', cal); closeDoor(); renderAll(); };
   $('soundBtn').onclick = () => { soundOn = !soundOn; localStorage.setItem('bingoSound', soundOn ? 'on' : 'off'); syncSound(); if (soundOn) sfx.ok(); };

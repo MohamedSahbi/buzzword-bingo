@@ -71,6 +71,20 @@
           }
         }
       }
+    },
+    "advent": {
+      "$cal": {
+        "$year": {
+          "meta": {
+            ".read": true
+          },
+          "doors": {
+            "$n": {
+              ".read": "root.child('advent').child($cal).child($year).child('meta').child('release').child($n).val() <= now"
+            }
+          }
+        }
+      }
     }
   }
 }
