@@ -14,9 +14,9 @@ export async function resultCardBlob(card) {
   // white card
   const x = 70, w = W - 140, r = 48;
   const lines = (card.lines || []).filter(Boolean), stripRows = card.strip ? Math.ceil([...card.strip].length / 15) : 0;
-  const G = 92, GAP = 12, gridH = card.grid ? 5 * G + 4 * GAP + 30 : 0;
+  const G = 78, GAP = 10, gridH = card.grid ? 5 * G + 4 * GAP + 30 : 0;
   const h = 110 + 300 + 70 + 40 + lines.length * 72 + stripRows * 76 + gridH + 70;   // title, number, label, gap, lines, strip, bottom
-  const y = Math.max(170, (H - h) / 2);
+  const y = Math.max(130, Math.min((H - h) / 2, H - 150 - h));
   g.fillStyle = '#ffffff'; g.beginPath(); g.roundRect(x, y, w, h, r); g.fill();
   const sans = 'system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", sans-serif', serif = 'Georgia, "Times New Roman", serif';
   // Shrink the font until the text fits; only very long text is shortened with an ellipsis.
