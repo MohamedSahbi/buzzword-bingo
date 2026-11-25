@@ -104,6 +104,12 @@ export default {
     "topic.office": "🏢 أجواء المكتب",
     "topic.christmas": "🎄 عيد الميلاد",
     "topic.advent": "🕯️ زمن المجيء",
+    "sound.mute": "كتم الأصوات",
+    "sound.unmute": "تشغيل الأصوات",
+    "boss.open": "المدير قادم! (B)",
+    "boss.back": "للعودة إلى اللعبة: B أو Esc",
+    "boss.file": "توقعات_الربع_الثالث_v7.xlsx",
+    "boss.rows": "الإيرادات|المصاريف التشغيلية|الاستثمارات|عدد الموظفين|التراخيص|السفر|السحابة|الإجمالي",
   },
   topics: {
     meeting: {

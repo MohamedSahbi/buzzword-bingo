@@ -104,6 +104,12 @@ export default {
     "topic.office": "🏢 Vita d’ufficio",
     "topic.christmas": "🎄 Natale",
     "topic.advent": "🕯️ Avvento",
+    "sound.mute": "Disattiva suoni",
+    "sound.unmute": "Attiva suoni",
+    "boss.open": "Arriva il capo! (B)",
+    "boss.back": "Torna al gioco: B o Esc",
+    "boss.file": "Forecast_Q3_finale_v7.xlsx",
+    "boss.rows": "Ricavi|Costi operativi|Investimenti|Organico|Licenze|Trasferte|Cloud|Totale",
   },
   topics: {
     meeting: {

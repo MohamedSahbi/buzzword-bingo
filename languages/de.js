@@ -104,6 +104,12 @@ export default {
     "topic.office": "🏢 Büroalltag",
     "topic.christmas": "🎄 Weihnachten",
     "topic.advent": "🕯️ Advent",
+    "sound.mute": "Töne aus",
+    "sound.unmute": "Töne an",
+    "boss.open": "Chef kommt! (B)",
+    "boss.back": "Zurück zum Spiel: B oder Esc",
+    "boss.file": "Forecast_Q3_final_v7.xlsx",
+    "boss.rows": "Umsatz|Betriebskosten|Investitionen|Mitarbeitende|Lizenzen|Reisekosten|Cloud-Kosten|Summe",
   },
   topics: {
     meeting: {

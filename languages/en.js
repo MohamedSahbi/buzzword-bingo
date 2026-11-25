@@ -104,6 +104,12 @@ export default {
     "topic.office": "🏢 Office / Work",
     "topic.christmas": "🎄 Christmas",
     "topic.advent": "🕯️ Advent",
+    "sound.mute": "Mute sounds",
+    "sound.unmute": "Turn sounds on",
+    "boss.open": "Boss key (B)",
+    "boss.back": "Press B or Esc to go back to the game",
+    "boss.file": "Q3_forecast_final_v7.xlsx",
+    "boss.rows": "Revenue|Operating costs|Investments|Headcount|Licences|Travel|Cloud spend|Total",
   },
   topics: {
     meeting: {

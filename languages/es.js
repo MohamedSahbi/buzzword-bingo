@@ -104,6 +104,12 @@ export default {
     "topic.office": "🏢 Oficina",
     "topic.christmas": "🎄 Navidad",
     "topic.advent": "🕯️ Adviento",
+    "sound.mute": "Silenciar",
+    "sound.unmute": "Activar sonido",
+    "boss.open": "¡Que viene el jefe! (B)",
+    "boss.back": "Volver al juego: B o Esc",
+    "boss.file": "Prevision_T3_final_v7.xlsx",
+    "boss.rows": "Ingresos|Gastos operativos|Inversiones|Plantilla|Licencias|Viajes|Nube|Total",
   },
   topics: {
     meeting: {
