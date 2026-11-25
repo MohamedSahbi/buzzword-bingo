@@ -23,4 +23,5 @@ export default {
   p_prophet: '🔮 Meilleur pronostiqueur : {name}', p_wild: '🤯 Coup de cœur de la soirée : {text}', p_soloIntro: 'Écrivez vos 9 pronostics maintenant. Ce soir, revenez cocher ce qui s’est réalisé.', p_tick: 'Cochez ce qui s’est réalisé, puis terminez.', p_finish: 'Terminer', p_need9: 'Remplissez d’abord les 9 cases.', p_cardsOf: '{name}', b_confirmed: 'Pronostics réalisés', b_line: 'Lignes',
   sound: 'Son', soloScore: 'Votre score',
   nav_cal: 'Calendrier', nav_score: 'Score et équipe', menu: 'Menu',
+  shareNative: "Partager",
 };

@@ -23,4 +23,5 @@ export default {
   p_prophet: '🔮 Mejor adivino: {name}', p_wild: '🤯 La favorita de la noche: {text}', p_soloIntro: 'Escribe ahora tus 9 predicciones. Esta noche vuelve y marca las que se han cumplido.', p_tick: 'Marca lo que se ha cumplido y termina.', p_finish: 'Terminar', p_need9: 'Rellena antes las 9 casillas.', p_cardsOf: '{name}', b_confirmed: 'Predicciones cumplidas', b_line: 'Líneas',
   nav_cal: 'Calendario', nav_score: 'Puntos y equipo', menu: 'Menú',
   sound: 'Sonido', soloScore: 'Tu puntuación',
+  shareNative: "Compartir",
 };

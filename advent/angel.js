@@ -7,7 +7,7 @@
 const ROUNDS = 15, SECONDS = 4;
 
 export function mountAngel(root, ctx) {
-  const { pack, esc, magic, sfx, bestKey, onExit } = ctx;
+  const { pack, esc, magic, sfx, bestKey, onExit, share: shareTo } = ctx;
   const u = pack.ui;
   let timer = null, alive = true, keyHandler = null;
   const stop = () => { alive = false; clearInterval(timer); if (keyHandler) removeEventListener('keydown', keyHandler); };
@@ -74,12 +74,13 @@ export function mountAngel(root, ctx) {
       const diff = log.filter(l => l.pick !== l.book);
       root.innerHTML = `<div class="result" style="text-align:center"><div id="aFinal" style="font:800 46px Georgia,serif;color:var(--berry);line-height:1.1">${score}</div>
         <p style="margin:6px 0"><b>${esc(verdict)}</b></p><p class="muted">${esc(u.matches.replace('{n}', matches).replace('{of}', log.length))}${record && best ? ` · 🏅 ${esc(u.newBest)}` : ''}</p>
-        <div class="row" style="justify-content:center;margin-top:12px"><button class="btn primary" id="aAgain">↻ ${esc(u.again)}</button><button class="btn gold" id="aShare">📋 ${esc(u.share)}</button><button class="btn" id="aExit">${esc(u.back)}</button></div></div>
+        <div id="aShareBox"></div>
+        <div class="row" style="justify-content:center;margin-top:12px"><button class="btn primary" id="aAgain">↻ ${esc(u.again)}</button><button class="btn" id="aExit">${esc(u.back)}</button></div></div>
         ${diff.length ? `<h3 style="margin:16px 0 6px">${esc(u.disagreed)}</h3><ul class="angel-diff">${diff.map(l => `<li><span>${l.pick ? (l.pick === 'a' ? '😇' : '😈') : '⏱'} → ${l.book === 'a' ? '😇' : '😈'}</span> ${esc(l.text)}</li>`).join('')}</ul>` : ''}`;
       if (record || matches >= 13) { sfx.bingo(); magic(root.querySelector('#aFinal'), true); }
       root.querySelector('#aAgain').onclick = play;
       root.querySelector('#aExit').onclick = onExit;
-      root.querySelector('#aShare').onclick = async e => { try { await navigator.clipboard.writeText(share); e.target.textContent = '✓'; } catch {} };
+      if (shareTo) shareTo(root.querySelector('#aShareBox'), share);
     }
     show();
   }

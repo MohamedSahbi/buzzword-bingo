@@ -23,4 +23,5 @@ export default {
   p_prophet: '🔮 Melhor vidente: {name}', p_wild: '🤯 Favorito da galera: {text}', p_soloIntro: 'Escreva seus 9 palpites agora. Hoje à noite, volte e marque o que se confirmou.', p_tick: 'Marque o que se confirmou e finalize.', p_finish: 'Finalizar', p_need9: 'Preencha os 9 quadrados primeiro.', p_cardsOf: '{name}', b_confirmed: 'Palpites que se confirmaram', b_line: 'Linhas',
   sound: 'Som', soloScore: 'Sua pontuação',
   nav_cal: 'Calendário', nav_score: 'Placar e time', menu: 'Menu',
+  shareNative: "Compartilhar",
 };

@@ -115,6 +115,9 @@ export default {
     "nav.play": "Hrát s ostatními",
     "nav.activity": "Dění",
     "menu.open": "Menu",
+    "share.native": "Sdílet",
+    "share.copy": "Kopírovat",
+    "share.copied": "Zkopírováno",
   },
   topics: {
     meeting: {

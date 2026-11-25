@@ -23,4 +23,5 @@ export default {
   p_prophet: '🔮 सबसे सही अंदाज़ा: {name}', p_wild: '🤯 सबका पसंदीदा: {text}', p_soloIntro: 'अभी अपने 9 अंदाज़े लिखिए। शाम को लौटकर टिक कीजिए कि क्या सच हुआ।', p_tick: 'जो सच हुआ उस पर टिक करें, फिर ख़त्म करें।', p_finish: 'ख़त्म करें', p_need9: 'पहले सारे 9 खाने भरें।', p_cardsOf: '{name}', b_confirmed: 'सच हुए अंदाज़े', b_line: 'लाइनें',
   sound: 'आवाज़', soloScore: 'आपका स्कोर',
   nav_cal: 'कैलेंडर', nav_score: 'स्कोर और टीम', menu: 'मेन्यू',
+  shareNative: "शेयर करें",
 };

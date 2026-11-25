@@ -115,6 +115,9 @@ export default {
     "nav.play": "같이 하기",
     "nav.activity": "활동",
     "menu.open": "메뉴",
+    "share.native": "공유하기",
+    "share.copy": "복사",
+    "share.copied": "복사했어요",
   },
   topics: {
     meeting: {

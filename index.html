@@ -5,6 +5,15 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#132238">
   <title>Buzzword Bingo — Live Multiplayer</title>
+  <meta name="description" content="Meeting jargon bingo, solo or live with your team, in 13 languages.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Buzzword Bingo">
+  <meta property="og:description" content="Meeting jargon bingo, solo or live with your team, in 13 languages.">
+  <meta property="og:url" content="https://mohamedsahbi.com/buzzword-bingo/">
+  <meta property="og:image" content="https://mohamedsahbi.com/buzzword-bingo/og-bingo.png">
+  <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+
   <style>
     :root{--bg:#eef3f8;--panel:#fff;--ink:#102033;--muted:#5c6b7b;--line:#d7e0e9;--brand:#1267d6;--brand2:#0a4ca7;--good:#087b4d;--warn:#a44c00;--mark:#dcecff;--free:#fff0bf;--shadow:0 14px 35px rgba(21,42,70,.12)}
     *{box-sizing:border-box} body{margin:0;background:linear-gradient(145deg,#e8f1fb,#f7f9fc 45%,#edf4ef);color:var(--ink);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;min-height:100vh}
@@ -90,6 +99,7 @@
         <div class="letters" aria-hidden="true"><span>B</span><span>I</span><span>N</span><span>G</span><span>O</span></div>
         <div id="board" class="board"></div>
         <div id="win" class="win" role="alert" data-i18n="win"></div>
+        <div id="winShare"></div>
       </section>
 
       <aside class="side">
@@ -153,6 +163,7 @@
 <script type="module">
   import { firebaseConfig } from './firebase-config.js';
   import { LANGUAGES, TOPIC_KEYS, translate, topicData, detectLanguage } from './languages/index.js';
+  import { shareBar } from './share.js';
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
   import { getAuth, signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
   import { getDatabase, ref, get, set, update, remove, onValue, onDisconnect, push, runTransaction, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js';
@@ -276,7 +287,17 @@
     words.forEach((word,i)=>{ const b=document.createElement('button'); b.className=`cell ${i===12?'free marked':''} ${marks[i]?'marked':''}`.trim(); b.type='button'; b.dataset.index=i; b.setAttribute('aria-pressed',i===12||!!marks[i]); b.innerHTML=`<span>${escapeHtml(word)}</span><span class="check">✓</span>`;
       if(room?.meta.mode==='shared' && marks[i]?.name){ const by=document.createElement('span');by.className='by';by.textContent=marks[i].name;b.append(by) }
       if(i===12)b.disabled=true; else b.addEventListener('click',()=>toggleMark(i)); els.board.append(b) });
-    els.win.classList.toggle('show',winnerLines(marks).length>0); updateHostControls(); requestAnimationFrame(fitCells);
+    const won=winnerLines(marks).length>0; els.win.classList.toggle('show',won); renderWinShare(won,marks); updateHostControls(); requestAnimationFrame(fitCells);
+  }
+  // Share a win: spoiler-free 5×5 grid of marked squares (no phrases), the topic, and a link to the game.
+  let lastShare='';
+  function renderWinShare(won,marks){
+    const box=$('winShare'); if(!won){ box.replaceChildren(); lastShare=''; return }
+    const topic=room?room.meta.topic:els.topic.value, lines=new Set(winnerLines(marks).flat());
+    const grid=[0,1,2,3,4].map(r=>[0,1,2,3,4].map(c=>{const i=r*5+c;return lines.has(i)?'🟩':(i===12||marks[i])?'🟨':'⬜'}).join('')).join('\n');
+    const text=`${t('win')} · Buzzword Bingo · ${t(`topic.${topic}`)}\n${grid}`;
+    if(text===lastShare) return; lastShare=text;
+    shareBar(box,{text,url:location.origin+location.pathname,labels:{share:escapeHtml(t('share.native')),copy:escapeHtml(t('share.copy')),copied:escapeHtml(t('share.copied'))}});
   }
 
   async function toggleMark(i){

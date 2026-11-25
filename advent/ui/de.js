@@ -23,4 +23,5 @@ export default {
   p_prophet: '🔮 Beste Hellseherin / bester Hellseher: {name}', p_wild: '🤯 Publikumsliebling: {text}', p_soloIntro: 'Schreib jetzt deine 9 Vorhersagen auf. Komm heute Abend zurück und hak ab, was eingetroffen ist.', p_tick: 'Hak ab, was eingetroffen ist, und schließ dann ab.', p_finish: 'Abschließen', p_need9: 'Füll zuerst alle 9 Felder aus.', p_cardsOf: '{name}', b_confirmed: 'Eingetroffene Vorhersagen', b_line: 'Reihen',
   sound: 'Ton', soloScore: 'Deine Punkte',
   nav_cal: 'Kalender', nav_score: 'Punkte & Team', menu: 'Menü',
+  shareNative: "Teilen",
 };

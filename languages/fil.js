@@ -116,6 +116,9 @@ export default {
     "nav.play": "Maglaro nang sabay",
     "nav.activity": "Mga nangyayari",
     "menu.open": "Menu",
+    "share.native": "I-share",
+    "share.copy": "Kopyahin",
+    "share.copied": "Nakopya na",
   },
   topics: {
     meeting: {

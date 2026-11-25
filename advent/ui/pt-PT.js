@@ -23,4 +23,5 @@ export default {
   p_prophet: '🔮 Melhor adivinho: {name}', p_wild: '🤯 A preferida de todos: {text}', p_soloIntro: 'Escreve já as tuas 9 previsões. Logo à noite, volta cá e marca o que se concretizou.', p_tick: 'Marca o que se concretizou e depois termina.', p_finish: 'Terminar', p_need9: 'Preenche primeiro os 9 quadrados.', p_cardsOf: '{name}', b_confirmed: 'Previsões que se concretizaram', b_line: 'Linhas',
   sound: 'Som', soloScore: 'A tua pontuação',
   nav_cal: 'Calendário', nav_score: 'Pontos e equipa', menu: 'Menu',
+  shareNative: "Partilhar",
 };

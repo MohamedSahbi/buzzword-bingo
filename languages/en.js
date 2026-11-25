@@ -115,6 +115,9 @@ export default {
     "nav.play": "Play together",
     "nav.activity": "Activity",
     "menu.open": "Menu",
+    "share.native": "Share",
+    "share.copy": "Copy",
+    "share.copied": "Copied",
   },
   topics: {
     meeting: {

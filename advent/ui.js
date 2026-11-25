@@ -15,6 +15,7 @@ import es from './ui/es.js';
 export const ADVENT_UI = {
   ja, 'pt-BR': ptBR, 'pt-PT': ptPT, hi, fr, de, it, ar, fil, ko, es,
   en: {
+    shareNative: 'Share',
     title: 'Advent calendar', back: '← Buzzword Bingo', culture: 'Calendar',
     opensOn: 'The calendar opens on 1 December.', previewBtn: 'Play the practice calendar', previewOn: 'Practice calendar: every door is open and scores are not saved. The real calendar has different doors.', previewExit: 'Back to the real calendar',
     locked: 'Opens on {date}', today: 'Today', done: '{pts} pts', play: 'Play', replay: 'Play again (practice)', backToCal: '← Calendar',
@@ -40,6 +41,7 @@ export const ADVENT_UI = {
     sound: 'Sound', soloScore: 'Your score',
   },
   cs: {
+    shareNative: 'Sdílet',
     title: 'Adventní kalendář', back: '← Buzzword Bingo', culture: 'Kalendář',
     opensOn: 'Kalendář se otevře 1. prosince.', previewBtn: 'Hrát cvičný kalendář', previewOn: 'Cvičný kalendář: všechna okénka jsou otevřená a body se neukládají. Skutečný kalendář má jiná okénka.', previewExit: 'Zpět ke skutečnému kalendáři',
     locked: 'Otevře se {date}', today: 'Dnes', done: '{pts} b.', play: 'Hrát', replay: 'Hrát znovu (trénink)', backToCal: '← Kalendář',

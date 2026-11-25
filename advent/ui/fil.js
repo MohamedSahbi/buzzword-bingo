@@ -23,4 +23,5 @@ export default {
   p_prophet: '🔮 Pinakamagaling manghula: {name}', p_wild: '🤯 Paborito ng lahat: {text}', p_soloIntro: 'Isulat na ang 9 mong hula. Mamayang gabi, bumalik at i-tsek ang mga nagkatotoo.', p_tick: 'I-tsek ang mga nagkatotoo, tapos tapusin.', p_finish: 'Tapusin', p_need9: 'Punan muna ang lahat ng 9 na kahon.', p_cardsOf: '{name}', b_confirmed: 'Mga hulang nagkatotoo', b_line: 'Mga linya',
   sound: 'Tunog', soloScore: 'Iskor mo',
   nav_cal: 'Kalendaryo', nav_score: 'Iskor at team', menu: 'Menu',
+  shareNative: "I-share",
 };

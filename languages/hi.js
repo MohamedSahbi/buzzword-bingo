@@ -115,6 +115,9 @@ export default {
     "nav.play": "साथ में खेलें",
     "nav.activity": "गतिविधि",
     "menu.open": "मेन्यू",
+    "share.native": "शेयर करें",
+    "share.copy": "कॉपी करें",
+    "share.copied": "कॉपी हो गया",
   },
   topics: {
     meeting: {

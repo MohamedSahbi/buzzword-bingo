@@ -23,4 +23,5 @@ export default {
   p_prophet: '🔮 予言者大賞：{name}さん', p_wild: '🤯 みんなが選んだベスト予想：{text}', p_soloIntro: '今のうちに予想を9つ書いておきましょう。夜にまた来て、当たったものにチェック。', p_tick: '当たったものにチェックして、終了してください。', p_finish: '終了', p_need9: '先に9マスすべて書いてください。', p_cardsOf: '{name}さん', b_confirmed: '当たった予想', b_line: 'ライン',
   sound: '音', soloScore: 'あなたの得点',
   nav_cal: 'カレンダー', nav_score: 'スコアとチーム', menu: 'メニュー',
+  shareNative: "シェア",
 };

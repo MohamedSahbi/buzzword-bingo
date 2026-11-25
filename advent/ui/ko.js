@@ -23,4 +23,5 @@ export default {
   p_prophet: '🔮 최고의 예언가: {name}', p_wild: '🤯 오늘의 화제: {text}', p_soloIntro: '지금 예측 9가지를 적어 두세요. 저녁에 다시 와서 맞은 걸 체크해요.', p_tick: '맞은 걸 체크하고 완료를 누르세요.', p_finish: '완료', p_need9: '먼저 9칸을 모두 채워 주세요.', p_cardsOf: '{name}', b_confirmed: '맞힌 예측', b_line: '줄',
   nav_cal: '캘린더', nav_score: '점수 & 팀', menu: '메뉴',
   sound: '소리', soloScore: '내 점수',
+  shareNative: "공유하기",
 };

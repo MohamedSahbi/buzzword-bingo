@@ -23,4 +23,5 @@ export default {
   p_prophet: '🔮 أفضل متنبّئ: {name}', p_wild: '🤯 المفضّل عند الجميع: {text}', p_soloIntro: 'اكتب توقعاتك التسعة الآن. وفي المساء ارجع وأشّر على ما تحقّق.', p_tick: 'أشّر على ما تحقّق، ثم أنهِ.', p_finish: 'إنهاء', p_need9: 'املأ المربعات التسعة أولًا.', p_cardsOf: '{name}', b_confirmed: 'توقعات تحقّقت', b_line: 'صفوف',
   sound: 'الصوت', soloScore: 'نتيجتك',
   nav_cal: 'الروزنامة', nav_score: 'النتيجة والفريق', menu: 'القائمة',
+  shareNative: "مشاركة",
 };

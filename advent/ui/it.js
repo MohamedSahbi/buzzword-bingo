@@ -23,4 +23,5 @@ export default {
   p_prophet: '🔮 Miglior indovino: {name}', p_wild: '🤯 Il preferito della serata: {text}', p_soloIntro: 'Scrivi ora le tue 9 previsioni. Stasera torna e spunta quelle che si sono avverate.', p_tick: 'Spunta quelle che si sono avverate, poi concludi.', p_finish: 'Concludi', p_need9: 'Prima riempi tutte e 9 le caselle.', p_cardsOf: '{name}', b_confirmed: 'Previsioni avverate', b_line: 'Righe',
   sound: 'Suono', soloScore: 'Il tuo punteggio',
   nav_cal: 'Calendario', nav_score: 'Punti e squadra', menu: 'Menu',
+  shareNative: "Condividi",
 };
