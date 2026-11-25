@@ -33,8 +33,15 @@
   .door.p3{background:repeating-linear-gradient(90deg,#7a2f8f 0 10px,#8d3ea3 10px 20px)}
   .door.p4{background:repeating-linear-gradient(0deg,#ffffff22 0 3px,transparent 3px 18px),repeating-linear-gradient(90deg,#ffffff22 0 3px,transparent 3px 18px),#9b1c1c}
   .door.p5{background:radial-gradient(#f2b84b 2px,transparent 2.5px) 0 0/14px 14px,#0b4a3a}
-  .door::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:12px;margin-left:-6px;background:var(--gold);opacity:.9}
-  .door::after{content:"";position:absolute;top:50%;left:0;right:0;height:12px;margin-top:-6px;background:var(--gold);opacity:.9}
+  .door.p6{background:repeating-linear-gradient(45deg,#c62828 0 10px,#fbeeee 10px 20px)}
+  .door.p7{background:radial-gradient(#ffffff70 2px,transparent 2.5px) 0 0/12px 12px,#b8862a}
+  .door.p8{background:radial-gradient(#ffffff66 3px,transparent 3.5px) 0 0/22px 22px,radial-gradient(#ffffff40 1.5px,transparent 2px) 11px 11px/22px 22px,#2c5d8f}
+  .door.p9{background:repeating-linear-gradient(135deg,#0e6e75 0 8px,#12828a 8px 16px)}
+  .door.big{grid-column:span 2;grid-row:span 2;aspect-ratio:auto}
+  .door.big .num{width:76px;height:76px;font-size:34px}
+  .door .bow{position:absolute;z-index:3;font-size:26px;left:50%;top:-4px;transform:translateX(-50%)}
+  .door::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:12px;margin-left:-6px;background:var(--rib,var(--gold));opacity:.92}
+  .door::after{content:"";position:absolute;top:50%;left:0;right:0;height:12px;margin-top:-6px;background:var(--rib,var(--gold));opacity:.92}
   .door .num{position:absolute;z-index:2;left:50%;top:50%;transform:translate(-50%,-50%);width:54px;height:54px;border-radius:50%;background:var(--snow);color:var(--berry);display:grid;place-items:center;font-family:Georgia,serif;font-weight:700;font-size:24px;box-shadow:0 2px 6px #0004}
   .door .lab{position:absolute;z-index:2;left:6px;right:6px;bottom:6px;text-align:center;font-size:11px;font-weight:700;background:#0008;border-radius:8px;padding:3px 4px}
   .door .tag{position:absolute;z-index:2;top:6px;right:6px;font-size:16px}
@@ -243,7 +250,8 @@
   for (let i = 0; i < 45; i++) { const f = document.createElement('i'); const s = 3 + Math.random() * 5; f.style.cssText = `left:${Math.random() * 100}%;width:${s}px;height:${s}px;--dx:${(Math.random() * 80 - 40).toFixed(0)}px;animation-duration:${(8 + Math.random() * 10).toFixed(1)}s;animation-delay:-${(Math.random() * 18).toFixed(1)}s`; $('snow').appendChild(f); }
 
   // ---------- calendar view ----------
-  const PAPER = ['p0', 'p1', 'p2', 'p3', 'p4', 'p5'];
+  const PAPER = ['p0', 'p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7', 'p8', 'p9'];
+  const RIBBON = ['#f2b84b', '#ffffff', '#d63a2f', '#2e9d62', '#c9d6e3', '#f2b84b'];
   function renderAll() {
     document.documentElement.lang = cal;
     document.title = `${t('title')} · Buzzword Bingo`;
@@ -270,9 +278,13 @@
     shuffle(doorNums(), seeded(`${cal}:${seasonYear}:grid`)).forEach(n => {
       const type = doorType(n), open = unlocked(n), done = seasonMode() && scores[n];
       const b = document.createElement('button'); b.type = 'button';
-      b.className = `door ${PAPER[Math.floor(seeded(`${cal}:${n}:paper`)() * PAPER.length)]}${open ? '' : ' locked'}${isToday(n) ? ' today' : ''}${done ? ' done' : ''}`;
-      b.innerHTML = `<span class="num">${n}</span>${type === 'predict' ? '<span class="tag">⭐</span>' : ''}<span class="lab">${esc(open ? (done ? t('done', { pts: scores[n].pts }) : (isToday(n) ? t('today') : t('t_' + type))) : '🔒 ' + fmtDate(n))}</span>`;
-      b.disabled = !open; b.title = open ? t('t_' + type) : t('locked', { date: fmtDate(n) });
+      const rnd = seeded(`${cal}:${n}:paper`), finale = type === 'predict';
+      b.className = `door ${PAPER[Math.floor(rnd() * PAPER.length)]}${finale ? ' big' : ''}${open ? '' : ' locked'}${isToday(n) ? ' today' : ''}${done ? ' done' : ''}`;
+      b.style.setProperty('--rib', RIBBON[Math.floor(rnd() * RIBBON.length)]);
+            // The game behind a door stays a surprise: only number, "today", points or the opening date are shown.
+      const label = !open ? '🔒 ' + fmtDate(n) : done ? t('done', { pts: scores[n].pts }) : isToday(n) ? t('today') : '';
+      b.innerHTML = `${finale ? '<span class="bow">🎀</span>' : ''}<span class="num">${n}</span>${label ? `<span class="lab">${esc(label)}</span>` : ''}`;
+      b.disabled = !open; b.title = open ? '' : t('locked', { date: fmtDate(n) });
       b.onclick = () => openDoor(n);
       wrap.appendChild(b);
     });

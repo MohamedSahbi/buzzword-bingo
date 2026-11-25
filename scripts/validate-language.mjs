@@ -9,7 +9,7 @@ const placeholders = s => [...String(s).matchAll(/\{(\w+)\}/g)].map(m => m[1]).s
 export function validateLanguage(code, L, en) {
   const errors = [], warnings = [];
   if (L.code !== code) errors.push(`code is "${L.code}" but it is registered as "${code}"`);
-  if (!/^[a-z]{2,3}$/.test(code)) errors.push('code must be a 2–3 letter ISO 639-1 code, e.g. "pl"');
+  if (!/^[a-z]{2,3}(-[A-Z]{2})?$/.test(code)) errors.push('code must be an ISO code like "pl" or a regional one like "pt-BR"');
   if (!L.label) errors.push('label (the language name written in that language) is missing');
   if (!['ltr', 'rtl'].includes(L.dir)) errors.push('dir must be "ltr" or "rtl"');
 

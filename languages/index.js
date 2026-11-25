@@ -30,9 +30,14 @@ export function topicData(lang, key) {
 
 // First supported language from the browser's preferences, e.g. "cs-CZ" → "cs".
 export function detectLanguage() {
+  const codes = Object.keys(LANGUAGES);
   for (const l of navigator.languages || [navigator.language || 'en']) {
+    const exact = codes.find(c => c.toLowerCase() === String(l).toLowerCase());   // e.g. pt-BR
+    if (exact) return exact;
     const base = String(l).toLowerCase().split('-')[0];
     if (LANGUAGES[base]) return base;
+    const regional = codes.find(c => c.toLowerCase().startsWith(base + '-'));      // pt → first pt-XX
+    if (regional) return regional;
   }
   return 'en';
 }
