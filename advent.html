@@ -154,6 +154,7 @@
     <div class="grow"></div>
     <button id="menuBtn" class="pill menu-btn" type="button" aria-expanded="false">☰</button>
     <div class="hdr-actions" id="hdrActions">
+      <label class="pill" title="Language"><span aria-hidden="true">🌐</span> <select id="uiLang" class="pill" aria-label="Language" style="padding:2px 6px;border:0;background:transparent"></select></label>
       <label class="pill"><span id="cultureLabel"></span> <select id="culture" class="pill" style="padding:2px 6px;border:0;background:transparent"></select></label>
       <button id="soundBtn" class="pill" type="button"></button>
       <button id="practiceBtn" class="pill m-only" type="button"></button>
@@ -205,6 +206,7 @@
   import { firebaseConfig } from './firebase-config.js';
   import { mountPredict } from './advent/predict.js';
   import { PREDICT_IDEAS } from './advent/predict-ideas.js';
+  import { LANGUAGES } from './languages/index.js';
 
   // ---------- setup ----------
   const $ = id => document.getElementById(id);
@@ -214,12 +216,13 @@
   const DB = firebaseConfig.databaseURL;
   let metas = {};                       // season calendars published for this year, by culture code
   const known = c => (CALENDARS[c] || metas[c] ? c : null);
-  let cal = 'en';
+  let cal = 'en';          // calendar culture (which doors)
+  let uiLang = 'en';       // website language (all interface text), shared with the main page
   let preview = params.get('preview') === '1';   // practice mode
   const C = () => (!preview && metas[cal]) ? metas[cal] : CALENDARS[cal] || Object.values(CALENDARS)[0];
   const seasonMode = () => !preview && !!metas[cal];
   const uiOf = c => ADVENT_UI[c] || ADVENT_UI[String(c).split('-')[0]] || ADVENT_UI.en;
-  const t = (k, v = {}) => (uiOf(cal)[k] ?? ADVENT_UI.en[k] ?? k).replace(/\{(\w+)\}/g, (_, x) => v[x] ?? '');
+  const t = (k, v = {}) => (uiOf(uiLang)[k] ?? ADVENT_UI.en[k] ?? k).replace(/\{(\w+)\}/g, (_, x) => v[x] ?? '');
   const esc = s => String(s).replace(/[&<>'"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[c]));
 
   // Season: December of this year (or of last year while it's January).
@@ -293,7 +296,7 @@
   const PAPER = ['p0', 'p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7', 'p8', 'p9'];
   const RIBBON = ['#f2b84b', '#ffffff', '#d63a2f', '#2e9d62', '#c9d6e3', '#f2b84b'];
   function renderAll() {
-    document.documentElement.lang = C().locale || cal; document.documentElement.dir = cal === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.lang = C().locale || cal; document.documentElement.dir = uiLang === 'ar' ? 'rtl' : 'ltr';
     document.title = `${t('title')} · Buzzword Bingo`;
     $('backLink').textContent = t('back'); $('cultureLabel').textContent = t('culture');
     $('title').innerHTML = `🎄 <span>${esc(t('title'))}</span>`;
@@ -620,6 +623,11 @@
   await loadMetas();
   document.body.classList.remove('is-loading');
   cal = known(params.get('lang')) || known(localStorage.getItem('bingoAdventLang')) || known(localStorage.getItem('bingoSiteLang')) || known(navigator.language) || known((navigator.language || 'en').slice(0, 2)) || 'en';
+  const uiKnown = c => c && ADVENT_UI[c] ? c : (c && ADVENT_UI[String(c).split('-')[0]] ? String(c).split('-')[0] : null);
+  uiLang = uiKnown(localStorage.getItem('bingoSiteLang')) || uiKnown(params.get('lang')) || uiKnown(navigator.language) || 'en';
+  Object.keys(ADVENT_UI).forEach(k => { const o = document.createElement('option'); o.value = k; o.textContent = LANGUAGES[k]?.label || k; $('uiLang').append(o); });
+  $('uiLang').value = uiLang;
+  $('uiLang').onchange = e => { uiLang = e.target.value; localStorage.setItem('bingoSiteLang', uiLang); renderAll(); };
   const allCodes = [...new Set([...Object.keys(metas), ...Object.keys(CALENDARS)])];
   allCodes.forEach(k => { const o = document.createElement('option'); o.value = k; o.textContent = (metas[k] || CALENDARS[k]).label; $('culture').append(o); });
   $('culture').value = cal;
