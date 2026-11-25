@@ -1,10 +1,10 @@
 // "Anděl, nebo čert?" / "Nice or naughty?": a quick-fire side game on the Advent page, playable any day.
 // Everyday deeds flash up one by one; sort each into 😇 or 😈 before the timer runs out.
-// Scoring (drains while you think): a match is worth +20 when the deed appears, falling with the timer bar to +5
-// at the last moment; ×1.5 on a streak of 3+ matches, ×2 on 6+. A wrong pick costs 5. Too slow: nothing.
+// Scoring (reaction time counts): a match is worth 1000 the moment the deed appears and drains live, 250 per second,
+// to 50 at the last moment; ×1.5 on a streak of 3+ matches, ×2 on 6+. A wrong pick costs 200. Too slow: nothing.
 // Content per culture lives in advent/deeds/<code>.js; see advent/deeds/en.js for the format.
 
-const ROUNDS = 15, SECONDS = 4, MAX = 20, MIN = 5, WRONG = 5;
+const ROUNDS = 15, SECONDS = 4, MAX = 1000, MIN = 50, WRONG = 200;
 const live = ms => Math.max(MIN, Math.round(MAX - (MAX - MIN) * Math.min(1, ms / (SECONDS * 1000))));
 const mult = streak => streak >= 6 ? 2 : streak >= 3 ? 1.5 : 1;
 
@@ -27,7 +27,7 @@ export function mountAngel(root, ctx) {
   function play() {
     const deck = [...pack.deeds].sort(() => Math.random() - .5).slice(0, ROUNDS);
     let i = 0, score = 0, streak = 0, answered = false, t0 = 0;
-    const log = [];
+    const log = [], times = [];
     root.innerHTML = `<div class="angel-top"><span id="aRound"></span><span id="aStreak"></span><b id="aScore">0</b></div>
       <div class="angel-bar"><i id="aBar"></i><b id="aLive"></b></div>
       <div class="angel-card" id="aCard"></div>
@@ -35,7 +35,7 @@ export function mountAngel(root, ctx) {
       <p class="muted angel-keys">${esc(u.keys)}</p>`;
     const $ = id => root.querySelector('#' + id);
 
-    function countTo(el, from, to) { const t1 = performance.now(); const step = () => { const k = Math.min(1, (performance.now() - t1) / 400); el.textContent = Math.round(from + (to - from) * k); if (k < 1 && alive) requestAnimationFrame(step); }; requestAnimationFrame(step); el.classList.remove('bump'); void el.offsetWidth; if (to > from) el.classList.add('bump'); }
+    function countTo(el, from, to) { const t1 = performance.now(); const step = () => { const k = Math.min(1, (performance.now() - t1) / 600); el.textContent = Math.round(from + (to - from) * k); if (k < 1 && alive) requestAnimationFrame(step); }; requestAnimationFrame(step); el.classList.remove('bump'); void el.offsetWidth; if (to > from) el.classList.add('bump'); }
     function show() {
       if (!alive) return;
       if (i >= deck.length) return done();
@@ -53,10 +53,10 @@ export function mountAngel(root, ctx) {
       const [text, book] = deck[i], ms = performance.now() - t0, c = $('aCard');
       let pts = 0;
       if (pick === book) {
-        streak++; pts = Math.round(live(ms) * mult(streak)); sfx.ok();
+        streak++; pts = Math.round(live(ms) * mult(streak)); times.push(ms); sfx.ok();
         c.className = 'angel-card ok'; if (streak === 3 || streak === 6 || streak === 10) magic(c, false);
       } else { streak = 0; c.className = 'angel-card no'; if (pick) { pts = -Math.min(WRONG, score); sfx.bad(); } }
-      c.innerHTML = `${esc(text)}<small>${book === 'a' ? '😇' : '😈'} ${esc(u.bookSays)}${pick ? '' : ` · ⏱ ${esc(u.tooSlow)}`}</small>`;
+      c.innerHTML = `${esc(text)}<small>${book === 'a' ? '😇' : '😈'} ${esc(u.bookSays)}${pick ? ` · ⚡ ${(ms / 1000).toFixed(2)} s` : ` · ⏱ ${esc(u.tooSlow)}`}</small>`;
       $('aLive').textContent = '';
       if (pts) { const f = document.createElement('span'); f.className = 'angel-float' + (pts < 0 ? ' neg' : ''); f.textContent = (pts > 0 ? '+' : '') + pts; c.appendChild(f); }
       const from = score; score += pts; countTo($('aScore'), from, score);
@@ -76,10 +76,12 @@ export function mountAngel(root, ctx) {
       const matches = log.filter(l => l.pick === l.book).length, best = +localStorage.getItem(bestKey) || 0, record = score > best;
       if (record) localStorage.setItem(bestKey, String(score));
       const verdict = matches >= 13 ? u.v3 : matches >= 9 ? u.v2 : u.v1;
-      const share = `😇😈 ${pack.title}: ${score} · ${log.map(l => l.pick === l.book ? '✅' : '❌').join('')}`;
+      const avg = times.length ? ` · ⚡ ${(times.reduce((a, b) => a + b, 0) / times.length / 1000).toFixed(2)} s` : '';
+      const share = `😇😈 ${pack.title}: ${score}${avg}\n${log.map(l => l.pick === l.book ? '✅' : '❌').join('')}`;
       const diff = log.filter(l => l.pick !== l.book);
       root.innerHTML = `<div class="result" style="text-align:center"><div id="aFinal" style="font:800 46px Georgia,serif;color:var(--berry);line-height:1.1">${score}</div>
         <p style="margin:6px 0"><b>${esc(verdict)}</b></p><p class="muted">${esc(u.matches.replace('{n}', matches).replace('{of}', log.length))}${record && best ? ` · 🏅 ${esc(u.newBest)}` : ''}</p>
+        ${times.length ? `<p class="muted">⚡ Ø ${(times.reduce((a, b) => a + b, 0) / times.length / 1000).toFixed(2)} s · 🏎 ${(Math.min(...times) / 1000).toFixed(2)} s</p>` : ''}
         <div id="aShareBox"></div>
         <div class="row" style="justify-content:center;margin-top:12px"><button class="btn primary" id="aAgain">↻ ${esc(u.again)}</button><button class="btn" id="aExit">${esc(u.back)}</button></div></div>
         ${diff.length ? `<h3 style="margin:16px 0 6px">${esc(u.disagreed)}</h3><ul class="angel-diff">${diff.map(l => `<li><span>${l.pick ? (l.pick === 'a' ? '😇' : '😈') : '⏱'} → ${l.book === 'a' ? '😇' : '😈'}</span> ${esc(l.text)}</li>`).join('')}</ul>` : ''}`;

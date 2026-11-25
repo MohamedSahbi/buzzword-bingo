@@ -82,8 +82,8 @@
   .angel-entry .ic{font-size:28px;line-height:1}.angel-entry b{display:block;font-size:15px}.angel-entry .grow{flex:1}
   .angel-rules{display:flex;gap:10px;margin:12px 0;font-weight:800}.angel-rules span{flex:1;text-align:center;padding:10px;border-radius:12px;background:#eef6ff}.angel-rules span+span{background:#fde8e6}
   .angel-top{display:flex;gap:12px;align-items:center;font-weight:700;color:var(--muted)}.angel-top b{margin-left:auto;font-size:26px;color:var(--ink);font-family:Georgia,serif}
-  .angel-bar{position:relative;height:22px;background:#e6edf3;border-radius:9px;overflow:hidden;margin:8px 0 14px}.angel-bar i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#f2b84b,#ffd98a)}
-  .angel-bar b{position:absolute;right:8px;top:0;line-height:22px;font-size:14px;font-weight:900;font-variant-numeric:tabular-nums}
+  .angel-bar{position:relative;height:26px;background:#e6edf3;border-radius:9px;overflow:hidden;margin:8px 0 14px}.angel-bar i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#f2b84b,#ffd98a)}
+  .angel-bar b{position:absolute;right:10px;top:0;line-height:26px;font-size:18px;font-weight:900;font-variant-numeric:tabular-nums}
   .angel-card{position:relative}.angel-float{position:absolute;right:14px;top:10px;font-size:22px;font-weight:900;color:#0f5132;animation:floatUp .9s ease-out forwards;pointer-events:none}.angel-float.neg{color:#b3261e}
   @keyframes floatUp{from{transform:translateY(0);opacity:1}to{transform:translateY(-34px);opacity:0}}
   #aScore.bump{animation:bump .35s ease}@keyframes bump{50%{transform:scale(1.25)}}#aScore{display:inline-block;font-variant-numeric:tabular-nums}
@@ -384,7 +384,7 @@
     v.innerHTML = `<div class="row" style="margin:0 0 10px"><button class="btn" id="backCal">${esc(t('backToCal'))}</button></div>
       <span class="kind">😇😈 ${esc(p.ui.angel)} / ${esc(p.ui.devil)}</span><h2>${esc(p.title)}</h2><div id="game"></div>`;
     $('backCal').onclick = closeDoor; window.scrollTo({ top: 0, behavior: 'smooth' });
-    stopGame = mountAngel($('game'), { pack: p, esc, magic, sfx, bestKey: `bingoAngelBest:${cal}`, onExit: closeDoor, share: shareTo });
+    stopGame = mountAngel($('game'), { pack: p, esc, magic, sfx, bestKey: `bingoAngelBest2:${cal}`, onExit: closeDoor, share: shareTo });
   }
   function renderSolo() {
     const s = loadScores(), vals = Object.values(s);
