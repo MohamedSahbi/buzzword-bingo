@@ -30,7 +30,7 @@
   .pill{display:inline-flex;align-items:center;gap:6px;border:1px solid #ffffff33;background:#ffffff14;color:var(--snow);border-radius:999px;padding:7px 12px;font:inherit;font-size:13px;cursor:pointer}
   select.pill{appearance:auto}
   select.pill option{color:#111}
-  .banner .ic{font-size:18px;margin-right:2px}.banner .cd{font-variant-numeric:tabular-nums;font-weight:800;color:var(--gold)}
+  .banner .ic{font-size:18px;margin-right:2px}.banner .ic+span{flex:1 1 0;min-width:170px}.banner .cd{font-variant-numeric:tabular-nums;font-weight:800;color:var(--gold)}
   .banner{background:#ffffff14;border:1px solid #ffffff2a;border-radius:14px;padding:10px 14px;margin-bottom:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:14px}
   .layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px;align-items:start}
   .doors{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:12px}
@@ -176,7 +176,7 @@
     body[data-tab=cal] .side{display:none}
     body[data-tab=score] #calendarView>section,body[data-tab=score] #banner{display:none}
   }
-  @media (max-width:860px){.layout{grid-template-columns:1fr}.split{grid-template-columns:1fr}.feed{height:clamp(170px,30vh,260px)}.gbar{position:sticky;top:66px;box-shadow:0 6px 16px #0003}}
+  @media (max-width:860px){body.playing #title,body.playing #subtitle,body.playing #banner,body.playing #angelEntry{display:none}.layout{grid-template-columns:1fr}.split{grid-template-columns:1fr}.feed{height:clamp(170px,30vh,260px)}.gbar{position:sticky;top:66px;box-shadow:0 6px 16px #0003}}
   @media (max-width:520px){.doors{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.door .num{width:40px;height:40px;font-size:18px}.door .lab{display:none}.items,.boxes{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 </head>
