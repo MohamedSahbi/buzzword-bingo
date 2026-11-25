@@ -8,6 +8,9 @@ import de from './de.js';
 import fr from './fr.js';
 import ko from './ko.js';
 import fil from './fil.js';
+import ar from './ar.js';
+import hi from './hi.js';
+import ja from './ja.js';
 
-export const DEEDS = { en, cs, 'en-US': enUS, 'en-AU': enAU, de, fr, ko, fil };
+export const DEEDS = { en, cs, 'en-US': enUS, 'en-AU': enAU, de, fr, ko, fil, ar, hi, ja };
 export const deedsFor = c => DEEDS[c] || DEEDS[String(c).split('-')[0]] || DEEDS.en;
