@@ -12,7 +12,10 @@ export async function resultCardBlob(card) {
   for (let i = 0; i < 90; i++) { g.globalAlpha = .25 + Math.random() * .4; g.fillStyle = night ? '#ffffff' : ['#f2b84b', '#16a66e', '#ffffff'][i % 3]; g.beginPath(); g.arc(Math.random() * W, Math.random() * H, 2 + Math.random() * 5, 0, 7); g.fill(); }
   g.globalAlpha = 1;
   // white card
-  const x = 70, y = 170, w = W - 140, h = H - 340, r = 48;
+  const x = 70, w = W - 140, r = 48;
+  const lines = (card.lines || []).filter(Boolean), stripRows = card.strip ? Math.ceil([...card.strip].length / 15) : 0;
+  const h = 110 + 300 + 70 + 40 + lines.length * 72 + stripRows * 76 + 70;   // title, number, label, gap, lines, strip, bottom
+  const y = Math.max(170, (H - h) / 2);
   g.fillStyle = '#ffffff'; g.beginPath(); g.roundRect(x, y, w, h, r); g.fill();
   const sans = 'system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", sans-serif', serif = 'Georgia, "Times New Roman", serif';
   // Shrink the font until the text fits; only very long text is shortened with an ellipsis.
@@ -23,15 +26,15 @@ export async function resultCardBlob(card) {
     g.fillStyle = color; g.textAlign = 'center'; g.fillText(s, W / 2, ty);
   };
   // header above the card
-  center(card.kicker, 115, `800 44px ${sans}`, '#f2b84b');
+  center(card.kicker, y - 50, `800 48px ${sans}`, '#f2b84b');
   center(card.title, y + 120, `800 64px ${serif}`, '#132433');
-  center(card.big, y + 330, `900 190px ${serif}`, '#b3261e');
-  center(card.bigLabel, y + 400, `700 38px ${sans}`, '#5a6b7b');
-  let ly = y + 510;
-  for (const line of card.lines || []) { center(line, ly, `700 44px ${sans}`, '#132433'); ly += 72; }
+  center(card.big, y + 360, `900 190px ${serif}`, '#b3261e');
+  center(card.bigLabel, y + 450, `700 36px ${sans}`, '#5a6b7b');
+  let ly = y + 560;
+  for (const line of lines) { center(line, ly, `700 44px ${sans}`, '#132433'); ly += 72; }
   if (card.strip) {
     // emoji row, wrapped to fit
-    g.font = `56px ${sans}`; const chars = [...card.strip]; const per = Math.max(1, Math.floor((w - 80) / g.measureText(chars[0] || 'x').width));
+    const chars = [...card.strip], per = 15;
     for (let i = 0; i < chars.length; i += per) { center(chars.slice(i, i + per).join(''), ly + 30, `56px ${sans}`, '#132433', w); ly += 72; }
   }
   center(card.footer, H - 80, `700 36px ${sans}`, '#cfe3f5');
