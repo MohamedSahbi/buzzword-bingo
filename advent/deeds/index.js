@@ -11,6 +11,10 @@ import fil from './fil.js';
 import ar from './ar.js';
 import hi from './hi.js';
 import ja from './ja.js';
+import es from './es.js';
+import it from './it.js';
+import ptBR from './pt-BR.js';
+import ptPT from './pt-PT.js';
 
-export const DEEDS = { en, cs, 'en-US': enUS, 'en-AU': enAU, de, fr, ko, fil, ar, hi, ja };
+export const DEEDS = { en, cs, 'en-US': enUS, 'en-AU': enAU, de, fr, ko, fil, ar, hi, ja, es, it, 'pt-BR': ptBR, 'pt-PT': ptPT };
 export const deedsFor = c => DEEDS[c] || DEEDS[String(c).split('-')[0]] || DEEDS.en;
