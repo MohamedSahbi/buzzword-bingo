@@ -38,7 +38,7 @@ for (const [code, cal] of Object.entries(CALENDARS)) {
     if (!d.title) err(where, 'missing title');
     if (d.type === 'predict') { if (!d.alt) { err(where, 'prediction door needs an alt game'); continue; } d = d.alt; }
     if (!d.title) err(where, 'missing title');
-    if (d.type === 'wrap') checkWrap(where, d);
+    if (d.type === 'wrap') err(where, "gift-wrap doors are no longer used: write a chat, listen or emoji door");
     else if (['chat', 'listen', 'emoji'].includes(d.type)) checkReveal(where, d);
     else err(where, `unknown type ${d.type}`);
   }
