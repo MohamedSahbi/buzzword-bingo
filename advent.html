@@ -175,6 +175,8 @@
     ? `${new Date(releaseAt(n)).toLocaleDateString(C().locale, { day: 'numeric', month: 'long', timeZone: C().timezone })}, 00:00 ${C().tzLabel}`
     : doorDate(n).toLocaleDateString(C().locale, { day: 'numeric', month: 'long' });
   const doorType = n => seasonMode() ? C().types[n] : C().doors[n].type;
+  // Firebase turns {1:…,24:…} into an array with an empty slot 0, so list only real doors.
+  const doorNums = () => Object.entries(C().dates).filter(([, v]) => v).map(([k]) => Number(k)).sort((a, b) => a - b);
 
   // A released door is fetched once with a plain web request and kept in this browser.
   async function loadDoor(n) {
@@ -226,7 +228,7 @@
   }
   function renderDoors() {
     const scores = loadScores(), wrap = $('doors'); wrap.replaceChildren();
-    Object.keys(C().dates).map(Number).sort((a, b) => a - b).forEach(n => {
+    doorNums().forEach(n => {
       const type = doorType(n), open = unlocked(n), done = seasonMode() && scores[n];
       const b = document.createElement('button'); b.type = 'button';
       b.className = `door ${PAPER[n % 4]}${open ? '' : ' locked'}${isToday(n) ? ' today' : ''}${done ? ' done' : ''}`;
@@ -240,7 +242,7 @@
     const s = loadScores(), vals = Object.values(s);
     $('soloTitle').textContent = t('soloScore');
     $('soloTotal').textContent = seasonMode() ? vals.reduce((a, v) => a + v.pts, 0) : '—';
-    $('soloDetail').textContent = seasonMode() ? `${vals.length} / ${Object.keys(C().dates).length}` : t('previewOn');
+    $('soloDetail').textContent = seasonMode() ? `${vals.length} / ${doorNums().length}` : t('previewOn');
   }
 
   // ---------- play view ----------
@@ -440,7 +442,7 @@
     try {
       const { D, db, uid } = await firebase(); const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let code;
       do { code = [...crypto.getRandomValues(new Uint32Array(6))].map(x => chars[x % chars.length]).join(''); } while ((await D.get(D.ref(db, `teams/${code}/meta`))).exists());
-      const last = Math.max(...Object.keys(C().dates).map(releaseAt));
+      const last = Math.max(...doorNums().map(releaseAt));
       await D.set(D.ref(db, `teams/${code}/meta`), { name: ($('tName').value || t('teamPh')).trim().slice(0, 30), lang: cal, createdBy: uid, createdAt: Date.now(), expiresAt: Math.min(last + 14 * 864e5, Date.now() + 59 * 864e5) });
       await connectTeam(code);
     } catch (e) { teamError(e); }
