@@ -16,7 +16,11 @@ export default {
       ['Máma', '[[aspoň dvanáct]] 😅'], ['Táta', '[[to je šílenství]]'], ['Máma', '§react 🙄'], ['Táta', '§deleted'], ['Klára', 'kdo má [[vykrajovátka]]?'],
       ['Babička', 'Jsou [[v krabici na půdě]] vedle ozdob. Babička'], ['Babička', '§voice 0:42'], ['Ondra', 'můžu [[ochutnávat]]? 😇'], ['Máma', 'ne!! [[až na Štědrý den]] 😂'],
       ['Táta', 'tak [[v sobotu pečeme]] a hotovo']]), start: '09:02' },
-    2: wrap('Pod stromečkem', [['Vánoční pohádky', 'Tři oříšky pro Popelku', 'S čerty nejsou žerty', 'Mrazík', 'Princezna ze mlejna'], ['Cukroví', 'Vanilkové rohlíčky', 'Linecké', 'Vosí hnízda', 'Pracny'], ['Štědrovečerní zvyky', 'Lití olova', 'Rozkrojené jablko', 'Lodičky ze skořápek', 'Šupina pod talířem'], ['Na sváteční stůl', 'Rybí polévka', 'Kapr', 'Bramborový salát', 'Vánočka']]),
+    2: listen('Hlasovka od mámy: Posíláme PFka', 'známky zase zdražily', ['Doporučeně', 'Zpáteční adresa', 'Třpytky všude', 'Šťastný nový rok'], [
+      'Ahoj zlato, to jsem já, [[píšu PFka]].', 'Koupila jsem [[balíček dvaceti přáníček]] a už teď vím, že to nebude stačit.', 'Je to [[číslo popisný nebo orientační]]? Já se v tom nevyznám.',
+      'A [[známky zase zdražily]], to je hrůza.', 'Tetě Věře tam [[připíšu pár řádků]], ta to má ráda.', 'Táta chce [[poslat jedno i pošťačce]], to je od něj hezký.',
+      'Letos tam dám [[fotku z dovolené]], tu s tou lodí.', 'Loni [[se nám jedno vrátilo]], napsala jsem špatný PSČ.', 'Prý je musíme [[poslat do půlky prosince]].',
+      'A [[PF 2027]] píšu zlatou fixou, jako vždycky.', 'Zítra je [[hodím do schránky]] cestou z práce.', 'Tak [[zatím pa]], mám tě ráda, pa pa pa.']),
     3: emoji('České Vánoce', 'Kapr ve vaně', ['Purpura', 'Jmelí', 'Betlém', 'Svařák'], [
       ['🐟🛁', 'Kapr ve vaně'], ['🐷✨', 'Zlaté prasátko'], ['🍎🔪⭐', 'Rozkrojené jablko'], ['🌰⛵🕯️', 'Lodičky ze skořápek'], ['🔥🥄💧', 'Lití olova'], ['🥔🥗', 'Bramborový salát'],
       ['🍞🎀', 'Vánočka'], ['⛪🌙', 'Půlnoční mše'], ['🔔👶', 'Ježíšek'], ['🐟🍲', 'Rybí polévka'], ['🌙🍪', 'Vanilkové rohlíčky'], ['🐟💰🍽️', 'Šupina pod talířem']]),
@@ -29,7 +33,9 @@ export default {
       ['Máma', '[[Mikuláš přijde v šest]] 😇'], ['Táta', '[[Kdo dělá čerta?]]'], ['Ondra', 'Já! [[Mám řetěz]] 😈'], ['Klára', '[[Nestraš malou]], prosím'],
       ['Babička', 'Má [[básničku připravenou]]?'], ['Máma', 'Jo, [[o sněhulákovi]] ☃️'], ['Táta', '[[Balíčky jsou v garáži]]'], ['Ondra', '[[Uhlí nebo brambory?]]'],
       ['Klára', '[[Hlavně mandarinky]] a čokoládu'], ['Babička', '[[Byla hodná celý rok]]'], ['Táta', 'Anděl má [[křídla z kartonu]]'], ['Máma', '[[Fotku pak pošlete]] 📸']]),
-    6: wrap('Pod stromečkem', [['Prosincové svátky', 'Mikuláš', 'Barborka', 'Lucie', 'Štědrý den'], ['Koledy', 'Nesem vám noviny', 'Půjdem spolu do Betléma', 'Narodil se Kristus Pán', 'Pásli ovce Valaši'], ['Na vánočních trzích', 'Svařák', 'Trdelník', 'Medovina', 'Punč'], ['Ozdoby na stromeček', 'Baňky', 'Řetěz', 'Hvězda', 'Slaměné ozdoby']]),
+    6: emoji('Zdobíme byt', 'Slaměné ozdoby', ['Lameta', 'Andělíček', 'Zvoneček', 'Girlanda'], [
+      ['⭐🎄🔝', 'Špička na stromeček'], ['🔮🎄', 'Skleněné baňky'], ['🌾⭐', 'Slaměné ozdoby'], ['🕯️🪟', 'Svíčka v okně'], ['🌿💋', 'Jmelí'], ['🔥🌿👃', 'Purpura'],
+      ['👶🐑🐂⭐', 'Betlém'], ['💡🔗', 'Světelný řetěz'], ['🍪🧵🎄', 'Perníčky na stromeček'], ['❄️✂️📄', 'Papírové vločky'], ['🌲🪵', 'Stojan na stromek'], ['🔴⭐🪟', 'Hvězda do okna']]),
     7: emoji('Pohádky a filmy', 'Byl jednou jeden král', ['Popelka', 'Anděl Páně', 'Císařův pekař', 'Lotrando a Zubejda'], [
       ['🌰🌰🌰👸', 'Tři oříšky pro Popelku'], ['😈🚫😂', 'S čerty nejsou žerty'], ['❄️👴🪄', 'Mrazík'], ['🛋️🐱🎄', 'Pelíšky'], ['👑🧂', 'Byl jednou jeden král'], ['💧⚙️👸', 'Princezna ze mlejna'],
       ['🦷🐋', 'Jak vytrhnout velrybě stoličku'], ['🎄🏠😱', 'Sám doma'], ['👸⭐', 'Princezna se zlatou hvězdou'], ['👸😤', 'Pyšná princezna'], ['😈🎲', 'Hrátky s čertem'], ['👸😢🎸', 'Šíleně smutná princezna']]),
@@ -41,7 +47,11 @@ export default {
       ['Petra', '[[Vybíráme na dárek pro šéfa]] 🎁'], ['Jirka', '[[Kolik dáváte?]]'], ['Petra', '[[Dvě stovky]] stačí'], ['Lucie', '[[Co on vůbec má rád?]]'],
       ['Jirka', '[[Hokej?]] Pořád mluví o hokeji'], ['Petra', 'Loni dostal [[lístky na hokej]]'], ['Lucie', 'Tak [[dobrou kávu]]?'], ['Jirka', '[[Pije jen čaj]]'],
       ['Petra', '[[Přání je u mě na stole]]'], ['Lucie', '[[Hlavně ať to nevidí]]!'], ['Jirka', '[[Stojí za tebou]] 😬'], ['Petra', '😳 [[Nic se neděje]]']]),
-    10: wrap('Pod stromečkem', [['Klasické dárky', 'Ponožky', 'Kniha', 'Parfém', 'Svetr'], ['Zimní radovánky', 'Sáňkování', 'Bruslení', 'Lyžování', 'Koulovačka'], ['Vánoční dekorace', 'Jmelí', 'Betlém', 'Adventní věnec', 'Purpura'], ['Zahřeje v zimě', 'Svařák', 'Grog', 'Vaječný koňak', 'Horká čokoláda']]),
+    10: listen('Sbormistr na zkoušce', 'alty se ztratily', ['Přídavek', 'Ladička', 'Vstupenky', 'Potlesk vestoje'], [
+      'Tak, [[ještě jednou od začátku]], prosím.', 'Soprány, [[krásný, ale tišeji]] ve druhé sloce.', 'Mám pocit, že [[alty se ztratily]] někde ve dvanáctém taktu.',
+      'Basy, [[koukejte na mě, ne do not]].', 'Komu [[zvoní telefon]]? Aha, mně, pardon.', 'Koncert je [[v neděli v kostele]], sraz v půl páté.',
+      'Oblečení: [[černá a něco třpytivýho]].', 'A prosím, [[dejchejte u čárek]], ne uprostřed slova.', 'Paní Jana upekla [[plech perníku]] na přestávku.',
+      'Ještě [[naposledy celou koledu]] a pak čaj.', 'Do příště se prosím [[naučte druhý hlas]].', 'Moc hezký, všichni, [[stejně za týden]].']),
     11: emoji('Advent a zima', 'Barborka', ['Lucie', 'Zlatá neděle', 'Punč', 'Koledy'], [
       ['🕯️🕯️🕯️🕯️', 'Adventní věnec'], ['🎅😈👼', 'Mikuláš, čert a anděl'], ['🍒🌿💧', 'Barborka'], ['🍷🔥', 'Svařák'], ['🛷⛄', 'Sáňkování'], ['⛸️🏙️', 'Bruslení na náměstí'],
       ['🎄💡🏙️', 'Rozsvícení stromu'], ['🍯🍺', 'Medovina'], ['📅🍫', 'Adventní kalendář'], ['🍪🎨', 'Zdobení perníčků'], ['✉️👶', 'Dopis Ježíškovi'], ['❄️⛄🥕', 'Sněhulák']]),
@@ -53,7 +63,9 @@ export default {
       ['Bára', '[[Losování je hotové]] 🎁'], ['Martin', '[[Můžu měnit?]] Vylosoval jsem sebe'], ['Bára', '[[Nic se nemění!]] Za pět minut znova'], ['Eva', '[[Jaký je limit?]]'],
       ['Bára', '[[Pět stovek]] a [[žádné poukazy]]'], ['Tomáš', '[[Svíčka je málo?]]'], ['Eva', 'Ano. [[Všichni dostanou svíčku]]'], ['Martin', '[[Pošlete přání]] 🙏'],
       ['Tomáš', 'Já [[cokoliv kromě ponožek]]'], ['Bára', '[[Předávání dvacátého]] u mě'], ['Eva', '[[Přineste chlebíčky]]!']]),
-    14: wrap('Pod stromečkem', [['Vánoční pečivo', 'Vánočka', 'Perník', 'Štóla', 'Trdelník'], ['Osud kapra', 'Na trhu', 'Ve vaně', 'Do řeky', 'Na talíři'], ['Zimní oblečení', 'Čepice', 'Šála', 'Rukavice', 'Kulich'], ['Stromeček', 'Jedlička', 'Smrček', 'Borovice', 'Umělý']]),
+    14: emoji('Hry u stolu', 'Člověče, nezlob se', ['Twister', 'Bingo', 'Mariáš', 'Schovávaná'], [
+      ['🙅😠🎲', 'Člověče, nezlob se'], ['🌧️🃏', 'Prší'], ['🖼️🖼️🔄', 'Pexeso'], ['♟️👑', 'Šachy'], ['⚫⚪↗️', 'Dáma'], ['⬜⚫🔗', 'Domino'],
+      ['🧩🖼️', 'Puzzle'], ['🎲🎲🎲', 'Kostky'], ['🤡🃏', 'Žolíky'], ['🎭✏️🗣️', 'Aktivity'], ['🎩🏠💰', 'Monopoly'], ['🏝️🐑🧱', 'Osadníci z Katanu']]),
     15: emoji('Koledy a vánoční písně', 'Malý bubeník', ['Purpura', 'Ježíšek', 'Koledníci', 'Zvoneček'], [
       ['🗞️📦', 'Nesem vám noviny'], ['🚶‍♂️🚶‍♀️⭐', 'Půjdem spolu do Betléma'], ['🐑🐑🏔️', 'Pásli ovce Valaši'], ['👶✨🙏', 'Narodil se Kristus Pán'], ['🔔🔔', 'Rolničky, rolničky'], ['🤫🌃', 'Tichá noc'],
       ['🥁👦', 'Malý bubeník'], ['⚪🎄', 'Bílé Vánoce'], ['🎼⛪', 'Česká mše vánoční'], ['👨‍🦳⏰⬆️', 'Hej mistře, vstaň bystře'], ['👶😍', 'Jak jsi krásné, neviňátko'], ['🌙🎁', 'Štědrej večer nastal']]),
@@ -69,7 +81,11 @@ export default {
       ['Hana', '[[Taxi v šest]], kdo jede?'], ['Pepa', '[[Jaký je dress code?]]'], ['Hana', '[[Slavnostně, ale pohodlně]]'], ['Lukáš', 'Bude [[vegetariánské menu]]?'],
       ['Pepa', '[[Karaoke potvrzeno]] 🎤'], ['Lukáš', '[[Já zpívat nebudu]]'], ['Hana', 'Loni [[jsi zpíval tři písničky]]'], ['Pepa', '[[Fotokoutek]] s rekvizitami!'],
       ['Lukáš', '[[Co se stane na večírku]]…'], ['Hana', '…[[zůstane v Teams]]'], ['Pepa', '[[Tombola]] je v devět!'], ['Hana', '[[Poslední tramvaj]] jede ve 12']]),
-    19: wrap('Pod stromečkem', [['Mikulášská družina', 'Mikuláš', 'Čert', 'Anděl', 'Pytel'], ['Co má čert', 'Rohy', 'Ocas', 'Kopyto', 'Řetěz'], ['Vánoční svátky', 'Štědrý den', 'Boží hod', 'Štěpán', 'Tři králové'], ['Na Silvestra', 'Ohňostroj', 'Šampaňské', 'Čočka', 'Odpočítávání']]),
+    19: listen('Hlášení v supermarketu', 'malý Matýsek', ['Věrnostní karta', 'Zboží zdarma', 'Nákup online', 'Taška zdarma'], [
+      'Vážení zákazníci, je tu [[poslední sobota před Vánoci]].', '[[Čerstvé rohlíky]] právě vyšly z pece.', 'Prosíme [[kolegu na pokladnu devět]].',
+      '[[Samoobslužné pokladny]] jsou otevřené u vchodu.', 'U informací čeká [[malý Matýsek]], hledá maminku.', 'V uličce sedm je [[rozlitá smetana]], dávejte prosím pozor.',
+      'Prosíme, [[vracejte vozíky]] na místo.', 'Živí [[kapři jsou před vchodem]], prodej do šesti.', 'Platí [[nejvýš dvě kostky másla]] na zákazníka, děkujeme za pochopení.',
+      '[[Akce na mandarinky]] platí jen dnes.', 'Před obchodem [[hraje dechovka]] až do poledne.', 'Děkujeme za nákup a [[přejeme klidné svátky]].']),
     20: emoji('Dárky a nakupování', 'Balík nedorazil', ['Poukaz', 'Kosmetická sada', 'Puzzle', 'Hrnek'], [
       ['🧦🧦', 'Ponožky'], ['📚🎁', 'Kniha'], ['🌸💧', 'Parfém'], ['🎮🕹️', 'Herní konzole'], ['🧶🦌', 'Svetr se sobem'], ['🛒⏰😰', 'Nákupy na poslední chvíli'],
       ['📦🚚❌', 'Balík nedorazil'], ['💳😬', 'Výpis z karty'], ['🎁↩️', 'Vrácení dárku'], ['✂️🎀', 'Balení dárků'], ['🧾📝', 'Seznam dárků'], ['🍫🎁', 'Bonboniéra']]),
@@ -81,7 +97,9 @@ export default {
       ['Máma', '[[Generální úklid]] v sobotu!'], ['Ondra', '[[Musíme mýt okna?]]'], ['Máma', '[[Okna se myjí vždycky]]'], ['Táta', 'Venku [[je pět stupňů]] 🥶'],
       ['Klára', '[[Já vysaju]]'], ['Babička', '[[Záclony vyprat]]'], ['Ondra', '[[Kde je vysavač?]]'], ['Táta', '[[V koupelně je kapr]], nemůžu se osprchovat'],
       ['Máma', '[[Napeč ještě perníčky]]'], ['Klára', '[[Kdo zdobí stromeček?]]'], ['Táta', '[[Zdobí se 23.]]'], ['Babička', '[[Ozdoby jsou na půdě]]']]),
-    23: wrap('Pod stromečkem', [['Tři oříšky pro Popelku', 'Popelka', 'Princ', 'Macocha', 'Rozárka'], ['Vánoční vůně', 'Skořice', 'Vanilka', 'Hřebíček', 'Purpura'], ['V betlému', 'Jesličky', 'Oslík', 'Volek', 'Pastýři'], ['Štědrovečerní stůl', 'Prostřeno navíc', 'Svíčka', 'Šupina', 'Oplatky s medem']]),
+    23: emoji('Co stihnout 23. prosince', 'Zatrhnout pohádky v programu', ['Umýt okna', 'Napsat Ježíškovi', 'Koupit kapra', 'Ozdobit dveře'], [
+      ['🥔🫕🥗', 'Uvařit brambory na salát'], ['🎁🙈', 'Schovat dárky'], ['🛏️👨‍👩‍👧', 'Ustlat pro návštěvu'], ['🍽️⭐🧺', 'Nachystat sváteční ubrus'], ['🔋🛒', 'Koupit baterky'], ['🧊➡️📦', 'Uvolnit místo v lednici'],
+      ['🚗👵', 'Vyzvednout babičku'], ['📷🔌', 'Nabít foťák'], ['🪑🔢', 'Spočítat židle'], ['📺📖🖊️', 'Zatrhnout pohádky v programu'], ['🐕🌳', 'Vyvenčit psa'], ['🗑️🚶', 'Vynést odpadky']]),
     24: { type: 'predict', title: 'Štědrý den', alt: chat('Štědrý den: rodinný chat', 'Viděla jsem zlaté prasátko', ['Kapr ve vaně', 'Půlnoční mše', 'Cukroví', 'Ponožky'], [
       ['Máma', '[[Krásný Štědrý den]] všem! 🎄'], ['Klára', '[[Viděla jsem zlaté prasátko]]'], ['Táta', 'Já [[snědl rohlík]], takže smůla'], ['Ondra', '[[V kolik je večeře?]]'],
       ['Babička', '[[Až vyjde první hvězda]]'], ['Máma', '[[Polévka je hotová]]'], ['Táta', '[[Salát se uležel]]'], ['Klára', '[[Kdy přijde Ježíšek?]]'],
