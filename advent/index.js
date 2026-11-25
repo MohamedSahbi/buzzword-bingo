@@ -4,3 +4,6 @@ import en from './en.js';
 import cs from './cs.js';
 
 export const CALENDARS = { en, cs };
+
+// Cultures with a real (time-locked) calendar published from the private repo. The page asks Firebase for these.
+export const SEASON_CODES = ['en', 'en-US', 'en-AU', 'cs', 'ja', 'pt-BR', 'pt-PT', 'hi', 'fr'];

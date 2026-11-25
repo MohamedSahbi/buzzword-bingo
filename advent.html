@@ -198,7 +198,7 @@
 
 <script type="module">
   import { ADVENT_UI } from './advent/ui.js';
-  import { CALENDARS } from './advent/index.js';
+  import { CALENDARS, SEASON_CODES } from './advent/index.js';
   import { firebaseConfig } from './firebase-config.js';
   import { mountPredict } from './advent/predict.js';
   import { PREDICT_IDEAS } from './advent/predict-ideas.js';
@@ -215,7 +215,8 @@
   let preview = params.get('preview') === '1';   // practice mode
   const C = () => (!preview && metas[cal]) ? metas[cal] : CALENDARS[cal] || Object.values(CALENDARS)[0];
   const seasonMode = () => !preview && !!metas[cal];
-  const t = (k, v = {}) => (ADVENT_UI[cal]?.[k] ?? ADVENT_UI.en[k] ?? k).replace(/\{(\w+)\}/g, (_, x) => v[x] ?? '');
+  const uiOf = c => ADVENT_UI[c] || ADVENT_UI[String(c).split('-')[0]] || ADVENT_UI.en;
+  const t = (k, v = {}) => (uiOf(cal)[k] ?? ADVENT_UI.en[k] ?? k).replace(/\{(\w+)\}/g, (_, x) => v[x] ?? '');
   const esc = s => String(s).replace(/[&<>'"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[c]));
 
   // Season: December of this year (or of last year while it's January).
@@ -244,7 +245,7 @@
     return d;
   }
   async function loadMetas() {
-    const codes = [...new Set([...Object.keys(CALENDARS), 'de', 'fr', 'es', 'it', 'ar'])];
+    const codes = [...new Set([...Object.keys(CALENDARS), ...SEASON_CODES])];
     await Promise.all(codes.map(async c => { try { const r = await fetch(`${DB}/advent/${c}/${seasonYear}/meta.json`); const m = r.ok ? await r.json() : null; if (m?.release) metas[c] = m; } catch {} }));
   }
 
@@ -289,7 +290,7 @@
   const PAPER = ['p0', 'p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7', 'p8', 'p9'];
   const RIBBON = ['#f2b84b', '#ffffff', '#d63a2f', '#2e9d62', '#c9d6e3', '#f2b84b'];
   function renderAll() {
-    document.documentElement.lang = cal;
+    document.documentElement.lang = C().locale || cal; document.documentElement.dir = cal === 'ar' ? 'rtl' : 'ltr';
     document.title = `${t('title')} · Buzzword Bingo`;
     $('backLink').textContent = t('back'); $('cultureLabel').textContent = t('culture');
     $('title').innerHTML = `🎄 <span>${esc(t('title'))}</span>`;
@@ -615,7 +616,7 @@
   document.body.classList.add('is-loading');
   await loadMetas();
   document.body.classList.remove('is-loading');
-  cal = known(params.get('lang')) || known(localStorage.getItem('bingoAdventLang')) || known(localStorage.getItem('bingoSiteLang')) || known((navigator.language || 'en').slice(0, 2)) || 'en';
+  cal = known(params.get('lang')) || known(localStorage.getItem('bingoAdventLang')) || known(localStorage.getItem('bingoSiteLang')) || known(navigator.language) || known((navigator.language || 'en').slice(0, 2)) || 'en';
   const allCodes = [...new Set([...Object.keys(metas), ...Object.keys(CALENDARS)])];
   allCodes.forEach(k => { const o = document.createElement('option'); o.value = k; o.textContent = (metas[k] || CALENDARS[k]).label; $('culture').append(o); });
   $('culture').value = cal;

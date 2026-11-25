@@ -1,0 +1,2 @@
+// Prediction prompts for English (Australia): a summer Christmas Day.
+export default ['Someone dozes off after lunch', 'The pav collapses', 'Someone gets socks', 'The dog steals a prawn', 'Backyard cricket gets competitive', 'Someone is out first ball', 'The air-con can’t keep up', 'Paper hat stays on all day', 'A present needs batteries', 'Someone says “I’m so full”', 'The bon bon joke gets a groan', 'An afternoon storm rolls in', 'Someone jumps in the pool', 'The prawns run out first', 'Someone mentions the Boxing Day Test'];

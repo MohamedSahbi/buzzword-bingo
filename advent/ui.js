@@ -1,5 +1,13 @@
-// Advent calendar interface text. Languages without an entry fall back to English.
+// Advent calendar interface text. English and Czech live here; other languages in advent/ui/<code>.js.
+// Languages without an entry fall back to the base language (pt-BR → pt) and then to English.
+import ja from './ui/ja.js';
+import ptBR from './ui/pt-BR.js';
+import hi from './ui/hi.js';
+import ptPT from './ui/pt-PT.js';
+import fr from './ui/fr.js';
+
 export const ADVENT_UI = {
+  ja, 'pt-BR': ptBR, 'pt-PT': ptPT, hi, fr,
   en: {
     title: 'Advent calendar', back: '← Buzzword Bingo', culture: 'Calendar',
     opensOn: 'The calendar opens on 1 December.', previewBtn: 'Play the practice calendar', previewOn: 'Practice calendar: every door is open and scores are not saved. The real calendar has different doors.', previewExit: 'Back to the real calendar',
