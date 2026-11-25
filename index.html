@@ -38,6 +38,7 @@
     <div class="layout">
       <section class="panel game" aria-label="Bingo game">
         <div class="toolbar">
+          <div class="field"><label for="lang">Language</label><select id="lang"></select></div>
           <div class="field"><label for="topic">Topic</label><select id="topic"></select></div>
           <button id="newCard" class="btn">New card</button>
           <button id="resetMarks" class="btn">Reset marks</button>
@@ -82,6 +83,7 @@
 
   <div id="createModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="createTitle">
     <div class="modal-card"><h2 id="createTitle">Create multiplayer room</h2><div class="stack">
+      <div class="field"><label for="createLang">Language</label><select id="createLang"></select></div>
       <div class="field"><label for="createTopic">Topic</label><select id="createTopic"></select></div>
       <div class="field"><label for="createMode">Game mode</label><select id="createMode"><option value="shared">Shared board — everyone marks one card</option><option value="individual">Individual cards — competitive bingo</option></select></div>
       <p class="help">A six-character room code and invite link will be created. Up to a small team works well with this demo.</p>
@@ -94,27 +96,14 @@
 
 <script type="module">
   import { firebaseConfig } from './firebase-config.js';
+  import { TOPICS, LANGS, TOPIC_LABELS, WORK_TOPICS } from './topics.js';
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
   import { getAuth, signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
   import { getDatabase, ref, get, set, update, remove, onValue, onDisconnect, push, runTransaction, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js';
 
-  const TOPICS = {
-    mixed: { label:'🎲 Mixed', free:'FREE: AI', words:[] },
-    meeting: { label:'💼 Meeting / Corporate', free:'FREE: Take this offline', words:[
-      'Strategic alignment','Synergies','Business value','High level','Roadmap','Operating model','Quick win','Transformation','Stakeholder management','End-to-end','Governance','Take this offline','Prioritization','Scalability','Value proposition','Ownership','Single pane of glass','Customer-centric','Standardization','Going forward','Empowerment','Ecosystem','What does good look like?','Accelerate','Circle back','Deep dive','Low-hanging fruit','Move the needle','Let’s double-click','Action items','Any blockers?','Parking lot','Let’s align','Next steps','Who owns this?','Can everyone see my screen?','You’re on mute','Hard stop','Put a pin in it','Touch base'] },
-    ai: { label:'🤖 AI', free:'FREE: AI', words:[
-      'Generative AI','Large language model','Prompt engineering','Hallucination','Responsible AI','Copilot','Agentic workflow','RAG','Vector database','Embeddings','Fine-tuning','Foundation model','Multimodal','Context window','Token budget','AI governance','Human in the loop','Model drift','Inference','Synthetic data','Neural network','Zero-shot','Few-shot','Guardrails','Explainability','AI at scale','Digital twin','Autonomous agent','Model evaluation','Semantic search','Grounding','AI transformation','Use-case pipeline','Data quality','Benchmark','Democratize AI'] },
-    cloud: { label:'☁️ Cloud / DevOps', free:'FREE: It depends', words:[
-      'Cloud-native','Kubernetes','Containerize it','CI/CD','Infrastructure as Code','GitOps','Zero downtime','Microservices','Serverless','Observability','SRE','DevSecOps','Shift left','Auto-scaling','Multi-cloud','Hybrid cloud','Landing zone','FinOps','High availability','Disaster recovery','Immutable infrastructure','Blue-green deployment','Canary release','Service mesh','Secrets management','Zero trust','Technical debt','Platform engineering','Golden path','Policy as code','Idempotent','Event-driven','API gateway','Back pressure','Single source of truth','Works on my machine'] },
-    office: { label:'🏢 Office / Work', free:'FREE: You’re on mute', words:[
-      'Coffee break','Open-plan office','Hybrid working','Work-life balance','Out of office','Desk booking','Hot desking','Town hall','All hands','Team building','Lunch and learn','Performance review','Timesheet','Expense report','Wellbeing','Employee engagement','Company culture','Onboarding','Offboarding','Knowledge sharing','Resource planning','Capacity','Deadline','Urgent request','FYI','EOD','COB','Bandwidth','Quick chat','Calendar conflict','Focus time','Back-to-back','Working session','Follow-up email','Friendly reminder','Per my last email'] },
-    atlas: { label:'🔵 Atlas Copco', free:'FREE: Alignment', words:[
-      'BCAM','Business Area','Group IT','CCoE','Compressor Technique','Power Technique','Vacuum Technique','Industrial Technique','Group standards','Group Management','Business Area roundtable','Azure roadmap','MACC','Cost mitigation','Target operating model','Sprint review','Group alignment','Let’s align with the BA','Is this a Group standard?','Who owns this centrally?','Does this apply to all BAs?','Let’s bring this to BCAM','Input from the business','Impact for the BAs','Put it on the roadmap','Global template','Local requirement','Divisional scope','Common platform','Business continuity','Security baseline','Enterprise architecture','Shared service','Data ownership','Central governance','Change advisory board','Service owner','Application landscape','Group policy','Operational excellence'] }
-  };
-  TOPICS.mixed.words = [...new Set(Object.entries(TOPICS).filter(([k])=>k!=='mixed').flatMap(([,v])=>v.words))];
 
   const $ = id => document.getElementById(id);
-  const els = ['topic','newCard','resetMarks','print','board','win','status','soloTab','multiTab','soloControls','multiControls','playerName','openCreate','joinCode','joinRoom','leaveRoom','players','playerCount','feed','roomBanner','roomCode','roomMode','roomHost','copyInvite','createModal','createTopic','createMode','cancelCreate','createRoom','startSolo','connectionDot','connectionText','firebaseNotice','endRoom','hostModal','hostModalTitle','hostModalBody','hostModalActions'].reduce((o,id)=>(o[id]=$(id),o),{});
+  const els = ['topic','newCard','resetMarks','print','board','win','status','soloTab','multiTab','soloControls','multiControls','playerName','openCreate','joinCode','joinRoom','leaveRoom','players','playerCount','feed','roomBanner','roomCode','roomMode','roomHost','copyInvite','createModal','createTopic','createMode','cancelCreate','createRoom','startSolo','connectionDot','connectionText','firebaseNotice','lang','createLang','endRoom','hostModal','hostModalTitle','hostModalBody','hostModalActions'].reduce((o,id)=>(o[id]=$(id),o),{});
   const configured = firebaseConfig.apiKey && !firebaseConfig.apiKey.includes('REPLACE_ME');
   let app, auth, db, uid = null, roomCode = null, room = null, unsubscribers = [], soloBoard = [], soloMarks = {}, soloSeed = Date.now().toString();
   // Room lifecycle: hosts can end or hand over a room; if the host is away for HOST_GRACE_MS the
@@ -125,7 +114,14 @@
   function hash(str){ let h=2166136261; for(let i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,16777619)} return h>>>0 }
   function rng(seed){ let a=hash(seed); return ()=>{a+=0x6D2B79F5;let t=a;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296} }
   function shuffled(items,seed){ const a=[...items],r=rng(seed); for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]]} return a }
-  function makeBoard(topicKey,seed,playerId=''){ const t=TOPICS[topicKey]||TOPICS.mixed; const words=shuffled(t.words,`${seed}:${playerId}`).slice(0,24); words.splice(12,0,t.free); return words }
+  // Word list for a language + topic; unknown topics (e.g. the retired Atlas Copco one) fall back to Mixed.
+  function topicData(lang,key){
+    const L=TOPICS[lang]?lang:'en';
+    if(key!=='mixed'&&TOPICS[L][key])return TOPICS[L][key];
+    return { free:TOPICS[L].ai.free, words:[...new Set(WORK_TOPICS.flatMap(k=>TOPICS[L][k].words))] };
+  }
+  function makeBoard(topicKey,seed,playerId='',lang='en'){ const t=topicData(lang,topicKey); const words=shuffled(t.words,`${seed}:${playerId}`).slice(0,24); words.splice(12,0,t.free); return words }
+  function currentLang(){ return room ? (room.meta.lang||'en') : els.lang.value }
   function initials(name){ return name.trim().split(/\s+/).slice(0,2).map(x=>x[0]?.toUpperCase()).join('')||'?' }
   function cleanName(){ return (els.playerName.value||localStorage.getItem('bingoName')||'Guest').trim().slice(0,24) }
   function cleanCode(v){ return v.toUpperCase().replace(/[^A-Z2-9]/g,'').slice(0,6) }
@@ -133,11 +129,11 @@
   function setStatus(text,type=''){ els.status.textContent=text; els.status.className=`status ${type}`.trim() }
   function currentTopic(){ return room ? room.meta.topic : els.topic.value }
   function currentMarks(){ if(!room) return soloMarks; if(room.meta.mode==='shared') return room.sharedMarks||{}; return room.players?.[uid]?.marks||{} }
-  function currentBoard(){ if(!room) return soloBoard; const playerSeed=room.meta.mode==='individual'?uid:''; return makeBoard(room.meta.topic,room.meta.seed,playerSeed) }
+  function currentBoard(){ if(!room) return soloBoard; const playerSeed=room.meta.mode==='individual'?uid:''; return makeBoard(room.meta.topic,room.meta.seed,playerSeed,room.meta.lang||'en') }
   function winnerLines(marks){ const hit=i=>i===12||!!marks[i]; const lines=[]; for(let r=0;r<5;r++)lines.push([0,1,2,3,4].map(c=>r*5+c)); for(let c=0;c<5;c++)lines.push([0,1,2,3,4].map(r=>r*5+c)); lines.push([0,6,12,18,24],[4,8,12,16,20]); return lines.filter(line=>line.every(hit)) }
 
   function renderBoard(){
-    const words=currentBoard(), marks=currentMarks(); els.board.replaceChildren();
+    const words=currentBoard(), marks=currentMarks(), lang=currentLang(); els.board.replaceChildren(); els.board.lang=lang; els.board.dir=LANGS[lang]?.dir||'ltr';
     words.forEach((word,i)=>{ const b=document.createElement('button'); b.className=`cell ${i===12?'free marked':''} ${marks[i]?'marked':''}`.trim(); b.type='button'; b.dataset.index=i; b.setAttribute('aria-pressed',i===12||!!marks[i]); b.innerHTML=`<span>${escapeHtml(word)}</span><span class="check">✓</span>`;
       if(room?.meta.mode==='shared' && marks[i]?.name){ const by=document.createElement('span');by.className='by';by.textContent=marks[i].name;b.append(by) }
       if(i===12)b.disabled=true; else b.addEventListener('click',()=>toggleMark(i)); els.board.append(b) });
@@ -162,18 +158,18 @@
   }
   async function claimWin(){ const name=cleanName(); const w=ref(db,`rooms/${roomCode}/winners/${uid}`); const tx=await runTransaction(w,current=>current||{name,at:Date.now()}); if(tx.committed)await addActivity(`🎉 ${name} got BINGO!`) }
   async function addActivity(text){ if(!roomCode||!db)return; const p=push(ref(db,`rooms/${roomCode}/activity`)); return set(p,{text,uid,at:serverTimestamp()}) }
-  function saveSolo(){ localStorage.setItem('bingoSolo',JSON.stringify({topic:els.topic.value,seed:soloSeed,marks:soloMarks})) }
-  function freshSolo(){ room=null; roomCode=null; soloSeed=crypto.randomUUID(); soloMarks={}; soloBoard=makeBoard(els.topic.value,soloSeed); saveSolo(); syncRoomUi(); renderBoard(); setStatus('Fresh solo card created.','success') }
+  function saveSolo(){ localStorage.setItem('bingoSolo',JSON.stringify({lang:els.lang.value,topic:els.topic.value,seed:soloSeed,marks:soloMarks})) }
+  function freshSolo(){ room=null; roomCode=null; soloSeed=crypto.randomUUID(); soloMarks={}; soloBoard=makeBoard(els.topic.value,soloSeed,'',els.lang.value); saveSolo(); syncRoomUi(); renderBoard(); setStatus('Fresh solo card created.','success') }
   function resetSoloMarks(){ soloMarks={};saveSolo();renderBoard();setStatus('Marks reset.','success') }
 
-  function populateTopics(){ Object.entries(TOPICS).forEach(([key,t])=>{ for(const select of [els.topic,els.createTopic]){const o=document.createElement('option');o.value=key;o.textContent=t.label;select.append(o)} }) }
-  function loadSolo(){ try{const s=JSON.parse(localStorage.getItem('bingoSolo')); if(s&&TOPICS[s.topic]){els.topic.value=s.topic;soloSeed=s.seed;soloMarks=s.marks||{}}}catch{} soloBoard=makeBoard(els.topic.value,soloSeed) }
+  function populateTopics(){ const add=(sel,v,t)=>{const o=document.createElement('option');o.value=v;o.textContent=t;sel.append(o)}; Object.entries(TOPIC_LABELS).forEach(([k,t])=>{add(els.topic,k,t);add(els.createTopic,k,t)}); Object.entries(LANGS).forEach(([k,l])=>{add(els.lang,k,l.label);add(els.createLang,k,l.label)}) }
+  function loadSolo(){ try{const s=JSON.parse(localStorage.getItem('bingoSolo')); if(s&&TOPIC_LABELS[s.topic]){els.topic.value=s.topic;if(LANGS[s.lang])els.lang.value=s.lang;soloSeed=s.seed;soloMarks=s.marks||{}}}catch{} soloBoard=makeBoard(els.topic.value,soloSeed,'',els.lang.value) }
   function showTab(multi){ els.soloTab.classList.toggle('active',!multi);els.multiTab.classList.toggle('active',multi);els.soloControls.classList.toggle('hidden',multi);els.multiControls.classList.toggle('hidden',!multi);if(multi&&!configured)els.firebaseNotice.classList.remove('hidden') }
   function syncRoomUi(){
     const active=!!room; els.roomBanner.classList.toggle('show',active); els.leaveRoom.classList.toggle('hidden',!active); els.joinRoom.classList.toggle('hidden',active); els.openCreate.classList.toggle('hidden',active); els.joinCode.parentElement.classList.toggle('hidden',active);
     els.endRoom.classList.toggle('hidden',!active||room.meta.hostId!==uid);
-    els.connectionDot.classList.toggle('on',active);els.connectionText.textContent=active?`Live · ${roomCode}`:'Solo mode'; els.topic.disabled=active;
-    if(active){els.roomCode.textContent=roomCode;els.roomMode.textContent=room.meta.mode==='shared'?'Shared board':'Individual cards';els.roomHost.textContent=`Hosted by ${room.meta.hostName}`;els.topic.value=room.meta.topic;showTab(true)}
+    els.connectionDot.classList.toggle('on',active);els.connectionText.textContent=active?`Live · ${roomCode}`:'Solo mode'; els.topic.disabled=active; els.lang.disabled=active;
+    if(active){els.roomCode.textContent=roomCode;els.roomMode.textContent=`${room.meta.mode==='shared'?'Shared board':'Individual cards'} · ${LANGS[room.meta.lang||'en']?.label||'English'}`;els.roomHost.textContent=`Hosted by ${room.meta.hostName}`;els.topic.value=TOPIC_LABELS[room.meta.topic]?room.meta.topic:'mixed';els.lang.value=LANGS[room.meta.lang]?room.meta.lang:'en';showTab(true)}
     else{els.players.innerHTML='<p class="help">Create or join a room to see players.</p>';els.playerCount.textContent='';els.feed.innerHTML='<p class="help">Marks and wins will appear here.</p>'}
     updateHostControls();
   }
@@ -190,7 +186,7 @@
   async function createRoom(){
     if(!await requireFirebase())return; const name=cleanName(); if(!name){setStatus('Enter your name first.','error');return} localStorage.setItem('bingoName',name);els.createRoom.disabled=true;
     try{ let code, snap; do{code=randomCode();snap=await get(ref(db,`rooms/${code}/meta`))}while(snap.exists()); const seed=crypto.randomUUID(); const now=Date.now();
-      await set(ref(db,`rooms/${code}/meta`),{hostId:uid,hostName:name,topic:els.createTopic.value,mode:els.createMode.value,seed,createdAt:now,lastActive:serverTimestamp(),version:1});
+      await set(ref(db,`rooms/${code}/meta`),{hostId:uid,hostName:name,topic:els.createTopic.value,lang:els.createLang.value,mode:els.createMode.value,seed,createdAt:now,lastActive:serverTimestamp(),version:1});
       await set(ref(db,`rooms/${code}/players/${uid}`),{name,online:true,joinedAt:now,marks:{}}); els.createModal.classList.remove('show'); await connectRoom(code); await addActivity(`${name} created the room`)
     }catch(e){setStatus(friendlyError(e),'error')}finally{els.createRoom.disabled=false}
   }
@@ -253,9 +249,9 @@
   function friendlyError(e){ const code=e?.code||'';if(code.includes('permission-denied'))return 'Permission denied. Publish database.rules.json in Firebase.';if(code.includes('auth'))return 'Anonymous sign-in failed. Enable it in Firebase Authentication.';return e?.message||'Something went wrong.' }
 
   populateTopics();els.playerName.value=localStorage.getItem('bingoName')||'';loadSolo();renderBoard();syncRoomUi();
-  els.topic.addEventListener('change',freshSolo);els.newCard.addEventListener('click',()=>room?hostNewGame():freshSolo());els.resetMarks.addEventListener('click',()=>room?hostReset():resetSoloMarks());els.print.addEventListener('click',()=>print());
+  els.topic.addEventListener('change',freshSolo);els.lang.addEventListener('change',freshSolo);els.newCard.addEventListener('click',()=>room?hostNewGame():freshSolo());els.resetMarks.addEventListener('click',()=>room?hostReset():resetSoloMarks());els.print.addEventListener('click',()=>print());
   els.soloTab.addEventListener('click',()=>showTab(false));els.multiTab.addEventListener('click',()=>showTab(true));els.startSolo.addEventListener('click',freshSolo);
-  els.openCreate.addEventListener('click',async()=>{if(await requireFirebase()){els.createTopic.value=els.topic.value;els.createModal.classList.add('show')}});els.cancelCreate.addEventListener('click',()=>els.createModal.classList.remove('show'));els.createModal.addEventListener('click',e=>{if(e.target===els.createModal)els.createModal.classList.remove('show')});els.createRoom.addEventListener('click',createRoom);
+  els.openCreate.addEventListener('click',async()=>{if(await requireFirebase()){els.createTopic.value=els.topic.value;els.createLang.value=els.lang.value;els.createModal.classList.add('show')}});els.cancelCreate.addEventListener('click',()=>els.createModal.classList.remove('show'));els.createModal.addEventListener('click',e=>{if(e.target===els.createModal)els.createModal.classList.remove('show')});els.createRoom.addEventListener('click',createRoom);
   els.joinCode.addEventListener('input',e=>e.target.value=cleanCode(e.target.value));els.joinRoom.addEventListener('click',()=>joinRoom());els.leaveRoom.addEventListener('click',openLeave);els.endRoom.addEventListener('click',openEndRoom);els.hostModal.addEventListener('click',e=>{if(e.target===els.hostModal)closeModal()});
   els.copyInvite.addEventListener('click',async()=>{const u=new URL(location.href);u.searchParams.set('room',roomCode);await navigator.clipboard.writeText(u.href);setStatus('Invite link copied.','success')});
 
