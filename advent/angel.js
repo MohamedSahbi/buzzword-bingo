@@ -72,10 +72,10 @@ export function mountAngel(root, ctx) {
       const verdict = matches >= 13 ? u.v3 : matches >= 9 ? u.v2 : u.v1;
       const share = `😇😈 ${pack.title}: ${score} · ${log.map(l => l.pick === l.book ? '✅' : '❌').join('')}`;
       const diff = log.filter(l => l.pick !== l.book);
-      root.innerHTML = `<div class="result-card"><div class="big-score" id="aFinal">${score}</div>
-        <p><b>${esc(verdict)}</b></p><p class="muted">${esc(u.matches.replace('{n}', matches).replace('{of}', log.length))}${record && best ? ` · 🏅 ${esc(u.newBest)}` : ''}</p></div>
-        ${diff.length ? `<h3 style="margin:14px 0 6px">${esc(u.disagreed)}</h3><ul class="angel-diff">${diff.map(l => `<li><span>${l.pick ? (l.pick === 'a' ? '😇' : '😈') : '⏱'} → ${l.book === 'a' ? '😇' : '😈'}</span> ${esc(l.text)}</li>`).join('')}</ul>` : ''}
-        <div class="row" style="margin-top:12px"><button class="btn primary" id="aAgain">↻ ${esc(u.again)}</button><button class="btn gold" id="aShare">📋 ${esc(u.share)}</button><button class="btn" id="aExit">${esc(u.back)}</button></div>`;
+      root.innerHTML = `<div class="result" style="text-align:center"><div id="aFinal" style="font:800 46px Georgia,serif;color:var(--berry);line-height:1.1">${score}</div>
+        <p style="margin:6px 0"><b>${esc(verdict)}</b></p><p class="muted">${esc(u.matches.replace('{n}', matches).replace('{of}', log.length))}${record && best ? ` · 🏅 ${esc(u.newBest)}` : ''}</p>
+        <div class="row" style="justify-content:center;margin-top:12px"><button class="btn primary" id="aAgain">↻ ${esc(u.again)}</button><button class="btn gold" id="aShare">📋 ${esc(u.share)}</button><button class="btn" id="aExit">${esc(u.back)}</button></div></div>
+        ${diff.length ? `<h3 style="margin:16px 0 6px">${esc(u.disagreed)}</h3><ul class="angel-diff">${diff.map(l => `<li><span>${l.pick ? (l.pick === 'a' ? '😇' : '😈') : '⏱'} → ${l.book === 'a' ? '😇' : '😈'}</span> ${esc(l.text)}</li>`).join('')}</ul>` : ''}`;
       if (record || matches >= 13) { sfx.bingo(); magic(root.querySelector('#aFinal'), true); }
       root.querySelector('#aAgain').onclick = play;
       root.querySelector('#aExit').onclick = onExit;
