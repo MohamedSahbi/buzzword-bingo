@@ -1,6 +1,6 @@
 // Result card image (1080×1350, portrait like Duolingo/Instagram posts), drawn in the browser on a canvas.
 // Shared as a file through the phone's share sheet, or downloaded on desktop. Nothing is uploaded anywhere.
-// card: { kicker, title, big, bigLabel, lines: [string], strip: string (emoji row), footer, theme: 'night' | 'bingo' }
+// card: { kicker, title, big, bigLabel, lines: [string], strip: string (emoji row), grid: 25 × 'win'|'mark'|'', footer, theme: 'night' | 'bingo' }
 export async function resultCardBlob(card) {
   const W = 1080, H = 1350, c = document.createElement('canvas'); c.width = W; c.height = H;
   const g = c.getContext('2d');
@@ -14,7 +14,8 @@ export async function resultCardBlob(card) {
   // white card
   const x = 70, w = W - 140, r = 48;
   const lines = (card.lines || []).filter(Boolean), stripRows = card.strip ? Math.ceil([...card.strip].length / 15) : 0;
-  const h = 110 + 300 + 70 + 40 + lines.length * 72 + stripRows * 76 + 70;   // title, number, label, gap, lines, strip, bottom
+  const G = 92, GAP = 12, gridH = card.grid ? 5 * G + 4 * GAP + 30 : 0;
+  const h = 110 + 300 + 70 + 40 + lines.length * 72 + stripRows * 76 + gridH + 70;   // title, number, label, gap, lines, strip, bottom
   const y = Math.max(170, (H - h) / 2);
   g.fillStyle = '#ffffff'; g.beginPath(); g.roundRect(x, y, w, h, r); g.fill();
   const sans = 'system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", sans-serif', serif = 'Georgia, "Times New Roman", serif';
@@ -36,6 +37,10 @@ export async function resultCardBlob(card) {
     // emoji row, wrapped to fit
     const chars = [...card.strip], per = 15;
     for (let i = 0; i < chars.length; i += per) { center(chars.slice(i, i + per).join(''), ly + 30, `56px ${sans}`, '#132433', w); ly += 72; }
+  }
+  if (card.grid) {
+    const gx = (W - (5 * G + 4 * GAP)) / 2, gy = ly - 30;
+    card.grid.forEach((v, i) => { g.fillStyle = v === 'win' ? '#16a66e' : v === 'mark' ? '#f2b84b' : '#e9eef3'; g.beginPath(); g.roundRect(gx + (i % 5) * (G + GAP), gy + Math.floor(i / 5) * (G + GAP), G, G, 18); g.fill(); });
   }
   center(card.footer, H - 80, `700 36px ${sans}`, '#cfe3f5');
   return new Promise(res => c.toBlob(res, 'image/png'));
