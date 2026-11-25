@@ -123,7 +123,7 @@
   @media (prefers-reduced-motion:reduce){.spark,.flash{display:none}.glow{animation:none}}
   .menu-btn,.m-only,.tabbar{display:none}.hdr-actions{display:flex;gap:8px;align-items:center}
   .loading{display:none}body.is-loading .loading{display:grid;place-items:center;font-size:42px;height:40vh;animation:spin 2.4s linear infinite}
-  body.is-loading #calendarView,body.is-loading #banner{visibility:hidden}
+  body.is-loading #calendarView,body.is-loading #banner,body.is-loading #teamPanel,body.is-loading .tabbar,body.is-loading .hdr-actions,body.is-loading #menuBtn{visibility:hidden}
   @keyframes spin{to{transform:rotate(360deg)}}
   .sq{hyphens:auto;-webkit-hyphens:auto;overflow-wrap:normal}
   /* ---------- phones: app bar + ☰ menu + bottom tabs ---------- */
@@ -147,6 +147,12 @@
 </style>
 </head>
 <body>
+<script>
+  // Before the app module runs: show the spinner, and recover once if a stale cached module breaks loading.
+  document.body.classList.add('is-loading');
+  addEventListener('error', e => { if (/module|export|import/i.test(String(e.message)) && !sessionStorage.getItem('bbReloaded')) { sessionStorage.setItem('bbReloaded', '1'); location.reload(); } });
+  setTimeout(() => sessionStorage.removeItem('bbReloaded'), 15000);
+</script>
 <div class="snow" id="snow" aria-hidden="true"></div>
 <div class="shell">
   <header class="appbar">
