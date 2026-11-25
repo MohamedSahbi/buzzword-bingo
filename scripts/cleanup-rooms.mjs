@@ -53,6 +53,12 @@ try {
   const teamCount = Object.keys(expired).length;
   if (teamCount && !dryRun) await db.ref('teams').update(expired);
   console.log(`${Object.keys(teams).length} team calendar(s) checked, ${teamCount} ${dryRun ? 'would be ' : ''}deleted (expired).`);
+
+  // Prediction rooms expire a few days after their event.
+  const preds = (await db.ref('predict').get()).val() || {};
+  const oldPreds = Object.fromEntries(Object.entries(preds).filter(([, r]) => !r?.meta?.expiresAt || r.meta.expiresAt < Date.now()).map(([c]) => [c, null]));
+  if (Object.keys(oldPreds).length && !dryRun) await db.ref('predict').update(oldPreds);
+  console.log(`${Object.keys(preds).length} prediction room(s) checked, ${Object.keys(oldPreds).length} ${dryRun ? 'would be ' : ''}deleted (expired).`);
 } finally {
   await app.delete();
 }

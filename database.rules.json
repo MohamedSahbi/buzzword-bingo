@@ -85,6 +85,49 @@
           }
         }
       }
+    },
+    "predict": {
+      "$code": {
+        ".validate": "$code.matches(/^[A-Z2-9]{6}$/)",
+        "meta": {
+          ".read": "auth != null",
+          ".write": "auth != null && ((!data.exists() && newData.child('hostId').val() === auth.uid) || data.child('hostId').val() === auth.uid)",
+          ".validate": "newData.hasChildren(['hostId','hostName','title','state','createdAt','expiresAt']) && newData.child('expiresAt').isNumber() && newData.child('expiresAt').val() <= now + 2592000000 && newData.child('hostName').isString() && newData.child('hostName').val().length <= 24 && newData.child('title').isString() && newData.child('title').val().length <= 80 && (newData.child('state').val() === 'collect' || newData.child('state').val() === 'live' || newData.child('state').val() === 'done')"
+        },
+        "players": {
+          ".read": "auth != null",
+          "$uid": {
+            ".write": "auth != null && auth.uid === $uid && root.child('predict').child($code).child('meta').exists()",
+            ".validate": "!newData.exists() || (newData.child('name').isString() && newData.child('name').val().length <= 24)"
+          }
+        },
+        "cards": {
+          ".read": "auth != null && root.child('predict').child($code).child('meta').child('state').val() !== 'collect'",
+          "$uid": {
+            ".read": "auth != null && auth.uid === $uid",
+            ".write": "auth != null && auth.uid === $uid && root.child('predict').child($code).child('meta').child('state').val() === 'collect'",
+            "$i": {
+              ".validate": "$i.matches(/^[0-8]$/) && newData.isString() && newData.val().length <= 60"
+            }
+          }
+        },
+        "claims": {
+          ".read": "auth != null",
+          "$cid": {
+            ".write": "auth != null && !data.exists() && newData.child('uid').val() === auth.uid && root.child('predict').child($code).child('meta').child('state').val() === 'live'",
+            ".validate": "newData.hasChildren(['uid','idx','at']) && newData.child('idx').isNumber() && newData.child('idx').val() >= 0 && newData.child('idx').val() <= 8"
+          }
+        },
+        "votes": {
+          ".read": "auth != null",
+          "$cid": {
+            "$voter": {
+              ".write": "auth != null && auth.uid === $voter && root.child('predict').child($code).child('meta').child('state').val() === 'live' && root.child('predict').child($code).child('claims').child($cid).exists()",
+              ".validate": "newData.val() === 1 || newData.val() === -1"
+            }
+          }
+        }
+      }
     }
   }
 }

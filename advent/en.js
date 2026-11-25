@@ -69,10 +69,10 @@ export default {
       ['Dad', '[[Tree shopping]] on Saturday, who’s in?'], ['Ella', '[[Real or fake?]]'], ['Mum', 'Real. [[It smells like Christmas]]'], ['Dad', '[[Needles everywhere]] though'],
       ['Ella', '[[Will it fit in the car?]]'], ['Mum', 'We’ll [[put it on the roof]]'], ['Dad', 'Remember [[the one that was too tall]]'], ['Ella', 'We had to [[cut off the top]] 😂'],
       ['Mum', '[[Measure the ceiling]] first this time'], ['Dad', '[[Where’s the tape measure?]]'], ['Ella', '[[In the drawer of doom]]'], ['Mum', '[[Hot chocolate after]] ☕']]),
-    18: { type: 'predict', title: 'The office Christmas party', alt: chat('Office party: the Teams thread', 'You sang three songs', ['Secret Santa', 'Speech by the boss', 'Last train', 'Free bar'], [
+    18: chat('Office party: the Teams thread', 'You sang three songs', ['Secret Santa', 'Speech by the boss', 'Last train', 'Free bar'], [
       ['Hana', '[[Taxi at 6]], who needs a lift?'], ['Joe', '[[What’s the dress code?]]'], ['Hana', '[[Festive smart]], whatever that means'], ['Mike', 'Is there [[a vegetarian option]]?'],
       ['Joe', '[[Karaoke confirmed]] 🎤'], ['Mike', '[[I’m not singing]]'], ['Hana', '[[You sang three songs]] last year'], ['Joe', '[[Photo booth]] with props!'],
-      ['Mike', '[[What happens at the party]]…'], ['Hana', '…[[stays in the Teams chat]]'], ['Joe', '[[Raffle at nine]]!'], ['Hana', '[[Chips on the way home]]?']]) },
+      ['Mike', '[[What happens at the party]]…'], ['Hana', '…[[stays in the Teams chat]]'], ['Joe', '[[Raffle at nine]]!'], ['Hana', '[[Chips on the way home]]?']]),
     19: wrap('Under the tree', [['Boxing Day', 'Sales', 'Long walk', 'Leftovers', 'Football'], ['Inside a cracker', 'Paper crown', 'Bad joke', 'Tiny toy', 'Snap'], ['Winter weather', 'Frost', 'Sleet', 'Fog', 'Blizzard'], ['Christmas trees', 'Nordmann', 'Spruce', 'Pine', 'Fir']]),
     20: emoji('Christmas traditions', 'Snacks for Santa', ['Ice skating', 'Panto', 'Midnight mass', 'Secret Santa'], [
       ['📬🎅', 'Letter to Santa'], ['🍪🥛🥕', 'Snacks for Santa'], ['🛒⏰😰', 'Last-minute shopping'], ['🎉🧨', 'Pulling crackers'], ['📄👑', 'Paper crowns'], ['📅🍫', 'Advent calendar'],

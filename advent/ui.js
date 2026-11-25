@@ -17,6 +17,11 @@ export const ADVENT_UI = {
     team: 'Team', teamIntro: 'Play with colleagues, family or friends: everyone opens the doors on their own and shares one scoreboard.', yourName: 'Your name', createTeam: 'Create a team', teamName: 'Team name', join: 'Join', teamCode: 'Team code', leaveTeam: 'Leave team', copyLink: 'Copy invite link', total: 'Total', you: 'you', noTeam: 'Not in a team yet.', teamErr: 'Could not reach the team: {err}', teamNotFound: 'Team not found.', namePh: 'Alex', teamPh: 'The Elves',
     typing: '{who} is typing…', voiceMsg: 'Voice message', deletedMsg: 'This message was deleted', perfect: 'Perfect wrap! No tape wasted +40',
     b_speed: 'Speed', b_star: '★ Golden star', b_bingo: 'Bingo', b_full: 'Full card', b_wrong: 'Wrong taps', b_wrap: 'Gifts wrapped', b_tape: 'Tape left', b_perfect: 'Perfect wrap', b_onday: 'Played on the day', b_streak: 'Streak: {days} days in a row', total: 'Total',
+    p_banner: 'On {date}: prediction bingo, our big finale. Create a room now so everyone can write their predictions in advance.', p_create: 'Create prediction room', p_joinCode: 'Room code', p_join: 'Join', p_solo: 'Play solo', p_skip: 'Play the chat bingo instead',
+    p_intro: 'Write 9 things you think will happen at the event. Cards stay sealed until the host starts.', p_room: 'Room {code}', p_invite: 'Copy invite link', p_yourCard: 'Your predictions', p_ph: 'e.g. {ex}', p_ideas: 'Need ideas? Tap one:',
+    p_seal: 'Seal my card', p_sealed: 'Sealed ✉️', p_start: 'Start the event', p_startHint: 'Only the host can start. After that, cards can’t be changed.', p_waiting: 'Waiting for the host to start…',
+    p_live: 'It’s on! Tap one of your squares when it happens. The others vote 👍 or 👎.', p_claim: '{name} says it happened:{text}', p_confirmed: 'Confirmed ✅', p_rejected: 'Rejected ❌', p_end: 'End and give awards', p_done: 'Final results',
+    p_prophet: '🔮 Best prophet: {name}', p_wild: '🤯 Crowd favourite: {text}', p_soloIntro: 'Write your 9 predictions now. Tonight, come back and tick what came true.', p_tick: 'Tick what came true, then finish.', p_finish: 'Finish', p_need9: 'Fill all 9 squares first.', p_cardsOf: '{name}', b_confirmed: 'Predictions that came true', b_line: 'Lines',
     sound: 'Sound', soloScore: 'Your score',
   },
   cs: {
@@ -36,6 +41,11 @@ export const ADVENT_UI = {
     team: 'Tým', teamIntro: 'Hrajte s kolegy, rodinou nebo přáteli: každý si otevírá okénka sám a máte společnou tabulku.', yourName: 'Vaše jméno', createTeam: 'Založit tým', teamName: 'Název týmu', join: 'Přidat se', teamCode: 'Kód týmu', leaveTeam: 'Opustit tým', copyLink: 'Kopírovat pozvánku', total: 'Celkem', you: 'vy', noTeam: 'Zatím nejste v týmu.', teamErr: 'Tým se nepodařilo načíst: {err}', teamNotFound: 'Tým nenalezen.', namePh: 'Jana', teamPh: 'Skřítci',
     typing: '{who} píše…', voiceMsg: 'Hlasová zpráva', deletedMsg: 'Zpráva byla smazána', perfect: 'Zabaleno bez chyby! +40',
     b_speed: 'Rychlost', b_star: '★ Zlatá hvězda', b_bingo: 'Bingo', b_full: 'Celá karta', b_wrong: 'Špatná klepnutí', b_wrap: 'Zabalené dárky', b_tape: 'Zbylá izolepa', b_perfect: 'Bez chyby', b_onday: 'Hráno ve správný den', b_streak: 'Série: {days} dní v řadě', total: 'Celkem',
+    p_banner: '{date}: bingo předpovědí, velké finále. Založte místnost už teď, ať si všichni stihnou napsat předpovědi.', p_create: 'Založit místnost', p_joinCode: 'Kód místnosti', p_join: 'Přidat se', p_solo: 'Hrát sám', p_skip: 'Místo toho chatové bingo',
+    p_intro: 'Napište 9 věcí, které se podle vás stanou. Karty zůstanou zapečetěné, dokud hostitel nezačne.', p_room: 'Místnost {code}', p_invite: 'Kopírovat pozvánku', p_yourCard: 'Vaše předpovědi', p_ph: 'např. {ex}', p_ideas: 'Potřebujete nápad? Klepněte:',
+    p_seal: 'Zapečetit kartu', p_sealed: 'Zapečetěno ✉️', p_start: 'Začít událost', p_startHint: 'Začít může jen hostitel. Pak už karty nejdou měnit.', p_waiting: 'Čekáme, až hostitel začne…',
+    p_live: 'Začalo to! Klepněte na své políčko, když se to stane. Ostatní hlasují 👍 nebo 👎.', p_claim: '{name} hlásí, že se stalo:{text}', p_confirmed: 'Potvrzeno ✅', p_rejected: 'Zamítnuto ❌', p_end: 'Ukončit a vyhlásit', p_done: 'Výsledky',
+    p_prophet: '🔮 Nejlepší prorok: {name}', p_wild: '🤯 Největší hit večera: {text}', p_soloIntro: 'Napište svých 9 předpovědí. Večer se vraťte a odškrtněte, co se splnilo.', p_tick: 'Odškrtněte, co se splnilo, a dokončete.', p_finish: 'Dokončit', p_need9: 'Nejdřív vyplňte všech 9 políček.', p_cardsOf: '{name}', b_confirmed: 'Splněné předpovědi', b_line: 'Řady',
     sound: 'Zvuk', soloScore: 'Vaše skóre',
   },
 };

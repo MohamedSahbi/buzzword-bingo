@@ -166,6 +166,8 @@
   import { ADVENT_UI } from './advent/ui.js';
   import { CALENDARS } from './advent/index.js';
   import { firebaseConfig } from './firebase-config.js';
+  import { mountPredict } from './advent/predict.js';
+  import { PREDICT_IDEAS } from './advent/predict-ideas.js';
 
   // ---------- setup ----------
   const $ = id => document.getElementById(id);
@@ -256,6 +258,10 @@
       b.innerHTML = `<span>🎯 ${esc(t('previewOn'))}</span>${metas[cal] ? `<button class="pill" id="exitPreview">${esc(t('previewExit'))}</button>` : ''}`; b.classList.remove('hidden');
       if (metas[cal]) $('exitPreview').onclick = () => { preview = false; history.replaceState(null, '', location.pathname); renderAll(); };
     }
+    else if (predictDoor() && Date.now() >= releaseAt(predictDoor()) - 5 * 864e5 && Date.now() < releaseAt(predictDoor()) + 864e5) {
+      const pn = predictDoor(); b.innerHTML = `<span>⭐ ${esc(t('p_banner', { date: fmtDate(pn) }))}</span><button class="pill" id="goPredict">🔮 ${esc(t('p_create'))}</button>`; b.classList.remove('hidden');
+      $('goPredict').onclick = () => openPredict(pn);
+    }
     else if (Date.now() < releaseAt(1)) { b.innerHTML = `<span>⏳ ${esc(t('opensOn'))}</span><button class="pill" id="goPreview">${esc(t('previewBtn'))}</button>`; b.classList.remove('hidden'); $('goPreview').onclick = () => { preview = true; const u = new URL(location.href); u.searchParams.set('preview', '1'); history.replaceState(null, '', u); renderAll(); }; }
   }
   function renderDoors() {
@@ -279,12 +285,15 @@
   }
 
   // ---------- play view ----------
-  let stopGame = () => {};
+  let stopGame = () => {}, skipPredict = false;
+  const predictDoor = () => doorNums().find(n => doorType(n) === 'predict');
   async function openDoor(n) {
     stopGame(); stopGame = () => {};
     let door, predictNote = '';
     try { door = await loadDoor(n); } catch { $('banner').innerHTML = `<span>🔒 ${esc(t('locked', { date: fmtDate(n) }))}</span>`; $('banner').classList.remove('hidden'); return; }
-    if (door.type === 'predict') { predictNote = `<p class="note">⭐ ${esc(t('h_predict'))}</p>`; door = door.alt; }
+    if (door.type === 'predict' && !skipPredict) { openPredict(n, door); return; }
+    if (door.type === 'predict') door = door.alt;
+    skipPredict = false;
     const v = $('playView'); $('calendarView').classList.add('hidden'); v.classList.remove('hidden');
     const played = seasonMode() && loadScores()[n];
     v.innerHTML = `<div class="row" style="margin:0 0 10px"><button class="btn" id="backCal">${esc(t('backToCal'))}</button><div class="grow"></div><span class="muted">${esc(fmtDate(n))}</span></div>
@@ -296,6 +305,22 @@
     if (door.type === 'wrap') stopGame = playWrap(door, $('game'), finish, n);
     else stopGame = playReveal(door, $('game'), finish, n);
   }
+  // Prediction finale: can be prepared days before its door opens (room, sealed cards); scores count once the door is open.
+  function openPredict(n, door = null, startCode = '') {
+    stopGame(); stopGame = () => {};
+    const v = $('playView'); $('calendarView').classList.add('hidden'); v.classList.remove('hidden');
+    v.innerHTML = `<div class="row" style="margin:0 0 10px"><button class="btn" id="backCal">${esc(t('backToCal'))}</button><div class="grow"></div><span class="muted">${esc(fmtDate(n))}</span></div>
+      <span class="kind">${n}. · ⭐ ${esc(t('t_predict'))}</span><h2>${esc(door?.title || t('t_predict'))}</h2><div id="game" style="margin-top:8px"></div><div id="result"></div>`;
+    $('backCal').onclick = closeDoor; window.scrollTo({ top: 0, behavior: 'smooth' });
+    stopGame = mountPredict($('game'), {
+      t, esc, firebase, magic, sfx, myName, startCode, title: `${cal}-${seasonYear}-${n}`,
+      ideas: PREDICT_IDEAS[cal] || PREDICT_IDEAS.en,
+      expiresAt: () => Math.min(Date.now() + 29 * 864e5, (seasonMode() ? releaseAt(n) : Date.now()) + 3 * 864e5),
+      invite: (c, full) => { const u = new URL(location.origin + location.pathname); u.searchParams.set('lang', cal); u.searchParams.set('predict', c); if (preview) u.searchParams.set('preview', '1'); return full ? u.href : u.pathname + u.search; },
+      onSkip: door ? () => { skipPredict = true; openDoor(n); } : null,
+      onFinish: res => finishDoor(n, { parts: res.parts }, { shareLine: res.shareLine }),
+    });
+  }
   function closeDoor() { stopGame(); stopGame = () => {}; $('playView').classList.add('hidden'); $('calendarView').classList.remove('hidden'); renderDoors(); renderSolo(); renderTeam(); }
   // Score = game parts + on-the-day bonus + streak bonus (10 per consecutive earlier door also played on its day, max 50).
   function finishDoor(n, res, door) {
@@ -306,7 +331,7 @@
       if (days) parts.push([t('b_streak', { days: days + 1 }), Math.min(50, days * 10)]);
     }
     const total = Math.max(0, Math.min(500, parts.reduce((a, [, v]) => a + v, 0)));
-    const first = seasonMode() && saveScore(n, total, onDay);
+    const first = seasonMode() && unlocked(n) && saveScore(n, total, onDay);
     if (first) pushTeamScore(n, total);
     sfx.bell();
     const share = `${t('title')} · ${C().label} · ${n}.\n${door.shareLine}\n⭐ ${total}\n${location.origin}${location.pathname}`;
@@ -535,6 +560,8 @@
   $('culture').onchange = e => { cal = e.target.value; localStorage.setItem('bingoAdventLang', cal); closeDoor(); renderAll(); };
   $('soundBtn').onclick = () => { soundOn = !soundOn; localStorage.setItem('bingoSound', soundOn ? 'on' : 'off'); syncSound(); if (soundOn) sfx.ok(); };
   renderAll();
+  const predictLink = cleanCode(params.get('predict'));
+  if (predictLink && predictDoor()) openPredict(predictDoor(), null, predictLink);
   const invited = cleanCode(params.get('team')), saved = localStorage.getItem(teamKey());
   if (invited) { $('tCode').value = invited; $('teamPanel').scrollIntoView({ behavior: 'smooth' }); }
   else if (saved) connectTeam(saved).catch(teamError);

@@ -25,10 +25,10 @@ export default {
       'Chci [[poděkovat každému z vás]].', 'Hlavně týmu, který [[vyřešil tu migraci]].', 'Příští rok nás čeká [[spousta výzev]].',
       'Budeme dělat [[víc s menšími zdroji]].', 'Teď ale [[nejde o čísla]].', 'V kuchyňce na vás [[čeká cukroví]].',
       'A prosím, [[nezapomeňte na docházku]].', '[[Firemní večírek bude v pátek]].', '[[Krásné Vánoce]] a hodně zdraví.']),
-    5: { type: 'predict', title: 'Mikuláš', alt: chat('Rodinný chat: Mikulášská nadílka', 'Uhlí nebo brambory?', ['Kapr ve vaně', 'Adventní věnec', 'Svařák', 'Zvoneček'], [
+    5: chat('Rodinný chat: Mikulášská nadílka', 'Uhlí nebo brambory?', ['Kapr ve vaně', 'Adventní věnec', 'Svařák', 'Zvoneček'], [
       ['Máma', '[[Mikuláš přijde v šest]] 😇'], ['Táta', '[[Kdo dělá čerta?]]'], ['Ondra', 'Já! [[Mám řetěz]] 😈'], ['Klára', '[[Nestraš malou]], prosím'],
       ['Babička', 'Má [[básničku připravenou]]?'], ['Máma', 'Jo, [[o sněhulákovi]] ☃️'], ['Táta', '[[Balíčky jsou v garáži]]'], ['Ondra', '[[Uhlí nebo brambory?]]'],
-      ['Klára', '[[Hlavně mandarinky]] a čokoládu'], ['Babička', '[[Byla hodná celý rok]]'], ['Táta', 'Anděl má [[křídla z kartonu]]'], ['Máma', '[[Fotku pak pošlete]] 📸']]) },
+      ['Klára', '[[Hlavně mandarinky]] a čokoládu'], ['Babička', '[[Byla hodná celý rok]]'], ['Táta', 'Anděl má [[křídla z kartonu]]'], ['Máma', '[[Fotku pak pošlete]] 📸']]),
     6: wrap('Pod stromečkem', [['Prosincové svátky', 'Mikuláš', 'Barborka', 'Lucie', 'Štědrý den'], ['Koledy', 'Nesem vám noviny', 'Půjdem spolu do Betléma', 'Narodil se Kristus Pán', 'Pásli ovce Valaši'], ['Na vánočních trzích', 'Svařák', 'Trdelník', 'Medovina', 'Punč'], ['Ozdoby na stromeček', 'Baňky', 'Řetěz', 'Hvězda', 'Slaměné ozdoby']]),
     7: emoji('Pohádky a filmy', 'Byl jednou jeden král', ['Popelka', 'Anděl Páně', 'Císařův pekař', 'Lotrando a Zubejda'], [
       ['🌰🌰🌰👸', 'Tři oříšky pro Popelku'], ['😈🚫😂', 'S čerty nejsou žerty'], ['❄️👴🪄', 'Mrazík'], ['🛋️🐱🎄', 'Pelíšky'], ['👑🧂', 'Byl jednou jeden král'], ['💧⚙️👸', 'Princezna ze mlejna'],
@@ -65,10 +65,10 @@ export default {
       ['Máma', '[[Kdo koupí kapra?]]'], ['Táta', 'Já ne, [[minule plaval ve vaně]] tři dny'], ['Ondra', '[[Pustíme ho do řeky]]!'], ['Babička', '[[Kapr musí být]]'],
       ['Klára', 'Já [[chci řízek]]'], ['Máma', '[[Bude obojí]]'], ['Táta', '[[Kde je velká mísa?]]'], ['Babička', '[[Šupinu do peněženky]]!'],
       ['Ondra', '[[Kdo ho bude čistit?]]'], ['Klára', '[[Já ne]] 🙅‍♀️'], ['Táta', '[[Koupím filety]]'], ['Máma', '[[Trhy jsou ve středu]]']]),
-    18: { type: 'predict', title: 'Firemní večírek', alt: chat('Firemní večírek: chat v Teams', 'jsi zpíval tři písničky', ['Proslov šéfa', 'Svařák', 'Chlebíčky', 'Secret Santa'], [
+    18: chat('Firemní večírek: chat v Teams', 'jsi zpíval tři písničky', ['Proslov šéfa', 'Svařák', 'Chlebíčky', 'Secret Santa'], [
       ['Hana', '[[Taxi v šest]], kdo jede?'], ['Pepa', '[[Jaký je dress code?]]'], ['Hana', '[[Slavnostně, ale pohodlně]]'], ['Lukáš', 'Bude [[vegetariánské menu]]?'],
       ['Pepa', '[[Karaoke potvrzeno]] 🎤'], ['Lukáš', '[[Já zpívat nebudu]]'], ['Hana', 'Loni [[jsi zpíval tři písničky]]'], ['Pepa', '[[Fotokoutek]] s rekvizitami!'],
-      ['Lukáš', '[[Co se stane na večírku]]…'], ['Hana', '…[[zůstane v Teams]]'], ['Pepa', '[[Tombola]] je v devět!'], ['Hana', '[[Poslední tramvaj]] jede ve 12']]) },
+      ['Lukáš', '[[Co se stane na večírku]]…'], ['Hana', '…[[zůstane v Teams]]'], ['Pepa', '[[Tombola]] je v devět!'], ['Hana', '[[Poslední tramvaj]] jede ve 12']]),
     19: wrap('Pod stromečkem', [['Mikulášská družina', 'Mikuláš', 'Čert', 'Anděl', 'Pytel'], ['Co má čert', 'Rohy', 'Ocas', 'Kopyto', 'Řetěz'], ['Vánoční svátky', 'Štědrý den', 'Boží hod', 'Štěpán', 'Tři králové'], ['Na Silvestra', 'Ohňostroj', 'Šampaňské', 'Čočka', 'Odpočítávání']]),
     20: emoji('Dárky a nakupování', 'Balík nedorazil', ['Poukaz', 'Kosmetická sada', 'Puzzle', 'Hrnek'], [
       ['🧦🧦', 'Ponožky'], ['📚🎁', 'Kniha'], ['🌸💧', 'Parfém'], ['🎮🕹️', 'Herní konzole'], ['🧶🦌', 'Svetr se sobem'], ['🛒⏰😰', 'Nákupy na poslední chvíli'],
