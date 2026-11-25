@@ -31,6 +31,8 @@
   .door.p1{background:repeating-linear-gradient(-45deg,#0f5132 0 12px,#176b44 12px 24px)}
   .door.p2{background:radial-gradient(#ffffff2e 2px,transparent 2.5px) 0 0/16px 16px,#1f4f8a}
   .door.p3{background:repeating-linear-gradient(90deg,#7a2f8f 0 10px,#8d3ea3 10px 20px)}
+  .door.p4{background:repeating-linear-gradient(0deg,#ffffff22 0 3px,transparent 3px 18px),repeating-linear-gradient(90deg,#ffffff22 0 3px,transparent 3px 18px),#9b1c1c}
+  .door.p5{background:radial-gradient(#f2b84b 2px,transparent 2.5px) 0 0/14px 14px,#0b4a3a}
   .door::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:12px;margin-left:-6px;background:var(--gold);opacity:.9}
   .door::after{content:"";position:absolute;top:50%;left:0;right:0;height:12px;margin-top:-6px;background:var(--gold);opacity:.9}
   .door .num{position:absolute;z-index:2;left:50%;top:50%;transform:translate(-50%,-50%);width:54px;height:54px;border-radius:50%;background:var(--snow);color:var(--berry);display:grid;place-items:center;font-family:Georgia,serif;font-weight:700;font-size:24px;box-shadow:0 2px 6px #0004}
@@ -65,6 +67,14 @@
   .feed{height:360px;overflow-y:auto;background:#eef3f7;border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:6px}
   .msg{max-width:90%;background:#fff;border:1px solid var(--line);border-radius:14px;padding:7px 11px;font-size:14px}
   .msg b{display:block;font-size:11px;color:var(--muted)}
+  .msg{position:relative}.msg time{float:right;margin:4px 0 0 10px;font-size:10px;color:var(--muted)}
+  .msg.emo{font-size:30px;background:transparent;border:0;padding:2px 6px}
+  .msg.voice .wave{letter-spacing:1px;color:#2e9d62}.msg.photo .ph{display:block;width:150px;height:90px;border-radius:10px;background:#dfe8ef;display:grid;place-items:center;font-size:36px}
+  .msg.deleted{font-style:italic;color:var(--muted)}
+  .msg .react{position:absolute;right:-6px;bottom:-10px;background:#fff;border:1px solid var(--line);border-radius:999px;font-size:12px;padding:0 5px}
+  .typing{font-size:12px;color:var(--muted);padding:2px 6px}.typing i{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--muted);margin:0 1px;animation:dot 1s infinite}.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+  @keyframes dot{50%{opacity:.2;transform:translateY(-2px)}}
+  .bd{width:100%;border-collapse:collapse;margin:8px 0;font-size:14px}.bd td{padding:3px 0;border-bottom:1px dashed #e9d39c}.bd td:last-child{text-align:right;font-weight:700}.bd tr.tot td{border:0;font-size:16px}
   .cap{font-size:16px;line-height:1.5;padding:4px 6px;border-radius:8px}
   .cap.now{background:#fff4d6}
   .riddle{align-self:center;text-align:center;margin:auto;font-size:64px;line-height:1.1}
@@ -96,6 +106,14 @@
   .shake{animation:sh .35s}@keyframes sh{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
   .toggle{display:inline-flex;gap:6px;align-items:center;font-size:13px;color:var(--muted)}
   .toggle input{width:auto}
+  /* magic effect for bonuses */
+  .spark{position:fixed;z-index:60;pointer-events:none;font-size:var(--sz,18px);left:var(--x);top:var(--y);animation:burst var(--d,900ms) cubic-bezier(.15,.7,.3,1) forwards}
+  @keyframes burst{0%{transform:translate(-50%,-50%) scale(.3) rotate(0);opacity:1}80%{opacity:1}100%{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(1) rotate(var(--rot));opacity:0}}
+  .glow{animation:glowpop .9s ease-out}
+  @keyframes glowpop{0%{box-shadow:0 0 0 0 #f2b84bcc;transform:scale(1)}30%{box-shadow:0 0 0 10px #f2b84b66;transform:scale(1.06)}100%{box-shadow:0 0 0 22px #f2b84b00;transform:scale(1)}}
+  .flash{position:fixed;inset:0;z-index:55;pointer-events:none;background:radial-gradient(circle at var(--x) var(--y),#f2b84b55,transparent 60%);animation:fl .8s ease-out forwards}
+  @keyframes fl{to{opacity:0}}
+  @media (prefers-reduced-motion:reduce){.spark,.flash{display:none}.glow{animation:none}}
   @media (max-width:860px){.layout{grid-template-columns:1fr}.split{grid-template-columns:1fr}.feed{height:260px}}
   @media (max-width:520px){.doors{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.door .num{width:40px;height:40px;font-size:18px}.door .lab{display:none}.items,.boxes{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
@@ -205,11 +223,25 @@
   const sfx = { ok: () => tone(660, .09), bad: () => tone(200, .12, 0, 'sawtooth', .06), star: () => [880, 1175].forEach((f, i) => tone(f, .14, i * .08, 'sine', .1)), bingo: () => [523, 659, 784, 1047].forEach((f, i) => tone(f, .18, i * .11, 'square', .08)), bell: () => [1319, 1568, 1319].forEach((f, i) => tone(f, .25, i * .18, 'sine', .07)), msg: () => tone(990, .04, 0, 'sine', .04) };
   function syncSound() { $('soundBtn').textContent = (soundOn ? '🔊 ' : '🔇 ') + t('sound'); }
 
+  // ---------- magic effect: sparkles + golden glow when a bonus lands ----------
+  function magic(el, big = false) {
+    if (!el || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const r = el.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2, icons = big ? ['✨', '⭐', '🌟', '🎉', '❄️', '🎁'] : ['✨', '⭐', '🌟'];
+    el.classList.remove('glow'); void el.offsetWidth; el.classList.add('glow');
+    if (big) { const f = document.createElement('div'); f.className = 'flash'; f.style.setProperty('--x', x + 'px'); f.style.setProperty('--y', y + 'px'); document.body.appendChild(f); setTimeout(() => f.remove(), 900); }
+    for (let i = 0, N = big ? 40 : 16; i < N; i++) {
+      const s = document.createElement('span'), a = Math.random() * Math.PI * 2, dist = (big ? 120 : 60) + Math.random() * (big ? 200 : 70);
+      s.className = 'spark'; s.textContent = icons[i % icons.length];
+      s.style.cssText = `--x:${x}px;--y:${y}px;--dx:${Math.cos(a) * dist}px;--dy:${Math.sin(a) * dist}px;--rot:${Math.random() * 360 - 180}deg;--sz:${(big ? 16 : 12) + Math.random() * 14}px;--d:${700 + Math.random() * 600}ms`;
+      document.body.appendChild(s); setTimeout(() => s.remove(), 1400);
+    }
+  }
+
   // ---------- snow ----------
   for (let i = 0; i < 45; i++) { const f = document.createElement('i'); const s = 3 + Math.random() * 5; f.style.cssText = `left:${Math.random() * 100}%;width:${s}px;height:${s}px;--dx:${(Math.random() * 80 - 40).toFixed(0)}px;animation-duration:${(8 + Math.random() * 10).toFixed(1)}s;animation-delay:-${(Math.random() * 18).toFixed(1)}s`; $('snow').appendChild(f); }
 
   // ---------- calendar view ----------
-  const PAPER = ['p0', 'p1', 'p2', 'p3'];
+  const PAPER = ['p0', 'p1', 'p2', 'p3', 'p4', 'p5'];
   function renderAll() {
     document.documentElement.lang = cal;
     document.title = `${t('title')} · Buzzword Bingo`;
@@ -228,10 +260,11 @@
   }
   function renderDoors() {
     const scores = loadScores(), wrap = $('doors'); wrap.replaceChildren();
-    doorNums().forEach(n => {
+    // Doors sit in a shuffled order with random wrapping, like a real Advent calendar (stable per culture and year).
+    shuffle(doorNums(), seeded(`${cal}:${seasonYear}:grid`)).forEach(n => {
       const type = doorType(n), open = unlocked(n), done = seasonMode() && scores[n];
       const b = document.createElement('button'); b.type = 'button';
-      b.className = `door ${PAPER[n % 4]}${open ? '' : ' locked'}${isToday(n) ? ' today' : ''}${done ? ' done' : ''}`;
+      b.className = `door ${PAPER[Math.floor(seeded(`${cal}:${n}:paper`)() * PAPER.length)]}${open ? '' : ' locked'}${isToday(n) ? ' today' : ''}${done ? ' done' : ''}`;
       b.innerHTML = `<span class="num">${n}</span>${type === 'predict' ? '<span class="tag">⭐</span>' : ''}<span class="lab">${esc(open ? (done ? t('done', { pts: scores[n].pts }) : (isToday(n) ? t('today') : t('t_' + type))) : '🔒 ' + fmtDate(n))}</span>`;
       b.disabled = !open; b.title = open ? t('t_' + type) : t('locked', { date: fmtDate(n) });
       b.onclick = () => openDoor(n);
@@ -259,21 +292,29 @@
       ${played ? `<p class="note">${esc(t('firstOnly'))}</p>` : ''}<div id="game"></div><div id="result"></div>`;
     $('backCal').onclick = closeDoor;
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    const finish = pts => finishDoor(n, pts, door);
+    const finish = res => finishDoor(n, res, door);
     if (door.type === 'wrap') stopGame = playWrap(door, $('game'), finish, n);
     else stopGame = playReveal(door, $('game'), finish, n);
   }
   function closeDoor() { stopGame(); stopGame = () => {}; $('playView').classList.add('hidden'); $('calendarView').classList.remove('hidden'); renderDoors(); renderSolo(); renderTeam(); }
-  function finishDoor(n, pts, door) {
-    const onDay = isToday(n), total = Math.min(500, pts + (onDay ? 20 : 0));
+  // Score = game parts + on-the-day bonus + streak bonus (10 per consecutive earlier door also played on its day, max 50).
+  function finishDoor(n, res, door) {
+    const onDay = isToday(n), parts = [...res.parts];
+    if (onDay) {
+      parts.push([t('b_onday'), 20]);
+      const sc = loadScores(); let days = 0; for (let k = n - 1; sc[k]?.onDay; k--) days++;
+      if (days) parts.push([t('b_streak', { days: days + 1 }), Math.min(50, days * 10)]);
+    }
+    const total = Math.max(0, Math.min(500, parts.reduce((a, [, v]) => a + v, 0)));
     const first = seasonMode() && saveScore(n, total, onDay);
     if (first) pushTeamScore(n, total);
     sfx.bell();
     const share = `${t('title')} · ${C().label} · ${n}.\n${door.shareLine}\n⭐ ${total}\n${location.origin}${location.pathname}`;
-    $('result').innerHTML = `<div class="result"><b style="font-size:18px">${esc(t('result', { n, pts: total }))}</b>${onDay ? `<div class="muted">${esc(t('onDayBonus'))}</div>` : ''}${!first && seasonMode() ? `<div class="muted">${esc(t('firstOnly'))}</div>` : ''}<pre>${esc(share)}</pre><div class="row"><button class="btn gold" id="copyRes">${esc(t('share'))}</button><button class="btn" id="again">${esc(t('replay'))}</button><button class="btn" id="back2">${esc(t('backToCal'))}</button></div></div>`;
+    $('result').innerHTML = `<div class="result"><b style="font-size:18px">${esc(t('result', { n, pts: total }))}</b><table class="bd">${parts.filter(([, v]) => v).map(([k, v]) => `<tr><td>${esc(k)}</td><td>${v > 0 ? '+' : ''}${v}</td></tr>`).join('')}<tr class="tot"><td>${esc(t('total'))}</td><td>${total}</td></tr></table>${!first && seasonMode() ? `<div class="muted">${esc(t('firstOnly'))}</div>` : ''}<pre>${esc(share)}</pre><div class="row"><button class="btn gold" id="copyRes">${esc(t('share'))}</button><button class="btn" id="again">${esc(t('replay'))}</button><button class="btn" id="back2">${esc(t('backToCal'))}</button></div></div>`;
     $('copyRes').onclick = async () => { try { await navigator.clipboard.writeText(share); $('copyRes').textContent = t('copied'); } catch {} };
     $('again').onclick = () => openDoor(n); $('back2').onclick = closeDoor;
     $('result').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (onDay) setTimeout(() => magic($('result').firstChild, parts.length > res.parts.length + 1), 600);   // big burst when a streak bonus was added
   }
 
   // ---------- engine 1: timed reveal (chat, listening, emoji riddles) ----------
@@ -285,12 +326,13 @@
 
   function playReveal(door, root, done, n) {
     const segs = door.type === 'emoji' ? door.riddles.map(([e, a]) => ({ emoji: e, phrases: [a] }))
-      : door.type === 'chat' ? door.lines.map(([who, txt]) => ({ who, text: plain(txt), phrases: marks(txt) }))
+      : door.type === 'chat' ? door.lines.map(([who, txt]) => ({ who, raw: txt, text: plain(txt), phrases: marks(txt) }))
       : door.text.map(txt => ({ text: plain(txt), phrases: marks(txt) }));
     const appearing = [...new Set(segs.flatMap(s => s.phrases))];
     const cardPhrases = shuffle([...appearing, ...door.decoys], seeded(`${cal}:${n}`)).slice(0, 16);
     const star = door.star && appearing.includes(door.star) ? door.star : appearing[Math.floor(appearing.length / 2)];
     const appearedAt = {}, found = new Set(); let pts = 0, bingo = false, full = false, idx = 0, timer = null, running = false, ended = false;
+    const P = { speed: 0, star: 0, bingo: 0, full: 0, wrong: 0 };
     const speedDiv = door.type === 'emoji' ? 350 : door.type === 'listen' ? 260 : 200;
 
     const voiceOk = door.type === 'listen' && 'speechSynthesis' in window;
@@ -310,20 +352,20 @@
     function tap(p, el) {
       if (!running && !ended || found.has(p) || ended) return;
       const at = appearedAt[p];
-      if (at === undefined) { pts = Math.max(0, pts - 5); sfx.bad(); el.classList.add('bad', 'shake'); setTimeout(() => el.classList.remove('bad', 'shake'), 400); note(t('notYet')); }
+      if (at === undefined) { pts = Math.max(0, pts - 5); P.wrong -= 5; sfx.bad(); el.classList.add('bad', 'shake'); setTimeout(() => el.classList.remove('bad', 'shake'), 400); note(t('notYet')); }
       else {
-        found.add(p); const s = Math.max(5, 30 - Math.round((Date.now() - at) / speedDiv)); pts += s; let msg = t('speed', { pts: s });
-        if (p === star) { pts += 25; msg = t('star') + ' · ' + msg; sfx.star(); } else sfx.ok();
+        found.add(p); const s = Math.max(5, 30 - Math.round((Date.now() - at) / speedDiv)); pts += s; P.speed += s; let msg = t('speed', { pts: s });
+        if (p === star) { pts += 25; P.star = 25; msg = t('star') + ' · ' + msg; sfx.star(); setTimeout(() => magic(card.children[cardPhrases.indexOf(p)]), 0); } else sfx.ok();
         const idxs = cardPhrases.map((q, i) => found.has(q) ? i : -1).filter(i => i >= 0);
-        if (!bingo && lines().some(l => l.every(i => idxs.includes(i)))) { bingo = true; pts += 50; msg = t('bingo'); sfx.bingo(); }
-        if (!full && found.size === appearing.length) { full = true; pts += 30; msg = t('fullCard'); }
+        if (!bingo && lines().some(l => l.every(i => idxs.includes(i)))) { bingo = true; pts += 50; P.bingo = 50; msg = t('bingo'); sfx.bingo(); setTimeout(() => magic(card, true), 0); }
+        if (!full && found.size === appearing.length) { full = true; pts += 30; P.full = 30; msg = t('fullCard'); setTimeout(() => magic(card, true), 350); }
         note(msg); drawCard();
       }
       $('pts').textContent = pts; $('fnd').textContent = `${found.size}/${appearing.length}`;
     }
     function show(seg) {
       seg.phrases.forEach(p => { if (appearedAt[p] === undefined) appearedAt[p] = Date.now(); });
-      if (door.type === 'chat') { const m = document.createElement('div'); m.className = 'msg'; m.innerHTML = `<b>${esc(seg.who)}</b>${esc(seg.text)}`; feed.appendChild(m); sfx.msg(); }
+      if (door.type === 'chat') { showChat(seg); }
       else if (door.type === 'emoji') {
         const prev = segs[idx - 2]; feed.innerHTML = `<div class="riddle">${seg.emoji}<small>${idx} / ${segs.length}</small></div>${prev ? `<div class="past">${prev.emoji} = ${esc(prev.phrases[0])}</div>` : ''}`;
       } else { feed.querySelectorAll('.cap.now').forEach(c => c.classList.remove('now')); const c = document.createElement('div'); c.className = 'cap now'; c.textContent = seg.text; feed.appendChild(c); }
@@ -335,14 +377,43 @@
       $('status').textContent = '';
       const grid = [0, 1, 2, 3].map(r => [0, 1, 2, 3].map(c => { const p = cardPhrases[r * 4 + c]; return found.has(p) ? (p === star ? '⭐' : '🎄') : '❄️'; }).join('')).join('\n');
       door.shareLine = `${t('t_' + door.type)} · ${found.size}/${appearing.length}${bingo ? ' · BINGO' : ''}\n${grid}`;
-      done(pts);
+      done({ parts: [[t('b_speed'), P.speed], [t('b_star'), P.star], [t('b_bingo'), P.bingo], [t('b_full'), P.full], [t('b_wrong'), P.wrong]] });
     }
     // Pacing: chat lines every ~2.6s, emoji riddles every ~7s, listening follows the speech (or reading time).
+    // ---- human chat feed ----
+    // Special lines: '§voice 0:42', '§photo 🎄', '§deleted', '§react ❤️' (reaction to the previous message).
+    // Emoji-only lines show as big emoji. Timestamps start at door.start (e.g. '09:02') and move on 0–3 minutes.
+    const COLORS = ['#b3261e', '#1d6f42', '#1f4f8a', '#7a2f8f', '#9a5b00', '#0e6e75', '#a0306a'];
+    const colorOf = w => COLORS[[...w].reduce((a, c) => a + c.charCodeAt(0), 0) % COLORS.length];
+    const clockRnd = seeded(`${cal}:${n}:clock`); let clock = (() => { const [h, m] = String(door.start || '09:02').split(':').map(Number); return h * 60 + m; })();
+    const isEmojiOnly = s => s.trim() && !/[\p{L}\p{N}]/u.test(s);
+    function chatPause(nextSeg) {
+      if (!nextSeg) return 600;
+      if (/^§react/.test(nextSeg.raw)) return 500 + Math.random() * 500;
+      const len = nextSeg.text.replace(/^§\w+\s*/, '').length;
+      return 300 + Math.random() * 1200 + Math.min(2600, 600 + len * 35);   // pause + typing time
+    }
+    function showTyping(who) { const el = document.createElement('div'); el.className = 'typing'; el.innerHTML = `${esc(t('typing', { who }))} <i></i><i></i><i></i>`; feed.appendChild(el); feed.scrollTop = feed.scrollHeight; return el; }
+    function showChat(seg) {
+      feed.querySelectorAll('.typing').forEach(x => x.remove());
+      const raw = seg.text, cmd = raw.match(/^§(\w+)\s*(.*)$/);
+      if (cmd && cmd[1] === 'react') { const last = [...feed.querySelectorAll('.msg')].pop(); if (last) { let r = last.querySelector('.react'); if (!r) { r = document.createElement('span'); r.className = 'react'; last.appendChild(r); } r.textContent = (r.textContent + ' ' + cmd[2]).trim(); } sfx.msg(); return; }
+      clock += Math.floor(clockRnd() * 3); const time = `${String(Math.floor(clock / 60) % 24).padStart(2, '0')}:${String(clock % 60).padStart(2, '0')}`;
+      const m = document.createElement('div'); m.className = 'msg'; let body;
+      if (!cmd) { if (isEmojiOnly(raw)) m.classList.add('emo'); body = esc(raw); }
+      else if (cmd[1] === 'voice') { m.classList.add('voice'); body = `🎤 <span class="wave">▶ ▂▅▇▅▃▆▂▅▇▃</span> ${esc(cmd[2] || '0:12')} · ${esc(t('voiceMsg'))}`; }
+      else if (cmd[1] === 'photo') { m.classList.add('photo'); body = `<span class="ph">${esc(cmd[2] || '📷')}</span>`; }
+      else if (cmd[1] === 'deleted') { m.classList.add('deleted'); body = `🚫 ${esc(t('deletedMsg'))}`; }
+      else body = esc(raw);
+      m.innerHTML = `${m.classList.contains('emo') ? '' : `<b style="color:${colorOf(seg.who)}">${esc(seg.who)}</b>`}${body}<time>${time}</time>`;
+      feed.appendChild(m); sfx.msg();
+      const nx = segs[idx]; if (nx && running && !/^§react/.test(nx.raw)) setTimeout(() => { if (running && segs[idx] === nx) showTyping(nx.who); }, 250 + Math.random() * 600);
+    }
     function next() {
       if (!running) return;
-      if (idx >= segs.length) { timer = setTimeout(end, door.type === 'emoji' ? 7000 : 5000); return; }
+      if (idx >= segs.length) { feed.querySelectorAll('.typing').forEach(x => x.remove()); timer = setTimeout(end, door.type === 'emoji' ? 7000 : 5000); return; }
       const seg = segs[idx++]; show(seg);
-      if (door.type === 'chat') timer = setTimeout(next, 2200 + Math.min(1800, seg.text.length * 25));
+      if (door.type === 'chat') timer = setTimeout(next, chatPause(segs[idx]));
       else if (door.type === 'emoji') timer = setTimeout(next, 7000);
       else speakOrRead(seg.text);
     }
@@ -383,14 +454,14 @@
     function finish(win) {
       over = true; $('wrapBtn').disabled = $('shuf').disabled = true;
       if (!win) { door.groups.forEach((_, i) => { if (!boxes.includes(i)) boxes.push(i); }); items = []; draw(); }
-      const pts = boxes.length && win ? 100 + tape * 15 : log.filter(x => x === '🎁').length * 20;
+      const wrapped = log.filter(x => x === '🎁').length;
       door.shareLine = `${t('t_wrap')} · ${log.join('')}`;
-      done(pts);
+      done({ parts: win ? [[t('b_wrap'), 100], [t('b_tape'), tape * 15], [t('b_perfect'), tape === 4 ? 40 : 0]] : [[t('b_wrap'), wrapped * 20]] });
     }
     $('wrapBtn').onclick = () => {
       if (sel.length !== 4) { $('note').textContent = t('pick4'); return; }
       const c = {}; sel.forEach(x => c[x.g] = (c[x.g] || 0) + 1); const best = Math.max(...Object.values(c));
-      if (best === 4) { const g = sel[0].g; boxes.push(g); log.push('🎁'); items = items.filter(x => x.g !== g); sel = []; $('note').textContent = t('wrapped', { tag: door.groups[g].n }); sfx.bingo(); draw(); if (boxes.length === 4) finish(true); return; }
+      if (best === 4) { const g = sel[0].g; boxes.push(g); log.push('🎁'); items = items.filter(x => x.g !== g); sel = []; $('note').textContent = t('wrapped', { tag: door.groups[g].n }); sfx.bingo(); draw(); magic($('boxes').children[boxes.length - 1]); if (boxes.length === 4) { if (tape === 4) { $('note').textContent = t('perfect'); sfx.star(); setTimeout(() => magic($('boxes'), true), 300); } finish(true); } return; }
       tape--; log.push('✂️'); sfx.bad(); $('note').textContent = best === 3 ? t('almost') : t('noFit');
       document.querySelectorAll('.item.sel').forEach(e => { e.classList.add('shake'); setTimeout(() => e.classList.remove('shake'), 400); });
       setTimeout(() => { draw(); if (tape === 0) finish(false); }, 420);

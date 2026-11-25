@@ -15,6 +15,8 @@ export const ADVENT_UI = {
     result: 'Door {n}: {pts} points', firstOnly: 'Only your first try counts. Replays are practice.', onDayBonus: '+20 for playing on the day', share: 'Copy result', copied: 'Copied',
     captions: 'Captions', voice: 'Voice', noVoice: 'No voice for this language on this device. Captions only.', listenNow: 'Speaking…',
     team: 'Team', teamIntro: 'Play with colleagues, family or friends: everyone opens the doors on their own and shares one scoreboard.', yourName: 'Your name', createTeam: 'Create a team', teamName: 'Team name', join: 'Join', teamCode: 'Team code', leaveTeam: 'Leave team', copyLink: 'Copy invite link', total: 'Total', you: 'you', noTeam: 'Not in a team yet.', teamErr: 'Could not reach the team: {err}', teamNotFound: 'Team not found.', namePh: 'Alex', teamPh: 'The Elves',
+    typing: '{who} is typing…', voiceMsg: 'Voice message', deletedMsg: 'This message was deleted', perfect: 'Perfect wrap! No tape wasted +40',
+    b_speed: 'Speed', b_star: '★ Golden star', b_bingo: 'Bingo', b_full: 'Full card', b_wrong: 'Wrong taps', b_wrap: 'Gifts wrapped', b_tape: 'Tape left', b_perfect: 'Perfect wrap', b_onday: 'Played on the day', b_streak: 'Streak: {days} days in a row', total: 'Total',
     sound: 'Sound', soloScore: 'Your score',
   },
   cs: {
@@ -32,6 +34,8 @@ export const ADVENT_UI = {
     result: 'Okénko {n}: {pts} bodů', firstOnly: 'Počítá se jen první pokus. Další hry jsou trénink.', onDayBonus: '+20 za hraní ve správný den', share: 'Kopírovat výsledek', copied: 'Zkopírováno',
     captions: 'Titulky', voice: 'Hlas', noVoice: 'Toto zařízení nemá český hlas. Jen titulky.', listenNow: 'Mluví se…',
     team: 'Tým', teamIntro: 'Hrajte s kolegy, rodinou nebo přáteli: každý si otevírá okénka sám a máte společnou tabulku.', yourName: 'Vaše jméno', createTeam: 'Založit tým', teamName: 'Název týmu', join: 'Přidat se', teamCode: 'Kód týmu', leaveTeam: 'Opustit tým', copyLink: 'Kopírovat pozvánku', total: 'Celkem', you: 'vy', noTeam: 'Zatím nejste v týmu.', teamErr: 'Tým se nepodařilo načíst: {err}', teamNotFound: 'Tým nenalezen.', namePh: 'Jana', teamPh: 'Skřítci',
+    typing: '{who} píše…', voiceMsg: 'Hlasová zpráva', deletedMsg: 'Zpráva byla smazána', perfect: 'Zabaleno bez chyby! +40',
+    b_speed: 'Rychlost', b_star: '★ Zlatá hvězda', b_bingo: 'Bingo', b_full: 'Celá karta', b_wrong: 'Špatná klepnutí', b_wrap: 'Zabalené dárky', b_tape: 'Zbylá izolepa', b_perfect: 'Bez chyby', b_onday: 'Hráno ve správný den', b_streak: 'Série: {days} dní v řadě', total: 'Celkem',
     sound: 'Zvuk', soloScore: 'Vaše skóre',
   },
 };
