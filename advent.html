@@ -69,6 +69,19 @@
   /* play view */
   .play{background:var(--card);color:var(--ink);border-radius:18px;padding:18px;box-shadow:0 10px 30px #0005}
   .play h2{font-family:Georgia,serif;margin:0;font-size:24px}
+  .angel-entry{display:flex;align-items:center;gap:12px;background:linear-gradient(90deg,#ffffff1f,#b3261e40);border:1px solid #ffffff2a;border-radius:14px;padding:10px 14px;margin-bottom:14px;font-size:14px}
+  .angel-entry .ic{font-size:28px;line-height:1}.angel-entry b{display:block;font-size:15px}.angel-entry .grow{flex:1}
+  .angel-rules{display:flex;gap:10px;margin:12px 0;font-weight:800}.angel-rules span{flex:1;text-align:center;padding:10px;border-radius:12px;background:#eef6ff}.angel-rules span+span{background:#fde8e6}
+  .angel-top{display:flex;gap:12px;align-items:center;font-weight:700;color:var(--muted)}.angel-top b{margin-left:auto;font-size:26px;color:var(--ink);font-family:Georgia,serif}
+  .angel-bar{height:6px;background:#e6edf3;border-radius:9px;overflow:hidden;margin:8px 0 14px}.angel-bar i{display:block;height:100%;width:100%;background:var(--gold)}
+  .angel-card{min-height:120px;display:grid;place-items:center;text-align:center;font-size:20px;font-weight:800;padding:18px;border-radius:16px;background:#fbf7ef;border:2px solid var(--line);touch-action:pan-y;user-select:none}
+  .angel-card small{display:block;font-size:13px;font-weight:700;color:var(--muted);margin-top:8px}
+  .angel-card.in{animation:pop .25s ease}.angel-card.ok{border-color:#2e9d62;background:#ecf8f1}.angel-card.no{border-color:var(--berry);background:#fdeceb}
+  @keyframes pop{from{transform:scale(.94);opacity:.4}}
+  .angel-btns{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+  .angel-pick{border:0;border-radius:16px;padding:14px;font-size:34px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;font-family:inherit}
+  .angel-pick span{font-size:15px;font-weight:800}.angel-pick.a{background:#e3f0ff;color:#123}.angel-pick.d{background:#fde0dc;color:#4a0f0a}.angel-pick:active{transform:scale(.97)}
+  .angel-keys{text-align:center;font-size:12px}.angel-diff{list-style:none;padding:0;margin:0;display:grid;gap:6px}.angel-diff li{background:#f4f7fa;border-radius:10px;padding:8px 10px;font-size:14px}.angel-diff li span{font-weight:800;margin-right:6px}
   .kind{display:inline-block;font-size:12px;font-weight:700;background:#fde9c4;color:#6b4300;border-radius:999px;padding:3px 10px;margin-bottom:6px}
   .split{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:16px;margin-top:12px}
   .feed{height:360px;overflow-y:auto;background:#eef3f7;border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:6px}
@@ -171,7 +184,7 @@
   <div id="banner" class="banner hidden"></div>
 
   <div id="calendarView" class="layout">
-    <section><div id="doors" class="doors"></div></section>
+    <section><div id="angelEntry" class="angel-entry"></div><div id="doors" class="doors"></div></section>
     <aside class="side">
       <div class="panel">
         <h2 id="soloTitle"></h2>
@@ -213,6 +226,8 @@
   import { mountPredict } from './advent/predict.js';
   import { PREDICT_IDEAS } from './advent/predict-ideas.js';
   import { LANGUAGES } from './languages/index.js';
+  import { mountAngel } from './advent/angel.js';
+  import { deedsFor } from './advent/deeds/index.js';
 
   // ---------- setup ----------
   const $ = id => document.getElementById(id);
@@ -308,7 +323,7 @@
     $('title').innerHTML = `🎄 <span>${esc(t('title'))}</span>`;
     $('subtitle').textContent = C().tagline;
     $('navCal').textContent = t('nav_cal'); $('navScore').textContent = t('nav_score'); menuBtn.setAttribute('aria-label', t('menu')); $('practiceBtn').textContent = '🎯 ' + (preview ? t('previewExit') : t('previewBtn')); $('practiceBtn').classList.toggle('hidden', !metas[cal]);
-    syncSound(); renderBanner(); renderDoors(); renderSolo(); renderTeamStatic(); renderTeam();
+    syncSound(); renderBanner(); renderAngelEntry(); renderDoors(); renderSolo(); renderTeamStatic(); renderTeam();
   }
   function renderBanner() {
     const b = $('banner'); b.classList.add('hidden');
@@ -338,6 +353,20 @@
       b.onclick = () => openDoor(n);
       wrap.appendChild(b);
     });
+  }
+  function renderAngelEntry() {
+    const p = deedsFor(cal);
+    $('angelEntry').innerHTML = `<span class="ic">😇😈</span><div class="grow"><b>${esc(p.title)}</b><span>${esc(p.ui.card)}</span></div><button class="btn gold" id="angelOpen">▶ ${esc(p.ui.play)}</button>`;
+    $('angelOpen').onclick = openAngel;
+  }
+  // Side game: playable any day, also before 1 December and in practice mode. Scores stay on this device.
+  function openAngel() {
+    stopGame(); stopGame = () => {};
+    const p = deedsFor(cal), v = $('playView'); $('calendarView').classList.add('hidden'); v.classList.remove('hidden'); document.body.classList.add('playing');
+    v.innerHTML = `<div class="row" style="margin:0 0 10px"><button class="btn" id="backCal">${esc(t('backToCal'))}</button></div>
+      <span class="kind">😇😈 ${esc(p.ui.angel)} / ${esc(p.ui.devil)}</span><h2>${esc(p.title)}</h2><div id="game"></div>`;
+    $('backCal').onclick = closeDoor; window.scrollTo({ top: 0, behavior: 'smooth' });
+    stopGame = mountAngel($('game'), { pack: p, esc, magic, sfx, bestKey: `bingoAngelBest:${cal}`, onExit: closeDoor });
   }
   function renderSolo() {
     const s = loadScores(), vals = Object.values(s);

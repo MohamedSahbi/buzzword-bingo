@@ -44,5 +44,28 @@ for (const [code, cal] of Object.entries(CALENDARS)) {
   }
   console.log(`✓ ${code}: ${days.length} doors checked`);
 }
+// Side game "Nice or naughty?": every file in advent/deeds/ must be registered and complete.
+{
+  const { readdirSync } = await import('node:fs');
+  const { DEEDS } = await import('../advent/deeds/index.js');
+  const keys = Object.keys(DEEDS.en.ui);
+  for (const f of readdirSync(new URL('../advent/deeds/', import.meta.url)).filter(f => f !== 'index.js')) {
+    const code = f.replace(/\.js$/, ''), p = DEEDS[code], w = `deeds/${code}`;
+    if (!p) { err(w, 'not registered in advent/deeds/index.js'); continue; }
+    if (!p.title) err(w, 'missing title');
+    for (const k of keys) if (!p.ui?.[k]) err(w, `ui.${k} missing`);
+    for (const k of ['matches']) if (p.ui?.[k] && !(p.ui[k].includes('{n}') && p.ui[k].includes('{of}'))) err(w, `ui.${k} needs {n} and {of}`);
+    if (!Array.isArray(p.deeds) || p.deeds.length < 30) err(w, 'needs at least 30 deeds');
+    const seen = new Set();
+    (p.deeds || []).forEach(([text, v], i) => {
+      if (v !== 'a' && v !== 'd') err(w, `deed ${i + 1}: verdict must be 'a' or 'd'`);
+      if (!text || text.length > 70) err(w, `deed ${i + 1}: empty or over 70 characters`);
+      if (seen.has(text)) err(w, `deed ${i + 1}: duplicate`); seen.add(text);
+    });
+    const angels = (p.deeds || []).filter(d => d[1] === 'a').length;
+    if (p.deeds?.length && (angels < p.deeds.length * .35 || angels > p.deeds.length * .65)) err(w, `unbalanced: ${angels} of ${p.deeds.length} are angel`);
+    console.log(`✓ deeds/${code}: ${p.deeds?.length} deeds`);
+  }
+}
 console.log(`\n${errors} error(s)`);
 process.exit(errors ? 1 : 0);

@@ -4,9 +4,9 @@ Ideas agreed with Mohamed, roughly in priority order. Move an item to the README
 
 ## Advent calendar
 - **Prediction rooms on the final door** (24 Dec in Czech, 25 Dec in English): set up a few days ahead, sealed predictions, the host starts the event, claims with 👍/👎 votes, "best prophet" awards. *In progress.*
-- **"Anděl, nebo čert?"**: a quick-fire game for people who can't wait for the next door. Twenty everyday deeds ("Snědl poslední rohlík v kuchyňce") flash up; sort each into 😇 or 😈 in 3 seconds; points for agreeing with Mikuláš's book; in a team, see how colleagues judged.
 - **"Play together now"** on any door: turns it into a live shared room for a team call.
 - **Practice calendar chats** in the new human style (only door 1 so far).
+- **Nice or naughty? in a team**: show how colleagues judged each deed (needs a rules change).
 - More cultures (see Languages).
 
 ## Game modes
