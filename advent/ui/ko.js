@@ -25,4 +25,5 @@ export default {
   sound: '소리', soloScore: '내 점수',
   shareNative: "공유하기",
   shareImage: "결과 이미지 저장",
+  shareAttach: "이미지를 저장했어요. 게시물에 첨부하세요.",
 };

@@ -25,4 +25,5 @@ export default {
   nav_cal: 'Calendrier', nav_score: 'Score et équipe', menu: 'Menu',
   shareNative: "Partager",
   shareImage: "Enregistrer l’image du résultat",
+  shareAttach: "Image enregistrée : joignez-la à votre publication.",
 };

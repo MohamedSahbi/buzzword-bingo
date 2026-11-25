@@ -118,6 +118,7 @@ export default {
     "share.native": "공유하기",
     "share.copy": "복사",
     "share.image": "결과 이미지 저장",
+    "share.attach": "이미지를 저장했어요. 게시물에 첨부하세요.",
     "share.copied": "복사했어요",
   },
   topics: {

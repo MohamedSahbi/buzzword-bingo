@@ -25,4 +25,5 @@ export default {
   nav_cal: 'Calendario', nav_score: 'Punti e squadra', menu: 'Menu',
   shareNative: "Condividi",
   shareImage: "Salva l’immagine del risultato",
+  shareAttach: "Immagine salvata: allegala al tuo post.",
 };

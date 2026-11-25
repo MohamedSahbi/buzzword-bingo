@@ -25,4 +25,5 @@ export default {
   nav_cal: 'الروزنامة', nav_score: 'النتيجة والفريق', menu: 'القائمة',
   shareNative: "مشاركة",
   shareImage: "حفظ صورة النتيجة",
+  shareAttach: "تم حفظ الصورة: أرفقها بمنشورك.",
 };

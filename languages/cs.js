@@ -118,6 +118,7 @@ export default {
     "share.native": "Sdílet",
     "share.copy": "Kopírovat",
     "share.image": "Uložit obrázek s výsledkem",
+    "share.attach": "Obrázek je uložený: přilož ho k příspěvku.",
     "share.copied": "Zkopírováno",
   },
   topics: {

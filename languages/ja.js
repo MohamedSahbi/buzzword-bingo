@@ -118,6 +118,7 @@ export default {
     "share.native": "シェア",
     "share.copy": "コピー",
     "share.image": "結果を画像で保存",
+    "share.attach": "画像を保存しました。投稿に添付してください。",
     "share.copied": "コピーしました",
   },
   topics: {

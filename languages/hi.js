@@ -118,6 +118,7 @@ export default {
     "share.native": "शेयर करें",
     "share.copy": "कॉपी करें",
     "share.image": "रिज़ल्ट की इमेज सेव करें",
+    "share.attach": "इमेज सेव हो गई: इसे अपनी पोस्ट में अटैच करें।",
     "share.copied": "कॉपी हो गया",
   },
   topics: {

@@ -30,12 +30,12 @@ function style() {
   s.textContent = `.sharebar{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 4px}
   .sharebar a,.sharebar button{display:inline-grid;place-items:center;width:40px;height:40px;border:0;border-radius:50%;padding:0;cursor:pointer;color:#fff;transition:transform .12s}
   .sharebar a:hover,.sharebar button:hover{transform:translateY(-2px)}
-  .sharebar .native{background:#132433}.sharebar .image{background:#f2b84b}.sharebar .copy{background:#e9eef3;color:#132433}
+  .sharetip{font-size:13px;font-weight:700;margin:4px 0 0;opacity:.85}.sharebar .native{background:#132433}.sharebar .image{background:#f2b84b}.sharebar .copy{background:#e9eef3;color:#132433}
   .sharebar a:focus-visible,.sharebar button:focus-visible{outline:3px solid #f2b84b;outline-offset:2px}`;
   document.head.appendChild(s);
 }
 
-// el: container; text: the result (no link); url: page to link to; labels: { share, copy, copied, image }
+// el: container; text: the result (no link); url: page to link to; labels: { share, copy, copied, image, attachText }
 // card (optional): result card for resultCardBlob(); shared as a picture on phones, downloadable everywhere.
 export function shareBar(el, { text, url, labels, card = null }) {
   style();
@@ -49,8 +49,18 @@ export function shareBar(el, { text, url, labels, card = null }) {
   const file = async () => new File([await resultCardBlob(card)], 'buzzword-bingo-result.png', { type: 'image/png' });
   // Phones: share the picture with the text and link when the browser allows files, otherwise text and link.
   if (native) native.onclick = async () => { try { if (card && canShareFiles()) await navigator.share({ files: [await file()], text: `${text}\n${url}` }); else await navigator.share({ text, url }); } catch {} };
+  const save = f => { const a = document.createElement('a'); a.href = URL.createObjectURL(f); a.download = f.name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); };
+  // With a result picture the network icons share the picture too. Websites cannot hand a file to one specific app:
+  // phones open the share sheet with the picture (the player picks the app there); computers save the picture and
+  // open the network's post box with the text, with a hint to attach the saved picture.
+  if (card) el.querySelectorAll('[data-net]').forEach(a => a.addEventListener('click', async e => {
+    e.preventDefault(); const href = a.href, f = await file();
+    if (canShareFiles()) { try { await navigator.share({ files: [f], text: `${text}\n${url}` }); } catch {} return; }
+    save(f); window.open(href, '_blank', 'noopener');
+    let tip = el.querySelector('.sharetip'); if (!tip) { tip = document.createElement('p'); tip.className = 'sharetip'; el.appendChild(tip); } tip.textContent = '🖼 ' + (labels.attachText || '');
+  }));
   const img = el.querySelector('[data-act=image]');
-  if (img) img.onclick = async () => { const f = await file(); if (canShareFiles()) { try { await navigator.share({ files: [f] }); return; } catch (e) { if (e?.name === 'AbortError') return; } } const a = document.createElement('a'); a.href = URL.createObjectURL(f); a.download = f.name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); };
+  if (img) img.onclick = async () => { const f = await file(); if (canShareFiles()) { try { await navigator.share({ files: [f] }); return; } catch (e) { if (e?.name === 'AbortError') return; } } save(f); };
   const copy = el.querySelector('[data-act=copy]');
   copy.onclick = async () => { try { await navigator.clipboard.writeText(`${text}\n${url}`); copy.innerHTML = svg('done'); copy.title = labels.copied; copy.setAttribute('aria-label', labels.copied); } catch {} };
 }

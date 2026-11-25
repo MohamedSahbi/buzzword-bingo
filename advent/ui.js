@@ -16,6 +16,7 @@ export const ADVENT_UI = {
   ja, 'pt-BR': ptBR, 'pt-PT': ptPT, hi, fr, de, it, ar, fil, ko, es,
   en: {
     shareNative: 'Share',
+    shareAttach: "Picture saved: attach it to your post.",
     shareImage: "Save result image",
     title: 'Advent calendar', back: '← Buzzword Bingo', culture: 'Calendar',
     opensOn: 'The calendar opens on 1 December.', previewBtn: 'Play the practice calendar', previewOn: 'Practice calendar: every door is open and scores are not saved. The real calendar has different doors.', previewExit: 'Back to the real calendar',
@@ -43,6 +44,7 @@ export const ADVENT_UI = {
   },
   cs: {
     shareNative: 'Sdílet',
+    shareAttach: "Obrázek je uložený: přilož ho k příspěvku.",
     shareImage: "Uložit obrázek s výsledkem",
     title: 'Adventní kalendář', back: '← Buzzword Bingo', culture: 'Kalendář',
     opensOn: 'Kalendář se otevře 1. prosince.', previewBtn: 'Hrát cvičný kalendář', previewOn: 'Cvičný kalendář: všechna okénka jsou otevřená a body se neukládají. Skutečný kalendář má jiná okénka.', previewExit: 'Zpět ke skutečnému kalendáři',

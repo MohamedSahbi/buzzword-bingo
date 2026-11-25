@@ -25,4 +25,5 @@ export default {
   nav_cal: 'Kalender', nav_score: 'Punkte & Team', menu: 'Menü',
   shareNative: "Teilen",
   shareImage: "Ergebnis als Bild speichern",
+  shareAttach: "Bild gespeichert: Häng es an deinen Beitrag an.",
 };

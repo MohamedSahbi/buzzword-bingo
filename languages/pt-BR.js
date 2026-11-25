@@ -118,6 +118,7 @@ export default {
     "share.native": "Compartilhar",
     "share.copy": "Copiar",
     "share.image": "Salvar imagem do resultado",
+    "share.attach": "Imagem salva: anexe ao seu post.",
     "share.copied": "Copiado",
   },
   topics: {

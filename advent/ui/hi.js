@@ -25,4 +25,5 @@ export default {
   nav_cal: 'कैलेंडर', nav_score: 'स्कोर और टीम', menu: 'मेन्यू',
   shareNative: "शेयर करें",
   shareImage: "रिज़ल्ट की इमेज सेव करें",
+  shareAttach: "इमेज सेव हो गई: इसे अपनी पोस्ट में अटैच करें।",
 };

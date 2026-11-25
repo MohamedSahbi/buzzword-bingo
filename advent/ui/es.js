@@ -25,4 +25,5 @@ export default {
   sound: 'Sonido', soloScore: 'Tu puntuación',
   shareNative: "Compartir",
   shareImage: "Guardar imagen del resultado",
+  shareAttach: "Imagen guardada: adjúntala a tu publicación.",
 };

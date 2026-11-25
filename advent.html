@@ -372,7 +372,7 @@
   // Link shared with results: the calendar in the same culture (never a door's content).
   const shareUrl = () => { const u = new URL(location.origin + location.pathname); u.searchParams.set('lang', cal); return u.href; };
   const footer = () => (location.host + location.pathname).replace(/\/(advent\.html)?$/, '');
-  const shareTo = (el, text, card = null) => shareBar(el, { text, url: shareUrl(), card: card && { footer: footer(), ...card }, labels: { share: esc(t('shareNative')), copy: esc(t('share')), copied: esc(t('copied')), image: esc(t('shareImage')) } });
+  const shareTo = (el, text, card = null) => shareBar(el, { text, url: shareUrl(), card: card && { footer: footer(), ...card }, labels: { share: esc(t('shareNative')), copy: esc(t('share')), copied: esc(t('copied')), image: esc(t('shareImage')), attachText: t('shareAttach') } });
   function renderAngelEntry() {
     const p = deedsFor(cal);
     $('angelEntry').innerHTML = `<span class="ic">😇😈</span><div class="grow"><b>${esc(p.title)}</b><span>${esc(p.ui.card)}</span></div><button class="btn gold" id="angelOpen">▶ ${esc(p.ui.play)}</button>`;

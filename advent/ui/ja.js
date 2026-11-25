@@ -25,4 +25,5 @@ export default {
   nav_cal: 'カレンダー', nav_score: 'スコアとチーム', menu: 'メニュー',
   shareNative: "シェア",
   shareImage: "結果を画像で保存",
+  shareAttach: "画像を保存しました。投稿に添付してください。",
 };

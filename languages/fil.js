@@ -119,6 +119,7 @@ export default {
     "share.native": "I-share",
     "share.copy": "Kopyahin",
     "share.image": "I-save ang result image",
+    "share.attach": "Na-save ang picture: i-attach mo sa post mo.",
     "share.copied": "Nakopya na",
   },
   topics: {

@@ -118,6 +118,7 @@ export default {
     "share.native": "مشاركة",
     "share.copy": "نسخ",
     "share.image": "حفظ صورة النتيجة",
+    "share.attach": "تم حفظ الصورة: أرفقها بمنشورك.",
     "share.copied": "تم النسخ",
   },
   topics: {
