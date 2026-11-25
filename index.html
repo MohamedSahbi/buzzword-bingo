@@ -15,79 +15,90 @@
     .layout{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:20px}.panel{background:var(--panel);border:1px solid rgba(157,174,191,.4);border-radius:20px;box-shadow:var(--shadow)}
     .game{padding:20px}.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:end;margin-bottom:16px}.field{display:grid;gap:5px;min-width:160px}.field label{font-size:12px;font-weight:750;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
     select,input{width:100%;border:1px solid #bcc8d5;border-radius:10px;padding:10px 11px;background:#fff;color:var(--ink);outline:none}select:focus,input:focus{border-color:var(--brand);box-shadow:0 0 0 3px #d8e9ff}
-    .btn{border:0;border-radius:10px;padding:10px 14px;font-weight:750;color:#24384d;background:#e7edf4}.btn:hover{filter:brightness(.97)}.primary{background:var(--brand);color:#fff}.primary:hover{background:var(--brand2)}.danger{background:#ffe9e5;color:#992e1b}.small{padding:7px 10px;font-size:13px}.grow{flex:1}.right{margin-left:auto}
+    .btn{border:0;border-radius:10px;padding:10px 14px;font-weight:750;color:#24384d;background:#e7edf4}.btn:hover{filter:brightness(.97)}.primary{background:var(--brand);color:#fff}.primary:hover{background:var(--brand2)}.danger{background:#ffe9e5;color:#992e1b}.small{padding:7px 10px;font-size:13px}.grow{flex:1}.right{margin-inline-start:auto}
     .room-banner{display:none;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;margin-bottom:14px;border:1px solid #b8d5f5;background:#eef7ff;border-radius:12px}.room-banner.show{display:flex}.room-code{font:800 18px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.13em}.status{min-height:22px;color:var(--muted);font-size:13px;margin:4px 0 10px}.status.error{color:#ac2c20}.status.success{color:var(--good)}
     .letters,.board{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.letters{margin-bottom:8px}.letters span{text-align:center;font-weight:900;font-size:clamp(18px,4vw,28px);color:var(--brand)}
-    .cell{position:relative;display:grid;place-items:center;text-align:center;min-width:0;aspect-ratio:1;border:1px solid #c8d3df;border-radius:13px;background:#fbfdff;color:#172b40;padding:8px;font-weight:750;font-size:clamp(10px,1.55vw,15px);line-height:1.2;overflow:hidden;transition:.15s transform,.15s background,.15s border-color;user-select:none}.cell:hover{transform:translateY(-2px);border-color:#70a8e8}.cell.marked{background:var(--mark);border-color:#4e92df;box-shadow:inset 0 0 0 2px #8fc0f5}.cell.free{background:var(--free);border-color:#e6b83c}.cell .check{position:absolute;right:5px;top:3px;font-size:14px;opacity:0}.cell.marked .check{opacity:1}.cell .by{position:absolute;left:4px;right:4px;bottom:3px;color:#31577b;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:650}
+    .cell{position:relative;display:grid;place-items:center;text-align:center;min-width:0;aspect-ratio:1;border:1px solid #c8d3df;border-radius:13px;background:#fbfdff;color:#172b40;padding:8px;font-weight:750;font-size:clamp(10px,1.55vw,15px);line-height:1.2;overflow:hidden;transition:.15s transform,.15s background,.15s border-color;user-select:none}.cell:hover{transform:translateY(-2px);border-color:#70a8e8}.cell.marked{background:var(--mark);border-color:#4e92df;box-shadow:inset 0 0 0 2px #8fc0f5}.cell.free{background:var(--free);border-color:#e6b83c}.cell .check{position:absolute;inset-inline-end:5px;top:3px;font-size:14px;opacity:0}.cell.marked .check{opacity:1}.cell .by{position:absolute;left:4px;right:4px;bottom:3px;color:#31577b;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:650}
     .win{display:none;margin:14px 0 0;padding:14px;border-radius:13px;text-align:center;background:linear-gradient(100deg,#0d734c,#16a66e);color:#fff;font-size:20px;font-weight:900}.win.show{display:block;animation:pop .4s ease-out}@keyframes pop{from{transform:scale(.92);opacity:0}to{transform:scale(1);opacity:1}}
     .side{display:grid;gap:16px;align-content:start}.side .panel{padding:17px}.side h2{font-size:16px;margin:0 0 12px}.tabs{display:flex;background:#eef2f6;border-radius:10px;padding:3px;margin-bottom:12px}.tab{flex:1;border:0;background:transparent;padding:8px;border-radius:8px;font-weight:750;color:var(--muted)}.tab.active{background:#fff;color:var(--ink);box-shadow:0 2px 7px #b8c3cf66}
     .stack{display:grid;gap:10px}.divider{height:1px;background:var(--line);margin:5px 0}.help{color:var(--muted);font-size:12px;margin:0}.players,.feed{display:grid;gap:7px;max-height:220px;overflow:auto}.player,.event{display:flex;align-items:center;gap:9px;border-bottom:1px solid #edf0f3;padding:6px 2px}.avatar{width:29px;height:29px;display:grid;place-items:center;border-radius:50%;background:#dcecff;color:#155ba8;font-weight:850;font-size:12px}.player-meta,.event-text{min-width:0;flex:1}.name{font-weight:750;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mini{font-size:11px;color:var(--muted)}.host{font-size:10px;background:#fff0bf;padding:2px 5px;border-radius:99px;color:#775200}.event{align-items:start;font-size:12px}.event time{color:var(--muted);white-space:nowrap}
-    details{border-top:1px solid var(--line);padding-top:12px}summary{cursor:pointer;font-weight:800}.steps{padding-left:20px;margin-bottom:0}.steps li{margin:7px 0}.hidden{display:none!important}.modal{position:fixed;inset:0;background:#0d1f36aa;display:none;place-items:center;padding:20px;z-index:10}.modal.show{display:grid}.modal-card{width:min(520px,100%);background:#fff;border-radius:18px;padding:22px;box-shadow:0 24px 70px #0005}.modal-card h2{margin-top:0}.modal-actions{display:flex;gap:9px;justify-content:flex-end;margin-top:16px}.notice{padding:10px 12px;border-radius:10px;background:#fff7db;border:1px solid #ecd580;color:#704d00;font-size:13px}
+    details{border-top:1px solid var(--line);padding-top:12px}summary{cursor:pointer;font-weight:800}.steps{padding-inline-start:20px;margin-bottom:0}.steps li{margin:7px 0}.hidden{display:none!important}.modal{position:fixed;inset:0;background:#0d1f36aa;display:none;place-items:center;padding:20px;z-index:10}.modal.show{display:grid}.modal-card{width:min(520px,100%);background:#fff;border-radius:18px;padding:22px;box-shadow:0 24px 70px #0005}.modal-card h2{margin-top:0}.modal-actions{display:flex;gap:9px;justify-content:flex-end;margin-top:16px}.notice{padding:10px 12px;border-radius:10px;background:#fff7db;border:1px solid #ecd580;color:#704d00;font-size:13px}
     @media(max-width:850px){.layout{grid-template-columns:1fr}.side{grid-template-columns:repeat(2,minmax(0,1fr))}.side .panel:last-child{grid-column:1/-1}}
-    @media(max-width:580px){.shell{padding:12px}.topbar{align-items:flex-start}.topbar>.pill{display:none}.game{padding:12px}.side{grid-template-columns:1fr}.side .panel:last-child{grid-column:auto}.letters,.board{gap:4px}.cell{border-radius:8px;padding:4px;font-size:clamp(8px,2.4vw,12px)}.toolbar .field{width:100%}.right{margin-left:0}.room-banner{align-items:flex-start;flex-direction:column}}
+    @media(max-width:580px){.shell{padding:12px}.topbar{align-items:flex-start}.conn-pill{display:none}.game{padding:12px}.side{grid-template-columns:1fr}.side .panel:last-child{grid-column:auto}.letters,.board{gap:4px}.cell{border-radius:8px;padding:4px;font-size:clamp(8px,2.4vw,12px)}.toolbar .field{width:100%}.right{margin-inline-start:0}.room-banner{align-items:flex-start;flex-direction:column}}
     @media print{body{background:#fff}.shell{padding:0}.topbar,.toolbar,.side,.room-banner,.status{display:none!important}.layout{display:block}.panel{border:0;box-shadow:none}.cell{print-color-adjust:exact}.game{padding:0}}
+    .letters{direction:ltr}.top-actions{display:flex;gap:8px;align-items:center}.lang-btn{cursor:pointer;font:inherit;font-size:13px;color:inherit}.lang-btn:hover{filter:brightness(.97)}
   </style>
 </head>
 <body>
   <main class="shell">
     <header class="topbar">
-      <div class="brand"><div class="logo">▦</div><div><h1>Buzzword Bingo</h1><p class="sub">Solo or live multiplayer — no app install needed</p></div></div>
-      <div class="pill"><span id="connectionDot" class="dot"></span><span id="connectionText">Solo mode</span></div>
+      <div class="brand"><div class="logo">▦</div><div><h1>Buzzword Bingo</h1><p class="sub" data-i18n="sub"></p></div></div>
+      <div class="top-actions">
+        <button id="langBtn" class="pill lang-btn" type="button" data-i18n-title="settings.open" data-i18n-aria="settings.open">🌐 <span id="langBtnText"></span></button>
+        <div class="pill conn-pill"><span id="connectionDot" class="dot"></span><span id="connectionText"></span></div>
+      </div>
     </header>
 
     <div class="layout">
-      <section class="panel game" aria-label="Bingo game">
+      <section class="panel game">
         <div class="toolbar">
-          <div class="field"><label for="lang">Language</label><select id="lang"></select></div>
-          <div class="field"><label for="topic">Topic</label><select id="topic"></select></div>
-          <button id="newCard" class="btn">New card</button>
-          <button id="resetMarks" class="btn">Reset marks</button>
-          <button id="print" class="btn right">Print / PDF</button>
+          <div class="field"><label for="topic" data-i18n="topic"></label><select id="topic"></select></div>
+          <button id="newCard" class="btn"></button>
+          <button id="resetMarks" class="btn" data-i18n="resetMarks"></button>
+          <button id="print" class="btn right" data-i18n="print"></button>
         </div>
-        <div id="roomBanner" class="room-banner"><div><span class="mini">ROOM CODE</span><br><span id="roomCode" class="room-code"></span></div><div><strong id="roomMode"></strong><br><span id="roomHost" class="mini"></span></div><button id="copyInvite" class="btn small primary">Copy invite link</button></div>
+        <div id="roomBanner" class="room-banner"><div><span class="mini" data-i18n="roomCodeLabel"></span><br><span id="roomCode" class="room-code"></span></div><div><strong id="roomMode"></strong><br><span id="roomHost" class="mini"></span></div><button id="copyInvite" class="btn small primary" data-i18n="copyInvite"></button></div>
         <div id="status" class="status" role="status" aria-live="polite"></div>
         <div class="letters" aria-hidden="true"><span>B</span><span>I</span><span>N</span><span>G</span><span>O</span></div>
         <div id="board" class="board"></div>
-        <div id="win" class="win" role="alert">🎉 BINGO!</div>
+        <div id="win" class="win" role="alert" data-i18n="win"></div>
       </section>
 
       <aside class="side">
         <section class="panel">
-          <div class="tabs"><button id="soloTab" class="tab active">Solo</button><button id="multiTab" class="tab">Multiplayer</button></div>
-          <div id="soloControls" class="stack"><p class="help">Play privately in this browser. Your marks stay on this device.</p><button id="startSolo" class="btn primary">Start a fresh solo game</button></div>
+          <div class="tabs"><button id="soloTab" class="tab active" data-i18n="solo"></button><button id="multiTab" class="tab" data-i18n="multi"></button></div>
+          <div id="soloControls" class="stack"><p class="help" data-i18n="soloHelp"></p><button id="startSolo" class="btn primary" data-i18n="startSolo"></button></div>
           <div id="multiControls" class="stack hidden">
-            <div class="field"><label for="playerName">Your name</label><input id="playerName" maxlength="24" autocomplete="nickname" placeholder="e.g. Mohamed"></div>
-            <button id="openCreate" class="btn primary">Create room</button>
+            <div class="field"><label for="playerName" data-i18n="yourName"></label><input id="playerName" maxlength="24" autocomplete="nickname" data-i18n-ph="namePh"></div>
+            <button id="openCreate" class="btn primary" data-i18n="createRoom"></button>
             <div class="divider"></div>
-            <div class="field"><label for="joinCode">Room code</label><input id="joinCode" maxlength="6" autocomplete="off" placeholder="ABC234" style="text-transform:uppercase"></div>
-            <button id="joinRoom" class="btn">Join room</button>
-            <button id="leaveRoom" class="btn hidden">Leave room</button>
-            <button id="endRoom" class="btn danger hidden">End room for everyone</button>
-            <p id="firebaseNotice" class="notice hidden">Multiplayer needs your Firebase configuration. See README.md.</p>
+            <div class="field"><label for="joinCode" data-i18n="roomCode"></label><input id="joinCode" maxlength="6" autocomplete="off" placeholder="ABC234" dir="ltr" style="text-transform:uppercase"></div>
+            <button id="joinRoom" class="btn" data-i18n="joinRoom"></button>
+            <button id="leaveRoom" class="btn hidden" data-i18n="leaveRoom"></button>
+            <button id="endRoom" class="btn danger hidden" data-i18n="endRoom"></button>
+            <p id="firebaseNotice" class="notice hidden" data-i18n="fbNotice"></p>
           </div>
         </section>
 
         <section class="panel">
-          <h2>Players <span id="playerCount" class="mini"></span></h2>
-          <div id="players" class="players"><p class="help">Create or join a room to see players.</p></div>
+          <h2><span data-i18n="players"></span> <span id="playerCount" class="mini"></span></h2>
+          <div id="players" class="players"></div>
         </section>
 
         <section class="panel">
-          <h2>Live activity</h2>
-          <div id="feed" class="feed"><p class="help">Marks and wins will appear here.</p></div>
-          <details><summary>How it works</summary><ol class="steps help"><li>Choose a topic or join a room.</li><li>Click a square when you hear the phrase.</li><li>Get five across, down, or diagonally.</li><li>Shared Board gives everyone one card; Individual Cards gives each player a different card.</li><li>The host can start a new card or reset the game for everyone.</li></ol></details>
+          <h2 data-i18n="activity"></h2>
+          <div id="feed" class="feed"></div>
+          <details><summary data-i18n="how"></summary><ol class="steps help"><li data-i18n="how1"></li><li data-i18n="how2"></li><li data-i18n="how3"></li><li data-i18n="how4"></li><li data-i18n="how5"></li></ol></details>
         </section>
       </aside>
     </div>
   </main>
 
   <div id="createModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="createTitle">
-    <div class="modal-card"><h2 id="createTitle">Create multiplayer room</h2><div class="stack">
-      <div class="field"><label for="createLang">Language</label><select id="createLang"></select></div>
-      <div class="field"><label for="createTopic">Topic</label><select id="createTopic"></select></div>
-      <div class="field"><label for="createMode">Game mode</label><select id="createMode"><option value="shared">Shared board — everyone marks one card</option><option value="individual">Individual cards — competitive bingo</option></select></div>
-      <p class="help">A six-character room code and invite link will be created. Up to a small team works well with this demo.</p>
-    </div><div class="modal-actions"><button id="cancelCreate" class="btn">Cancel</button><button id="createRoom" class="btn primary">Create room</button></div></div>
+    <div class="modal-card"><h2 id="createTitle" data-i18n="createTitle"></h2><div class="stack">
+      <div class="field"><label for="createLang" data-i18n="cardLang"></label><select id="createLang"></select></div>
+      <div class="field"><label for="createTopic" data-i18n="topic"></label><select id="createTopic"></select></div>
+      <div class="field"><label for="createMode" data-i18n="gameMode"></label><select id="createMode"><option value="shared" data-i18n="modeShared"></option><option value="individual" data-i18n="modeIndividual"></option></select></div>
+      <p class="help" data-i18n="createHelp"></p>
+    </div><div class="modal-actions"><button id="cancelCreate" class="btn" data-i18n="cancel"></button><button id="createRoom" class="btn primary" data-i18n="createRoom"></button></div></div>
+  </div>
+
+  <div id="langModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="langTitle">
+    <div class="modal-card"><h2 id="langTitle" data-i18n="settings.title"></h2><div class="stack">
+      <div class="field"><label for="siteLang" data-i18n="settings.site"></label><select id="siteLang"></select></div>
+      <div class="field"><label for="cardLang" data-i18n="settings.cards"></label><select id="cardLang"></select></div>
+      <p id="langRoomNote" class="help hidden" data-i18n="settings.roomNote"></p>
+    </div><div class="modal-actions"><button id="langDone" class="btn primary" data-i18n="settings.done"></button></div></div>
   </div>
 
   <div id="hostModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="hostModalTitle">
@@ -96,14 +107,13 @@
 
 <script type="module">
   import { firebaseConfig } from './firebase-config.js';
-  import { TOPICS, LANGS, TOPIC_LABELS, WORK_TOPICS } from './topics.js';
+  import { LANGUAGES, TOPIC_KEYS, translate, topicData, detectLanguage } from './languages/index.js';
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
   import { getAuth, signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
   import { getDatabase, ref, get, set, update, remove, onValue, onDisconnect, push, runTransaction, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js';
 
-
   const $ = id => document.getElementById(id);
-  const els = ['topic','newCard','resetMarks','print','board','win','status','soloTab','multiTab','soloControls','multiControls','playerName','openCreate','joinCode','joinRoom','leaveRoom','players','playerCount','feed','roomBanner','roomCode','roomMode','roomHost','copyInvite','createModal','createTopic','createMode','cancelCreate','createRoom','startSolo','connectionDot','connectionText','firebaseNotice','lang','createLang','endRoom','hostModal','hostModalTitle','hostModalBody','hostModalActions'].reduce((o,id)=>(o[id]=$(id),o),{});
+  const els = ['topic','newCard','resetMarks','print','board','win','status','soloTab','multiTab','soloControls','multiControls','playerName','openCreate','joinCode','joinRoom','leaveRoom','endRoom','players','playerCount','feed','roomBanner','roomCode','roomMode','roomHost','copyInvite','createModal','createTopic','createLang','createMode','cancelCreate','createRoom','startSolo','connectionDot','connectionText','firebaseNotice','hostModal','hostModalTitle','hostModalBody','hostModalActions','langBtn','langBtnText','langModal','siteLang','cardLang','langRoomNote','langDone'].reduce((o,id)=>(o[id]=$(id),o),{});
   const configured = firebaseConfig.apiKey && !firebaseConfig.apiKey.includes('REPLACE_ME');
   let app, auth, db, uid = null, roomCode = null, room = null, unsubscribers = [], soloBoard = [], soloMarks = {}, soloSeed = Date.now().toString();
   // Room lifecycle: hosts can end or hand over a room; if the host is away for HOST_GRACE_MS the
@@ -111,106 +121,149 @@
   const HOST_GRACE_MS = 2 * 60 * 1000, TOUCH_EVERY_MS = 60 * 1000;
   let hostTimer = null, lastTouch = 0, claimingHost = false, endedByMe = false;
 
-  function hash(str){ let h=2166136261; for(let i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,16777619)} return h>>>0 }
-  function rng(seed){ let a=hash(seed); return ()=>{a+=0x6D2B79F5;let t=a;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296} }
-  function shuffled(items,seed){ const a=[...items],r=rng(seed); for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]]} return a }
-  // Word list for a language + topic; unknown topics (e.g. the retired Atlas Copco one) fall back to Mixed.
-  function topicData(lang,key){
-    const L=TOPICS[lang]?lang:'en';
-    if(key!=='mixed'&&TOPICS[L][key])return TOPICS[L][key];
-    return { free:TOPICS[L].ai.free, words:[...new Set(WORK_TOPICS.flatMap(k=>TOPICS[L][k].words))] };
+  // ---- Language settings: one place for website language and card language ----
+  // siteLang: interface text. cardPref: 'auto' (= follow siteLang) or a language code for bingo phrases.
+  let siteLang = pickLang(localStorage.getItem('bingoSiteLang')) || detectLanguage();
+  let cardPref = localStorage.getItem('bingoCardLang') || 'auto';
+  if (cardPref !== 'auto' && !LANGUAGES[cardPref]) cardPref = 'auto';
+  let lastStatus = null;
+  function pickLang(l){ return LANGUAGES[l] ? l : null }
+  const t = (key, vars) => translate(siteLang, key, vars);
+  function soloCardLang(){ return cardPref === 'auto' ? siteLang : cardPref }
+  function langLabel(code){ return LANGUAGES[code]?.label || code }
+
+  function applyI18n(){
+    document.documentElement.lang = siteLang; document.documentElement.dir = LANGUAGES[siteLang].dir;
+    document.querySelectorAll('[data-i18n]').forEach(e => e.textContent = t(e.dataset.i18n));
+    document.querySelectorAll('[data-i18n-ph]').forEach(e => e.placeholder = t(e.dataset.i18nPh));
+    document.querySelectorAll('[data-i18n-title]').forEach(e => e.title = t(e.dataset.i18nTitle));
+    document.querySelectorAll('[data-i18n-aria]').forEach(e => e.setAttribute('aria-label', t(e.dataset.i18nAria)));
+    els.langBtnText.textContent = langLabel(siteLang);
+    for (const sel of [els.topic, els.createTopic]) [...sel.options].forEach(o => o.textContent = t(`topic.${o.value}`));
+    const auto = [...els.cardLang.options].find(o => o.value === 'auto'); if (auto) auto.textContent = t('settings.same', { lang: langLabel(siteLang) });
+    if (lastStatus) els.status.textContent = t(lastStatus.key, lastStatus.vars);
+    syncRoomUi(); renderBoard(); renderPlayers(); renderFeed();
   }
-  function makeBoard(topicKey,seed,playerId='',lang='en'){ const t=topicData(lang,topicKey); const words=shuffled(t.words,`${seed}:${playerId}`).slice(0,24); words.splice(12,0,t.free); return words }
-  function currentLang(){ return room ? (room.meta.lang||'en') : els.lang.value }
+  function openLangSettings(){ els.siteLang.value = siteLang; els.cardLang.value = cardPref; els.langRoomNote.classList.toggle('hidden', !room); els.langModal.classList.add('show') }
+  function saveLangSettings(){
+    const newSite = pickLang(els.siteLang.value) || 'en', newPref = els.cardLang.value;
+    const cardsChange = !room && (newPref === 'auto' ? newSite : newPref) !== soloCardLang();
+    siteLang = newSite; cardPref = newPref; localStorage.setItem('bingoSiteLang', siteLang); localStorage.setItem('bingoCardLang', cardPref);
+    els.langModal.classList.remove('show'); applyI18n(); if (cardsChange) freshSolo();
+  }
+
+  // ---- Board ----
+  function hash(str){ let h=2166136261; for(let i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,16777619)} return h>>>0 }
+  function rng(seed){ let a=hash(seed); return ()=>{a+=0x6D2B79F5;let x=a;x=Math.imul(x^x>>>15,x|1);x^=x+Math.imul(x^x>>>7,x|61);return((x^x>>>14)>>>0)/4294967296} }
+  function shuffled(items,seed){ const a=[...items],r=rng(seed); for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]]} return a }
+  function makeBoard(topicKey,seed,playerId='',lang='en'){ const d=topicData(lang,topicKey); const words=shuffled(d.words,`${seed}:${playerId}`).slice(0,24); words.splice(12,0,d.free); return words }
+  function currentLang(){ return room ? (pickLang(room.meta.lang)||'en') : soloCardLang() }
   function initials(name){ return name.trim().split(/\s+/).slice(0,2).map(x=>x[0]?.toUpperCase()).join('')||'?' }
   function cleanName(){ return (els.playerName.value||localStorage.getItem('bingoName')||'Guest').trim().slice(0,24) }
   function cleanCode(v){ return v.toUpperCase().replace(/[^A-Z2-9]/g,'').slice(0,6) }
   function randomCode(){ const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; const a=new Uint32Array(6); crypto.getRandomValues(a); return [...a].map(n=>chars[n%chars.length]).join('') }
-  function setStatus(text,type=''){ els.status.textContent=text; els.status.className=`status ${type}`.trim() }
-  function currentTopic(){ return room ? room.meta.topic : els.topic.value }
+  // Status messages are stored as keys so they re-translate when the language changes.
+  function setStatus(key,type='',vars={}){ lastStatus={key,vars}; els.status.textContent=t(key,vars); els.status.className=`status ${type}`.trim() }
   function currentMarks(){ if(!room) return soloMarks; if(room.meta.mode==='shared') return room.sharedMarks||{}; return room.players?.[uid]?.marks||{} }
-  function currentBoard(){ if(!room) return soloBoard; const playerSeed=room.meta.mode==='individual'?uid:''; return makeBoard(room.meta.topic,room.meta.seed,playerSeed,room.meta.lang||'en') }
+  function currentBoard(){ if(!room) return soloBoard; const playerSeed=room.meta.mode==='individual'?uid:''; return makeBoard(room.meta.topic,room.meta.seed,playerSeed,currentLang()) }
   function winnerLines(marks){ const hit=i=>i===12||!!marks[i]; const lines=[]; for(let r=0;r<5;r++)lines.push([0,1,2,3,4].map(c=>r*5+c)); for(let c=0;c<5;c++)lines.push([0,1,2,3,4].map(r=>r*5+c)); lines.push([0,6,12,18,24],[4,8,12,16,20]); return lines.filter(line=>line.every(hit)) }
+  const escapeHtml=s=>String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
 
   function renderBoard(){
-    const words=currentBoard(), marks=currentMarks(), lang=currentLang(); els.board.replaceChildren(); els.board.lang=lang; els.board.dir=LANGS[lang]?.dir||'ltr';
+    const words=currentBoard(), marks=currentMarks(), lang=currentLang(); els.board.replaceChildren(); els.board.lang=lang; els.board.dir=LANGUAGES[lang]?.dir||'ltr';
     words.forEach((word,i)=>{ const b=document.createElement('button'); b.className=`cell ${i===12?'free marked':''} ${marks[i]?'marked':''}`.trim(); b.type='button'; b.dataset.index=i; b.setAttribute('aria-pressed',i===12||!!marks[i]); b.innerHTML=`<span>${escapeHtml(word)}</span><span class="check">✓</span>`;
       if(room?.meta.mode==='shared' && marks[i]?.name){ const by=document.createElement('span');by.className='by';by.textContent=marks[i].name;b.append(by) }
       if(i===12)b.disabled=true; else b.addEventListener('click',()=>toggleMark(i)); els.board.append(b) });
-    const won=winnerLines(marks).length>0; els.win.classList.toggle('show',won); updateHostControls();
+    els.win.classList.toggle('show',winnerLines(marks).length>0); updateHostControls();
   }
-  const escapeHtml=s=>s.replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
 
   async function toggleMark(i){
     if(!room){ soloMarks[i]=soloMarks[i]?null:true; if(!soloMarks[i])delete soloMarks[i]; saveSolo(); renderBoard(); return }
     if(!uid)return;
     const marks=currentMarks(), wasMarked=!!marks[i], name=cleanName();
     try{
-      if(room.meta.mode==='shared'){
-        const p=ref(db,`rooms/${roomCode}/sharedMarks/${i}`); wasMarked?await remove(p):await set(p,{uid,name,at:serverTimestamp()});
-      }else{
-        const p=ref(db,`rooms/${roomCode}/players/${uid}/marks/${i}`); wasMarked?await remove(p):await set(p,true);
-      }
-      await addActivity(wasMarked?`${name} unmarked “${currentBoard()[i]}”`:`${name} marked “${currentBoard()[i]}”`); touchRoom();
+      if(room.meta.mode==='shared'){ const p=ref(db,`rooms/${roomCode}/sharedMarks/${i}`); wasMarked?await remove(p):await set(p,{uid,name,at:serverTimestamp()}) }
+      else{ const p=ref(db,`rooms/${roomCode}/players/${uid}/marks/${i}`); wasMarked?await remove(p):await set(p,true) }
+      await addActivity(wasMarked?'act.unmarked':'act.marked',{name,word:currentBoard()[i]}); touchRoom();
       const prospective={...marks}; if(wasMarked)delete prospective[i]; else prospective[i]=true;
       if(!wasMarked && winnerLines(prospective).length) await claimWin();
-    }catch(e){ setStatus(friendlyError(e),'error') }
+    }catch(e){ showError(e) }
   }
-  async function claimWin(){ const name=cleanName(); const w=ref(db,`rooms/${roomCode}/winners/${uid}`); const tx=await runTransaction(w,current=>current||{name,at:Date.now()}); if(tx.committed)await addActivity(`🎉 ${name} got BINGO!`) }
-  async function addActivity(text){ if(!roomCode||!db)return; const p=push(ref(db,`rooms/${roomCode}/activity`)); return set(p,{text,uid,at:serverTimestamp()}) }
-  function saveSolo(){ localStorage.setItem('bingoSolo',JSON.stringify({lang:els.lang.value,topic:els.topic.value,seed:soloSeed,marks:soloMarks})) }
-  function freshSolo(){ room=null; roomCode=null; soloSeed=crypto.randomUUID(); soloMarks={}; soloBoard=makeBoard(els.topic.value,soloSeed,'',els.lang.value); saveSolo(); syncRoomUi(); renderBoard(); setStatus('Fresh solo card created.','success') }
-  function resetSoloMarks(){ soloMarks={};saveSolo();renderBoard();setStatus('Marks reset.','success') }
+  async function claimWin(){ const name=cleanName(); const w=ref(db,`rooms/${roomCode}/winners/${uid}`); const tx=await runTransaction(w,current=>current||{name,at:Date.now()}); if(tx.committed)await addActivity('act.bingo',{name}) }
+  // Activity is stored as a message key + values, so each player reads it in their own language.
+  // `text` (English) is kept for the database rules and older clients.
+  async function addActivity(key,vars={}){ if(!roomCode||!db)return; const p=push(ref(db,`rooms/${roomCode}/activity`)); return set(p,{k:key,v:vars,text:translate('en',key,vars).slice(0,160),uid,at:serverTimestamp()}) }
+  function saveSolo(){ localStorage.setItem('bingoSolo',JSON.stringify({lang:soloCardLang(),topic:els.topic.value,seed:soloSeed,marks:soloMarks})) }
+  function freshSolo(){ room=null; roomCode=null; soloSeed=crypto.randomUUID(); soloMarks={}; soloBoard=makeBoard(els.topic.value,soloSeed,'',soloCardLang()); saveSolo(); syncRoomUi(); renderBoard(); setStatus('st.freshSolo','success') }
+  function resetSoloMarks(){ soloMarks={};saveSolo();renderBoard();setStatus('st.marksReset','success') }
 
-  function populateTopics(){ const add=(sel,v,t)=>{const o=document.createElement('option');o.value=v;o.textContent=t;sel.append(o)}; Object.entries(TOPIC_LABELS).forEach(([k,t])=>{add(els.topic,k,t);add(els.createTopic,k,t)}); Object.entries(LANGS).forEach(([k,l])=>{add(els.lang,k,l.label);add(els.createLang,k,l.label)}) }
-  function loadSolo(){ try{const s=JSON.parse(localStorage.getItem('bingoSolo')); if(s&&TOPIC_LABELS[s.topic]){els.topic.value=s.topic;if(LANGS[s.lang])els.lang.value=s.lang;soloSeed=s.seed;soloMarks=s.marks||{}}}catch{} soloBoard=makeBoard(els.topic.value,soloSeed,'',els.lang.value) }
+  function populateSelects(){
+    const add=(sel,v,txt)=>{const o=document.createElement('option');o.value=v;o.textContent=txt;sel.append(o)};
+    TOPIC_KEYS.forEach(k=>{add(els.topic,k,k);add(els.createTopic,k,k)});
+    add(els.cardLang,'auto','auto');
+    Object.values(LANGUAGES).forEach(l=>{add(els.siteLang,l.code,l.label);add(els.cardLang,l.code,l.label);add(els.createLang,l.code,l.label)});
+  }
+  function loadSolo(){ try{const s=JSON.parse(localStorage.getItem('bingoSolo')); if(s&&TOPIC_KEYS.includes(s.topic)&&s.lang===soloCardLang()){els.topic.value=s.topic;soloSeed=s.seed;soloMarks=s.marks||{}}}catch{} soloBoard=makeBoard(els.topic.value,soloSeed,'',soloCardLang()) }
   function showTab(multi){ els.soloTab.classList.toggle('active',!multi);els.multiTab.classList.toggle('active',multi);els.soloControls.classList.toggle('hidden',multi);els.multiControls.classList.toggle('hidden',!multi);if(multi&&!configured)els.firebaseNotice.classList.remove('hidden') }
   function syncRoomUi(){
     const active=!!room; els.roomBanner.classList.toggle('show',active); els.leaveRoom.classList.toggle('hidden',!active); els.joinRoom.classList.toggle('hidden',active); els.openCreate.classList.toggle('hidden',active); els.joinCode.parentElement.classList.toggle('hidden',active);
     els.endRoom.classList.toggle('hidden',!active||room.meta.hostId!==uid);
-    els.connectionDot.classList.toggle('on',active);els.connectionText.textContent=active?`Live · ${roomCode}`:'Solo mode'; els.topic.disabled=active; els.lang.disabled=active;
-    if(active){els.roomCode.textContent=roomCode;els.roomMode.textContent=`${room.meta.mode==='shared'?'Shared board':'Individual cards'} · ${LANGS[room.meta.lang||'en']?.label||'English'}`;els.roomHost.textContent=`Hosted by ${room.meta.hostName}`;els.topic.value=TOPIC_LABELS[room.meta.topic]?room.meta.topic:'mixed';els.lang.value=LANGS[room.meta.lang]?room.meta.lang:'en';showTab(true)}
-    else{els.players.innerHTML='<p class="help">Create or join a room to see players.</p>';els.playerCount.textContent='';els.feed.innerHTML='<p class="help">Marks and wins will appear here.</p>'}
+    els.connectionDot.classList.toggle('on',active);els.connectionText.textContent=active?t('conn.live',{code:roomCode}):t('conn.solo'); els.topic.disabled=active;
+    if(active){els.roomCode.textContent=roomCode;els.roomMode.textContent=`${t(room.meta.mode==='shared'?'roomShared':'roomIndividual')} · ${langLabel(currentLang())}`;els.roomHost.textContent=t('hostedBy',{name:room.meta.hostName});els.topic.value=TOPIC_KEYS.includes(room.meta.topic)?room.meta.topic:'mixed';showTab(true)}
     updateHostControls();
   }
-  function updateHostControls(){ const isHost=room?.meta.hostId===uid; els.newCard.textContent=room?'New game':'New card'; els.newCard.disabled=!!room&&!isHost;els.resetMarks.disabled=!!room&&!isHost }
-  function renderPlayers(){ const ps=Object.entries(room?.players||{}).filter(([,p])=>p?.name); els.playerCount.textContent=ps.length?`(${ps.length})`:''; els.players.replaceChildren(); if(!ps.length){els.players.innerHTML='<p class="help">Waiting for players…</p>';return} ps.sort((a,b)=>(b[1].joinedAt||0)-(a[1].joinedAt||0)).forEach(([id,p])=>{const row=document.createElement('div');row.className='player';row.innerHTML=`<span class="avatar">${escapeHtml(initials(p.name))}</span><span class="player-meta"><span class="name">${escapeHtml(p.name)}</span><br><span class="mini">${id===uid?'You · ':''}${p.online===false?'Away':'Online'}</span></span>${id===room.meta.hostId?'<span class="host">HOST</span>':''}`;els.players.append(row)}) }
-  function renderFeed(){ const events=Object.values(room?.activity||{}).sort((a,b)=>(b.at||0)-(a.at||0)).slice(0,20);els.feed.replaceChildren();if(!events.length){els.feed.innerHTML='<p class="help">No activity yet.</p>';return}events.forEach(e=>{const d=document.createElement('div');d.className='event';const t=e.at?new Date(e.at).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'';d.innerHTML=`<span>•</span><span class="event-text">${escapeHtml(e.text)}</span><time>${t}</time>`;els.feed.append(d)}) }
+  function updateHostControls(){ const isHost=room?.meta.hostId===uid; els.newCard.textContent=t(room?'newGame':'newCard'); els.newCard.disabled=!!room&&!isHost;els.resetMarks.disabled=!!room&&!isHost }
+  function renderPlayers(){
+    if(!room){ els.playerCount.textContent=''; els.players.innerHTML=`<p class="help">${escapeHtml(t('playersEmpty'))}</p>`; return }
+    const ps=Object.entries(room.players||{}).filter(([,p])=>p?.name); els.playerCount.textContent=ps.length?`(${ps.length})`:''; els.players.replaceChildren();
+    if(!ps.length){els.players.innerHTML=`<p class="help">${escapeHtml(t('waiting'))}</p>`;return}
+    ps.sort((a,b)=>(b[1].joinedAt||0)-(a[1].joinedAt||0)).forEach(([id,p])=>{const row=document.createElement('div');row.className='player';row.innerHTML=`<span class="avatar">${escapeHtml(initials(p.name))}</span><span class="player-meta"><span class="name">${escapeHtml(p.name)}</span><br><span class="mini">${id===uid?escapeHtml(t('you'))+' · ':''}${escapeHtml(t(p.online===false?'away':'online'))}</span></span>${id===room.meta.hostId?`<span class="host">${escapeHtml(t('host'))}</span>`:''}`;els.players.append(row)})
+  }
+  function renderFeed(){
+    if(!room){ els.feed.innerHTML=`<p class="help">${escapeHtml(t('feedEmpty'))}</p>`; return }
+    const events=Object.values(room.activity||{}).sort((a,b)=>(b.at||0)-(a.at||0)).slice(0,20);els.feed.replaceChildren();
+    if(!events.length){els.feed.innerHTML=`<p class="help">${escapeHtml(t('noActivity'))}</p>`;return}
+    events.forEach(e=>{const d=document.createElement('div');d.className='event';const time=e.at?new Date(e.at).toLocaleTimeString(siteLang,{hour:'2-digit',minute:'2-digit'}):'';const text=e.k?t(e.k,e.v||{}):(e.text||'');d.innerHTML=`<span>•</span><span class="event-text">${escapeHtml(text)}</span><time>${time}</time>`;els.feed.append(d)})
+  }
 
+  // ---- Firebase / rooms ----
   async function initFirebase(){
     if(!configured)return false;
     try{ app=initializeApp(firebaseConfig);auth=getAuth(app);db=getDatabase(app); await signInAnonymously(auth); await new Promise(resolve=>{const off=onAuthStateChanged(auth,u=>{if(u){uid=u.uid;off();resolve()}})}); return true }
-    catch(e){setStatus(`Firebase connection failed: ${friendlyError(e)}`,'error');return false}
+    catch(e){setStatus('st.fbFailed','error',{err:errorText(e)});return false}
   }
-  async function requireFirebase(){ if(db&&uid)return true; els.firebaseNotice.classList.remove('hidden');setStatus('Add your Firebase project configuration before using multiplayer.','error');return false }
+  async function requireFirebase(){ if(db&&uid)return true; els.firebaseNotice.classList.remove('hidden');setStatus('st.needConfig','error');return false }
   async function createRoom(){
-    if(!await requireFirebase())return; const name=cleanName(); if(!name){setStatus('Enter your name first.','error');return} localStorage.setItem('bingoName',name);els.createRoom.disabled=true;
+    if(!await requireFirebase())return; const name=cleanName(); if(!name){setStatus('st.enterName','error');return} localStorage.setItem('bingoName',name);els.createRoom.disabled=true;
     try{ let code, snap; do{code=randomCode();snap=await get(ref(db,`rooms/${code}/meta`))}while(snap.exists()); const seed=crypto.randomUUID(); const now=Date.now();
       await set(ref(db,`rooms/${code}/meta`),{hostId:uid,hostName:name,topic:els.createTopic.value,lang:els.createLang.value,mode:els.createMode.value,seed,createdAt:now,lastActive:serverTimestamp(),version:1});
-      await set(ref(db,`rooms/${code}/players/${uid}`),{name,online:true,joinedAt:now,marks:{}}); els.createModal.classList.remove('show'); await connectRoom(code); await addActivity(`${name} created the room`)
-    }catch(e){setStatus(friendlyError(e),'error')}finally{els.createRoom.disabled=false}
+      await set(ref(db,`rooms/${code}/players/${uid}`),{name,online:true,joinedAt:now,marks:{}}); els.createModal.classList.remove('show'); await connectRoom(code); await addActivity('act.created',{name})
+    }catch(e){showError(e)}finally{els.createRoom.disabled=false}
   }
   async function joinRoom(codeInput){
-    if(!await requireFirebase())return; const name=cleanName(),code=cleanCode(codeInput||els.joinCode.value);if(!name){setStatus('Enter your name first.','error');return}if(code.length!==6){setStatus('Enter the six-character room code.','error');return}localStorage.setItem('bingoName',name);
-    try{const snap=await get(ref(db,`rooms/${code}/meta`));if(!snap.exists()){setStatus('Room not found. Check the code and try again.','error');return}await update(ref(db,`rooms/${code}/players/${uid}`),{name,online:true,joinedAt:Date.now()});await connectRoom(code);await addActivity(`${name} joined the room`);touchRoom(true)}catch(e){setStatus(friendlyError(e),'error')}
+    if(!await requireFirebase())return; const name=cleanName(),code=cleanCode(codeInput||els.joinCode.value);if(!name){setStatus('st.enterName','error');return}if(code.length!==6){setStatus('st.enterCode','error');return}localStorage.setItem('bingoName',name);
+    try{const snap=await get(ref(db,`rooms/${code}/meta`));if(!snap.exists()){setStatus('st.notFound','error');return}await update(ref(db,`rooms/${code}/players/${uid}`),{name,online:true,joinedAt:Date.now()});await connectRoom(code);await addActivity('act.joined',{name});touchRoom(true)}catch(e){showError(e)}
   }
   async function connectRoom(code){
     disconnectListeners();roomCode=code;endedByMe=false; const roomRef=ref(db,`rooms/${code}`); const playerRef=ref(db,`rooms/${code}/players/${uid}`);
     // Re-arm presence on every (re)connect so a host who drops and comes back is "Online" again.
     unsubscribers.push(onValue(ref(db,'.info/connected'),async s=>{ if(s.val()!==true||roomCode!==code)return; try{await onDisconnect(playerRef).update({online:false,lastSeen:serverTimestamp()});await update(playerRef,{online:true})}catch{} }));
     let first=true;
-    unsubscribers.push(onValue(roomRef,s=>{if(!s.exists()){const mine=endedByMe;leaveRoom(false,mine?'You ended the room.':'This room has ended.',mine?'success':'error');return}room=s.val();syncRoomUi();renderBoard();renderPlayers();renderFeed();if(first){setStatus(`Connected to room ${code}.`,'success');first=false}maybeClaimHost()}));
+    unsubscribers.push(onValue(roomRef,s=>{if(!s.exists()){const mine=endedByMe;leaveRoom(false,mine?'st.youEnded':'st.ended',mine?'success':'error');return}room=s.val();syncRoomUi();renderBoard();renderPlayers();renderFeed();if(first){setStatus('st.connected','success',{code});first=false}maybeClaimHost()}));
     clearInterval(hostTimer);hostTimer=setInterval(maybeClaimHost,15000);
     const url=new URL(location.href);url.searchParams.set('room',code);history.replaceState(null,'',url)
   }
   function disconnectListeners(){unsubscribers.forEach(off=>off());unsubscribers=[];clearInterval(hostTimer);hostTimer=null}
-  async function leaveRoom(removeSelf=true,msg='Left multiplayer room.',type='success'){ const old=roomCode;disconnectListeners();closeModal();if(db&&old&&uid){const pRef=ref(db,`rooms/${old}/players/${uid}`);try{await onDisconnect(pRef).cancel()}catch{}if(removeSelf){try{await remove(pRef)}catch{}}}room=null;roomCode=null;history.replaceState(null,'',location.pathname);syncRoomUi();renderBoard();setStatus(msg,type) }
-  async function hostNewGame(){ if(!room||room.meta.hostId!==uid)return;try{await update(ref(db,`rooms/${roomCode}`),{'meta/seed':crypto.randomUUID(),sharedMarks:null,winners:null,activity:null});const players=room.players||{};await Promise.all(Object.keys(players).map(id=>remove(ref(db,`rooms/${roomCode}/players/${id}/marks`))));await addActivity(`${cleanName()} started a new game`);touchRoom(true)}catch(e){setStatus(friendlyError(e),'error')} }
-  async function hostReset(){ if(!room||room.meta.hostId!==uid)return;try{await update(ref(db,`rooms/${roomCode}`),{sharedMarks:null,winners:null});await Promise.all(Object.keys(room.players||{}).map(id=>remove(ref(db,`rooms/${roomCode}/players/${id}/marks`))));await addActivity(`${cleanName()} reset all marks`);touchRoom(true)}catch(e){setStatus(friendlyError(e),'error')} }
+  async function leaveRoom(removeSelf=true,msgKey='st.left',type='success'){ const old=roomCode;disconnectListeners();closeModal();if(db&&old&&uid){const pRef=ref(db,`rooms/${old}/players/${uid}`);try{await onDisconnect(pRef).cancel()}catch{}if(removeSelf){try{await remove(pRef)}catch{}}}room=null;roomCode=null;history.replaceState(null,'',location.pathname);syncRoomUi();renderBoard();renderPlayers();renderFeed();setStatus(msgKey,type) }
+  async function hostNewGame(){ if(!room||room.meta.hostId!==uid)return;try{await update(ref(db,`rooms/${roomCode}`),{'meta/seed':crypto.randomUUID(),sharedMarks:null,winners:null,activity:null});const players=room.players||{};await Promise.all(Object.keys(players).map(id=>remove(ref(db,`rooms/${roomCode}/players/${id}/marks`))));await addActivity('act.newGame',{name:cleanName()});touchRoom(true)}catch(e){showError(e)} }
+  async function hostReset(){ if(!room||room.meta.hostId!==uid)return;try{await update(ref(db,`rooms/${roomCode}`),{sharedMarks:null,winners:null});await Promise.all(Object.keys(room.players||{}).map(id=>remove(ref(db,`rooms/${roomCode}/players/${id}/marks`))));await addActivity('act.reset',{name:cleanName()});touchRoom(true)}catch(e){showError(e)} }
+  function errorText(e){ const code=e?.code||''; if(code.includes('permission-denied'))return t('err.permission'); if(code.includes('auth'))return t('err.auth'); return e?.message||t('err.generic') }
+  function showError(e){ lastStatus=null; els.status.textContent=errorText(e); els.status.className='status error' }
 
   // Keeps meta/lastActive fresh (at most once a minute) so the nightly cleanup only removes idle rooms.
   function touchRoom(force=false){ if(!roomCode||!db)return; const n=Date.now(); if(!force&&n-lastTouch<TOUCH_EVERY_MS)return; lastTouch=n; update(ref(db,`rooms/${roomCode}/meta`),{lastActive:serverTimestamp()}).catch(()=>{}) }
 
+  // ---- Host dialogs: end room, hand over, auto-takeover ----
   function closeModal(){ els.hostModal.classList.remove('show') }
   function para(text){ const p=document.createElement('p');p.className='help';p.textContent=text;return p }
   function openModal(title,body,actions){
@@ -220,19 +273,19 @@
   }
   // Other players, online first, then whoever joined earliest.
   function otherPlayers(){ return Object.entries(room?.players||{}).filter(([id,p])=>id!==uid&&p?.name).sort((a,b)=>((b[1].online!==false)-(a[1].online!==false))||((a[1].joinedAt||0)-(b[1].joinedAt||0))) }
-  function openEndRoom(){ openModal('End room for everyone?',[para('This deletes the room with its marks and activity. Everyone in it goes back to solo mode.')],[['Cancel','',closeModal],['End room','danger',endRoom]]) }
-  async function endRoom(){ if(!room||room.meta.hostId!==uid)return; endedByMe=true; try{await remove(ref(db,`rooms/${roomCode}`));closeModal()}catch(e){endedByMe=false;setStatus(friendlyError(e),'error')} }
+  function openEndRoom(){ openModal(t('m.endTitle'),[para(t('m.endBody'))],[[t('cancel'),'',closeModal],[t('m.endBtn'),'danger',endRoom]]) }
+  async function endRoom(){ if(!room||room.meta.hostId!==uid)return; endedByMe=true; try{await remove(ref(db,`rooms/${roomCode}`));closeModal()}catch(e){endedByMe=false;showError(e)} }
   function openLeave(){
     if(!room||room.meta.hostId!==uid){leaveRoom(true);return}
     const others=otherPlayers();
-    if(!others.length){ openModal('Leave the room?',[para('You are the only player. End the room to delete it now, or just leave: an idle room is deleted automatically after 24 hours.')],[['Cancel','',closeModal],['Just leave','',()=>leaveRoom(true)],['End room','danger',endRoom]]); return }
-    const field=document.createElement('div');field.className='field';const label=document.createElement('label');label.htmlFor='handoverTo';label.textContent='Hand over host to';const sel=document.createElement('select');sel.id='handoverTo';
-    others.forEach(([id,p])=>{const o=document.createElement('option');o.value=id;o.textContent=`${p.name}${p.online===false?' (away)':''}`;sel.append(o)}); field.append(label,sel);
-    openModal('You are the host',[para('Hand the room over so the game can go on without you, or end it for everyone.'),field],[['Cancel','',closeModal],['End room for everyone','danger',endRoom],['Hand over & leave','primary',()=>handOver(sel.value)]]);
+    if(!others.length){ openModal(t('m.leaveTitle'),[para(t('m.alone'))],[[t('cancel'),'',closeModal],[t('m.justLeave'),'',()=>leaveRoom(true)],[t('m.endBtn'),'danger',endRoom]]); return }
+    const field=document.createElement('div');field.className='field';const label=document.createElement('label');label.htmlFor='handoverTo';label.textContent=t('m.handTo');const sel=document.createElement('select');sel.id='handoverTo';
+    others.forEach(([id,p])=>{const o=document.createElement('option');o.value=id;o.textContent=`${p.name}${p.online===false?t('m.awaySuffix'):''}`;sel.append(o)}); field.append(label,sel);
+    openModal(t('m.hostTitle'),[para(t('m.hostBody')),field],[[t('cancel'),'',closeModal],[t('endRoom'),'danger',endRoom],[t('m.handLeave'),'primary',()=>handOver(sel.value)]]);
   }
   async function handOver(toId){
     const p=room?.players?.[toId]; if(!p?.name||room.meta.hostId!==uid)return;
-    try{ await update(ref(db,`rooms/${roomCode}/meta`),{hostId:toId,hostName:p.name}); await addActivity(`${cleanName()} handed host to ${p.name}`); await leaveRoom(true) }catch(e){setStatus(friendlyError(e),'error')}
+    try{ await update(ref(db,`rooms/${roomCode}/meta`),{hostId:toId,hostName:p.name}); await addActivity('act.handed',{name:cleanName(),to:p.name}); await leaveRoom(true) }catch(e){showError(e)}
   }
   // If the host left without handing over, or has been away for HOST_GRACE_MS, the online player who
   // joined first takes over. The database rules enforce the same condition, so races are harmless.
@@ -244,18 +297,19 @@
     if(!gone)return;
     const next=Object.entries(players).filter(([id,p])=>p?.name&&p.online!==false&&id!==hostId).sort((a,b)=>((a[1].joinedAt||0)-(b[1].joinedAt||0))||a[0].localeCompare(b[0]))[0];
     if(next?.[0]!==uid)return;
-    claimingHost=true; try{ await update(ref(db,`rooms/${roomCode}/meta`),{hostId:uid,hostName:me.name}); await addActivity(`${me.name} is now the host`) }catch{} finally{claimingHost=false}
+    claimingHost=true; try{ await update(ref(db,`rooms/${roomCode}/meta`),{hostId:uid,hostName:me.name}); await addActivity('act.nowHost',{name:me.name}) }catch{} finally{claimingHost=false}
   }
-  function friendlyError(e){ const code=e?.code||'';if(code.includes('permission-denied'))return 'Permission denied. Publish database.rules.json in Firebase.';if(code.includes('auth'))return 'Anonymous sign-in failed. Enable it in Firebase Authentication.';return e?.message||'Something went wrong.' }
 
-  populateTopics();els.playerName.value=localStorage.getItem('bingoName')||'';loadSolo();renderBoard();syncRoomUi();
-  els.topic.addEventListener('change',freshSolo);els.lang.addEventListener('change',freshSolo);els.newCard.addEventListener('click',()=>room?hostNewGame():freshSolo());els.resetMarks.addEventListener('click',()=>room?hostReset():resetSoloMarks());els.print.addEventListener('click',()=>print());
-  els.soloTab.addEventListener('click',()=>showTab(false));els.multiTab.addEventListener('click',()=>showTab(true));els.startSolo.addEventListener('click',freshSolo);
-  els.openCreate.addEventListener('click',async()=>{if(await requireFirebase()){els.createTopic.value=els.topic.value;els.createLang.value=els.lang.value;els.createModal.classList.add('show')}});els.cancelCreate.addEventListener('click',()=>els.createModal.classList.remove('show'));els.createModal.addEventListener('click',e=>{if(e.target===els.createModal)els.createModal.classList.remove('show')});els.createRoom.addEventListener('click',createRoom);
-  els.joinCode.addEventListener('input',e=>e.target.value=cleanCode(e.target.value));els.joinRoom.addEventListener('click',()=>joinRoom());els.leaveRoom.addEventListener('click',openLeave);els.endRoom.addEventListener('click',openEndRoom);els.hostModal.addEventListener('click',e=>{if(e.target===els.hostModal)closeModal()});
-  els.copyInvite.addEventListener('click',async()=>{const u=new URL(location.href);u.searchParams.set('room',roomCode);await navigator.clipboard.writeText(u.href);setStatus('Invite link copied.','success')});
+  // ---- Start ----
+  populateSelects(); els.playerName.value=localStorage.getItem('bingoName')||''; loadSolo(); applyI18n();
+  els.langBtn.addEventListener('click',openLangSettings); els.langDone.addEventListener('click',saveLangSettings); els.langModal.addEventListener('click',e=>{if(e.target===els.langModal)saveLangSettings()});
+  els.topic.addEventListener('change',freshSolo); els.newCard.addEventListener('click',()=>room?hostNewGame():freshSolo()); els.resetMarks.addEventListener('click',()=>room?hostReset():resetSoloMarks()); els.print.addEventListener('click',()=>print());
+  els.soloTab.addEventListener('click',()=>showTab(false)); els.multiTab.addEventListener('click',()=>showTab(true)); els.startSolo.addEventListener('click',freshSolo);
+  els.openCreate.addEventListener('click',async()=>{if(await requireFirebase()){els.createTopic.value=els.topic.value;els.createLang.value=soloCardLang();els.createModal.classList.add('show')}}); els.cancelCreate.addEventListener('click',()=>els.createModal.classList.remove('show')); els.createModal.addEventListener('click',e=>{if(e.target===els.createModal)els.createModal.classList.remove('show')}); els.createRoom.addEventListener('click',createRoom);
+  els.joinCode.addEventListener('input',e=>e.target.value=cleanCode(e.target.value)); els.joinRoom.addEventListener('click',()=>joinRoom()); els.leaveRoom.addEventListener('click',openLeave); els.endRoom.addEventListener('click',openEndRoom); els.hostModal.addEventListener('click',e=>{if(e.target===els.hostModal)closeModal()});
+  els.copyInvite.addEventListener('click',async()=>{const u=new URL(location.href);u.searchParams.set('room',roomCode);await navigator.clipboard.writeText(u.href);setStatus('st.inviteCopied','success')});
 
-  if(configured){ initFirebase().then(async ok=>{if(!ok)return;const q=new URLSearchParams(location.search).get('room');if(q){showTab(true);els.joinCode.value=cleanCode(q);setStatus(`Invite detected for room ${cleanCode(q)}. Enter your name and select Join room.`)}}) } else { els.firebaseNotice.classList.remove('hidden') }
+  if(configured){ initFirebase().then(async ok=>{if(!ok)return;const q=new URLSearchParams(location.search).get('room');if(q){showTab(true);els.joinCode.value=cleanCode(q);setStatus('st.invite','',{code:cleanCode(q)})}}) } else { els.firebaseNotice.classList.remove('hidden') }
 </script>
 </body>
 </html>

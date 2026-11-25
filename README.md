@@ -9,7 +9,7 @@ A browser-based 5×5 buzzword bingo game with:
 - Live player list, activity feed, synchronized marks, and BINGO announcements
 - Host-controlled new game and reset
 - Topics: Mixed, Meeting/Corporate, AI, Cloud/DevOps, Office/Work, Christmas and Advent
-- Languages: English, Czech, German, French, Spanish, Italian and Arabic (right-to-left). Each language has its own culturally written word lists in `topics.js`, not translations
+- Languages: English, Czech, German, French, Spanish, Italian and Arabic (right-to-left). The 🌐 button sets the website language and the card language in one place. Each language lives in `languages/<code>.js`: interface text plus word lists written for that culture, not translations. See `docs/ADDING_A_LANGUAGE.md`
 - Invite links (`?room=ABC234`), printing, and PDF export
 
 The frontend is plain HTML/CSS/JavaScript. Multiplayer uses Firebase Anonymous Authentication and Firebase Realtime Database.
@@ -112,7 +112,8 @@ Do not store confidential company information in room names, player names, or ac
 ## Files
 
 - `index.html` — complete user interface and game logic
-- `topics.js` — word lists per language and topic
+- `languages/` — one file per language (interface text + bingo phrases) and the registry `index.js`
+- `scripts/check-languages.mjs` — validates every language file
 - `firebase-config.js` — your Firebase web app configuration
 - `database.rules.json` — Realtime Database security rules
 - `README.md` — setup and deployment guide

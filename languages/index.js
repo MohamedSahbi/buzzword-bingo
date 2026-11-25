@@ -1,0 +1,38 @@
+// Language registry. To add a language: create languages/<code>.js (copy en.js) and add it below.
+// docs/ADDING_A_LANGUAGE.md has the full checklist; scripts/check-languages.mjs validates the result.
+import en from './en.js';
+import cs from './cs.js';
+import de from './de.js';
+import fr from './fr.js';
+import es from './es.js';
+import it from './it.js';
+import ar from './ar.js';
+
+export const LANGUAGES = { en, cs, de, fr, es, it, ar };
+
+// Topic keys in picker order. "mixed" is built from WORK_TOPICS of the chosen language.
+export const TOPIC_KEYS = ['mixed', 'meeting', 'ai', 'cloud', 'office', 'christmas', 'advent'];
+export const WORK_TOPICS = ['meeting', 'ai', 'cloud', 'office'];
+
+// Website text with {placeholders}; falls back to English, then to the key itself.
+export function translate(lang, key, vars = {}) {
+  const s = LANGUAGES[lang]?.ui[key] ?? LANGUAGES.en.ui[key] ?? key;
+  return s.replace(/\{(\w+)\}/g, (_, k) => (vars[k] ?? `{${k}}`));
+}
+
+// Card phrases for a language + topic; unknown topics (e.g. the retired Atlas Copco one) fall back to Mixed.
+export function topicData(lang, key) {
+  const L = LANGUAGES[lang] ? lang : 'en';
+  const t = LANGUAGES[L].topics;
+  if (key !== 'mixed' && t[key]) return t[key];
+  return { free: t.ai.free, words: [...new Set(WORK_TOPICS.flatMap(k => t[k].words))] };
+}
+
+// First supported language from the browser's preferences, e.g. "cs-CZ" → "cs".
+export function detectLanguage() {
+  for (const l of navigator.languages || [navigator.language || 'en']) {
+    const base = String(l).toLowerCase().split('-')[0];
+    if (LANGUAGES[base]) return base;
+  }
+  return 'en';
+}
