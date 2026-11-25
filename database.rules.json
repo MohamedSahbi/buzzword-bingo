@@ -33,7 +33,7 @@
           ".write": "auth != null && root.child('rooms').child($roomCode).child('meta').child('hostId').val() === auth.uid",
           "$index": {
             ".write": "auth != null",
-            ".validate": "!newData.exists() || ($index.matches(/^(?:[0-9]|1[0-9]|2[0-4])$/) && newData.hasChildren(['uid','name']))"
+            ".validate": "!newData.exists() || ($index.matches(/^([0-9]|1[0-9]|2[0-4])$/) && newData.hasChildren(['uid','name']))"
           }
         },
         "winners": {
