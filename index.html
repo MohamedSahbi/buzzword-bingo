@@ -35,7 +35,7 @@
   .boss th{background:#f3f3f3;color:#666;font-weight:400}.boss td.lbl{text-align:start}.boss tr:last-child td{font-weight:600}.boss-hint{padding:6px 12px;color:#888;font-size:12px;border-top:1px solid #e1e1e1}
   .topbar{flex-wrap:wrap}
   .menu-btn,.m-only,.m-label,.tabbar{display:none}
-  .cell{hyphens:auto;-webkit-hyphens:auto;overflow-wrap:anywhere}
+  .cell{hyphens:auto;-webkit-hyphens:auto;overflow-wrap:normal;word-break:normal}
   /* ---------- phones: app bar + ☰ menu + bottom tabs ---------- */
   @media(max-width:720px){
     body{padding-bottom:76px}
@@ -264,6 +264,11 @@
   function currentMarks(){ if(!room) return soloMarks; if(room.meta.mode==='shared') return room.sharedMarks||{}; return room.players?.[uid]?.marks||{} }
   function currentBoard(){ if(!room) return soloBoard; const playerSeed=room.meta.mode==='individual'?uid:''; return makeBoard(room.meta.topic,room.meta.seed,playerSeed,currentLang()) }
   function winnerLines(marks){ const hit=i=>i===12||!!marks[i]; const lines=[]; for(let r=0;r<5;r++)lines.push([0,1,2,3,4].map(c=>r*5+c)); for(let c=0;c<5;c++)lines.push([0,1,2,3,4].map(r=>r*5+c)); lines.push([0,6,12,18,24],[4,8,12,16,20]); return lines.filter(line=>line.every(hit)) }
+  // Shrink a square's text until its longest word fits (hyphenation isn't available in every browser/language).
+  function fitCells(){ els.board.querySelectorAll('.cell > span:first-child').forEach(sp=>{ const cell=sp.parentElement; sp.style.fontSize=''; let size=parseFloat(getComputedStyle(cell).fontSize); const max=cell.clientWidth-6; let guard=20; while(guard-- && size>7 && (sp.scrollWidth>max || [...sp.textContent.split(/\s+/)].some(w=>measure(w,size,cell)>max))){ size-=0.5; sp.style.fontSize=size+'px'; } }) }
+  const _m=document.createElement('canvas').getContext('2d');
+  function measure(word,size,el){ const cs=getComputedStyle(el); _m.font=`${cs.fontWeight} ${size}px ${cs.fontFamily}`; return _m.measureText(word).width }
+  addEventListener('resize',()=>requestAnimationFrame(fitCells));
   const escapeHtml=s=>String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
 
   function renderBoard(){
@@ -271,7 +276,7 @@
     words.forEach((word,i)=>{ const b=document.createElement('button'); b.className=`cell ${i===12?'free marked':''} ${marks[i]?'marked':''}`.trim(); b.type='button'; b.dataset.index=i; b.setAttribute('aria-pressed',i===12||!!marks[i]); b.innerHTML=`<span>${escapeHtml(word)}</span><span class="check">✓</span>`;
       if(room?.meta.mode==='shared' && marks[i]?.name){ const by=document.createElement('span');by.className='by';by.textContent=marks[i].name;b.append(by) }
       if(i===12)b.disabled=true; else b.addEventListener('click',()=>toggleMark(i)); els.board.append(b) });
-    els.win.classList.toggle('show',winnerLines(marks).length>0); updateHostControls();
+    els.win.classList.toggle('show',winnerLines(marks).length>0); updateHostControls(); requestAnimationFrame(fitCells);
   }
 
   async function toggleMark(i){

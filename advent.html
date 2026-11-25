@@ -125,7 +125,7 @@
   .loading{display:none}body.is-loading .loading{display:grid;place-items:center;font-size:42px;height:40vh;animation:spin 2.4s linear infinite}
   body.is-loading #calendarView,body.is-loading #banner{visibility:hidden}
   @keyframes spin{to{transform:rotate(360deg)}}
-  .sq{hyphens:auto;-webkit-hyphens:auto;overflow-wrap:anywhere}
+  .sq{hyphens:auto;-webkit-hyphens:auto;overflow-wrap:normal}
   /* ---------- phones: app bar + ☰ menu + bottom tabs ---------- */
   @media (max-width:720px){
     body{padding-bottom:78px}.shell{padding:0 10px 12px}
@@ -273,6 +273,15 @@
     }
   }
 
+  // Shrink text in a square until its longest word fits (no mid-word breaks).
+  const _m = document.createElement('canvas').getContext('2d');
+  function fitSquares(root) {
+    root.querySelectorAll('.sq').forEach(el => {
+      el.style.fontSize = ''; const cs = getComputedStyle(el); let size = parseFloat(cs.fontSize); const max = el.clientWidth - 8;
+      const widest = s => { _m.font = `${cs.fontWeight} ${s}px ${cs.fontFamily}`; return Math.max(...el.textContent.split(/\s+/).map(w => _m.measureText(w).width)); };
+      while (size > 7 && widest(size) > max) { size -= 0.5; el.style.fontSize = size + 'px'; }
+    });
+  }
   // ---------- snow ----------
   for (let i = 0; i < 45; i++) { const f = document.createElement('i'); const s = 3 + Math.random() * 5; f.style.cssText = `left:${Math.random() * 100}%;width:${s}px;height:${s}px;--dx:${(Math.random() * 80 - 40).toFixed(0)}px;animation-duration:${(8 + Math.random() * 10).toFixed(1)}s;animation-delay:-${(Math.random() * 18).toFixed(1)}s`; $('snow').appendChild(f); }
 
@@ -412,6 +421,7 @@
     function drawCard() {
       card.replaceChildren();
       cardPhrases.forEach(p => { const b = document.createElement('button'); b.type = 'button'; b.className = `sq${p === star ? ' star' : ''}${found.has(p) ? ' ok' : ''}`; b.textContent = (p === star ? '★ ' : '') + p; b.onclick = () => tap(p, b); card.appendChild(b); });
+      requestAnimationFrame(() => fitSquares(card));
     }
     function lines() { const L = []; for (let r = 0; r < 4; r++) { L.push([0, 1, 2, 3].map(c => r * 4 + c)); L.push([0, 1, 2, 3].map(x => x * 4 + r)); } L.push([0, 5, 10, 15], [3, 6, 9, 12]); return L; }
     function tap(p, el) {

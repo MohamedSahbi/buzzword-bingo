@@ -14,9 +14,12 @@ export const LANGUAGES = { en, cs, de, fr, es, it, ar };
 export const TOPIC_KEYS = ['mixed', 'meeting', 'ai', 'cloud', 'office', 'christmas', 'advent'];
 export const WORK_TOPICS = ['meeting', 'ai', 'cloud', 'office'];
 
+// Built-in English for the newest keys, in case a browser still has an older cached language file.
+const FALLBACK = { 'nav.card': 'Card', 'nav.play': 'Play together', 'nav.activity': 'Activity', 'menu.open': 'Menu' };
+
 // Website text with {placeholders}; falls back to English, then to the key itself.
 export function translate(lang, key, vars = {}) {
-  const s = LANGUAGES[lang]?.ui[key] ?? LANGUAGES.en.ui[key] ?? key;
+  const s = LANGUAGES[lang]?.ui[key] ?? LANGUAGES.en.ui[key] ?? FALLBACK[key] ?? key;
   return s.replace(/\{(\w+)\}/g, (_, k) => (vars[k] ?? `{${k}}`));
 }
 
