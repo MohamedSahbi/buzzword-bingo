@@ -11,8 +11,10 @@ import ja from './ja.js';
 import ptBR from './pt-BR.js';
 import hi from './hi.js';
 import ptPT from './pt-PT.js';
+import fil from './fil.js';
+import ko from './ko.js';
 
-export const LANGUAGES = { en, cs, de, fr, es, it, ar, 'pt-BR': ptBR, 'pt-PT': ptPT, ja, hi };
+export const LANGUAGES = { en, cs, de, fr, es, it, ar, 'pt-BR': ptBR, 'pt-PT': ptPT, ja, ko, hi, fil };
 
 // Topic keys in picker order. "mixed" is built from WORK_TOPICS of the chosen language.
 export const TOPIC_KEYS = ['mixed', 'meeting', 'ai', 'cloud', 'office', 'christmas', 'advent'];

@@ -5,9 +5,14 @@ import ptBR from './ui/pt-BR.js';
 import hi from './ui/hi.js';
 import ptPT from './ui/pt-PT.js';
 import fr from './ui/fr.js';
+import de from './ui/de.js';
+import it from './ui/it.js';
+import ar from './ui/ar.js';
+import fil from './ui/fil.js';
+import ko from './ui/ko.js';
 
 export const ADVENT_UI = {
-  ja, 'pt-BR': ptBR, 'pt-PT': ptPT, hi, fr,
+  ja, 'pt-BR': ptBR, 'pt-PT': ptPT, hi, fr, de, it, ar, fil, ko,
   en: {
     title: 'Advent calendar', back: '← Buzzword Bingo', culture: 'Calendar',
     opensOn: 'The calendar opens on 1 December.', previewBtn: 'Play the practice calendar', previewOn: 'Practice calendar: every door is open and scores are not saved. The real calendar has different doors.', previewExit: 'Back to the real calendar',

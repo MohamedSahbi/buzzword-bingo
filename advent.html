@@ -198,7 +198,10 @@
 
 <script type="module">
   import { ADVENT_UI } from './advent/ui.js';
-  import { CALENDARS, SEASON_CODES } from './advent/index.js';
+  import * as ADVENT_INDEX from './advent/index.js';
+  const { CALENDARS } = ADVENT_INDEX;
+  // A cached older module may lack SEASON_CODES for a few minutes after a deploy.
+  const SEASON_CODES = ADVENT_INDEX.SEASON_CODES || ['en', 'cs'];
   import { firebaseConfig } from './firebase-config.js';
   import { mountPredict } from './advent/predict.js';
   import { PREDICT_IDEAS } from './advent/predict-ideas.js';

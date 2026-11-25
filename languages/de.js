@@ -283,7 +283,7 @@ export default {
       ],
     },
     christmas: {
-      free: "★ Früher war mehr Lametta",
+      free: "★ Alle Jahre wieder",
       words: [
         "Heiligabend",
         "Bescherung",

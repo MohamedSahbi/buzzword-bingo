@@ -1,0 +1,2 @@
+// Idee per le previsioni della Vigilia (italiano).
+export default ['Qualcuno si addormenta sul divano', 'Lo zio rifà la barzelletta di sempre', 'La nonna dice “mangia ancora”', 'Sfida panettone contro pandoro', 'Arriva un regalo riciclato', 'Qualcuno riceve calzini', 'Qualcuno fa tombola', 'Si gioca a sette e mezzo', 'Danno Una poltrona per due', 'Cade una pallina dall’albero', 'Il cane ruba qualcosa dal tavolo', 'Qualcuno dice “non ce la faccio più”', 'Il cenone finisce dopo mezzanotte', 'Videochiamata con i parenti lontani', 'Il gatto si arrampica sull’albero'];
