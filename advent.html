@@ -30,6 +30,7 @@
   .pill{display:inline-flex;align-items:center;gap:6px;border:1px solid #ffffff33;background:#ffffff14;color:var(--snow);border-radius:999px;padding:7px 12px;font:inherit;font-size:13px;cursor:pointer}
   select.pill{appearance:auto}
   select.pill option{color:#111}
+  .banner .ic{font-size:18px;margin-right:2px}.banner .cd{font-variant-numeric:tabular-nums;font-weight:800;color:var(--gold)}
   .banner{background:#ffffff14;border:1px solid #ffffff2a;border-radius:14px;padding:10px 14px;margin-bottom:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:14px}
   .layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px;align-items:start}
   .doors{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:12px}
@@ -121,6 +122,12 @@
   .sq.star{border:2px solid var(--gold);background:#fff6df}
   .sq.star.ok{background:#f7d985}
   .stats{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
+  .gbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px;padding:8px 10px;background:#fff;border:1px solid var(--line);border-radius:14px;z-index:5}
+  .gbar .stat{padding:4px 10px}.gbar .stat b{font-size:18px}.gbar .toggle{font-size:13px}
+  .live{width:12px;height:12px;border-radius:50%;background:#c9d6e3;flex:none}.live.on{background:#d63a2f;box-shadow:0 0 0 0 #d63a2f88;animation:pulse 1.4s infinite}
+  @keyframes pulse{70%{box-shadow:0 0 0 10px #d63a2f00}100%{box-shadow:0 0 0 0 #d63a2f00}}
+  .go-big{margin:auto;border:0;border-radius:20px;background:var(--berry);color:#fff;font:inherit;font-size:22px;font-weight:900;padding:18px 34px;cursor:pointer;display:flex;align-items:center;gap:12px;box-shadow:0 8px 24px #b3261e55}
+  .go-big span{font-size:26px}.go-big:hover{filter:brightness(1.08)}
   .stat{background:#eef3f7;border-radius:10px;padding:6px 12px}
   .stat small{display:block;font-size:11px;color:var(--muted)}
   .stat b{font-size:20px}
@@ -169,7 +176,7 @@
     body[data-tab=cal] .side{display:none}
     body[data-tab=score] #calendarView>section,body[data-tab=score] #banner{display:none}
   }
-  @media (max-width:860px){.layout{grid-template-columns:1fr}.split{grid-template-columns:1fr}.feed{height:260px}}
+  @media (max-width:860px){.layout{grid-template-columns:1fr}.split{grid-template-columns:1fr}.feed{height:clamp(170px,30vh,260px)}.gbar{position:sticky;top:66px;box-shadow:0 6px 16px #0003}}
   @media (max-width:520px){.doors{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.door .num{width:40px;height:40px;font-size:18px}.door .lab{display:none}.items,.boxes{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 </head>
@@ -338,28 +345,40 @@
     $('title').innerHTML = `🎄 <span>${esc(t('title'))}</span>`;
     $('subtitle').textContent = C().tagline;
     $('navCal').textContent = t('nav_cal'); $('navScore').textContent = t('nav_score'); menuBtn.setAttribute('aria-label', t('menu')); $('practiceBtn').textContent = '🎯 ' + (preview ? t('previewExit') : t('previewBtn')); $('practiceBtn').classList.toggle('hidden', !metas[cal]);
-    syncSound(); renderBanner(); renderAngelEntry(); renderDoors(); renderSolo(); renderTeamStatic(); renderTeam();
+    syncSound(); renderBanner(); tickCountdown(); renderAngelEntry(); renderDoors(); renderSolo(); renderTeamStatic(); renderTeam();
   }
   function renderBanner() {
     const b = $('banner'); b.classList.add('hidden');
     if (preview || !metas[cal]) {
-      b.innerHTML = `<span>🎯 ${esc(t('previewOn'))}</span>${metas[cal] ? `<button class="pill" id="exitPreview">${esc(t('previewExit'))}</button>` : ''}`; b.classList.remove('hidden');
+      b.innerHTML = `<span class="ic">🎯</span><span>${esc(t('previewOn').split(/(?<=[.!?。])\s*/)[0])}</span>${metas[cal] ? `<button class="pill" id="exitPreview">${esc(t('previewExit'))}</button>` : ''}`; b.classList.remove('hidden');
       if (metas[cal]) $('exitPreview').onclick = () => { preview = false; history.replaceState(null, '', location.pathname); renderAll(); };
     }
     else if (predictDoor() && Date.now() >= releaseAt(predictDoor()) - 5 * 864e5 && Date.now() < releaseAt(predictDoor()) + 864e5) {
-      const pn = predictDoor(); b.innerHTML = `<span>⭐ ${esc(t('p_banner', { date: fmtDate(pn) }))}</span><button class="pill" id="goPredict">🔮 ${esc(t('p_create'))}</button>`; b.classList.remove('hidden');
+      const pn = predictDoor(); b.innerHTML = `<span class="ic">⭐</span><span>${esc(t('p_banner', { date: fmtDate(pn) }))}</span><button class="pill" id="goPredict">🔮 ${esc(t('p_create'))}</button>`; b.classList.remove('hidden');
       $('goPredict').onclick = () => openPredict(pn);
     }
-    else if (Date.now() < releaseAt(1)) { b.innerHTML = `<span>⏳ ${esc(t('opensOn'))}</span><button class="pill" id="goPreview">${esc(t('previewBtn'))}</button>`; b.classList.remove('hidden'); $('goPreview').onclick = () => { preview = true; const u = new URL(location.href); u.searchParams.set('preview', '1'); history.replaceState(null, '', u); renderAll(); }; }
+    else if (Date.now() >= releaseAt(1) && nextRelease()) {
+      const st = streakNow(); b.innerHTML = `<span class="cd" id="cdown"></span>${st > 1 ? `<span class="cd">🔥 ${st}</span>` : ''}`; b.classList.remove('hidden');
+    }
+    else if (Date.now() < releaseAt(1)) { b.innerHTML = `<span class="ic">⏳</span><span>${esc(t('opensOn'))}</span><span class="cd" id="cdown"></span><button class="pill" id="goPreview">${esc(t('previewBtn'))}</button>`; b.classList.remove('hidden'); $('goPreview').onclick = () => { preview = true; const u = new URL(location.href); u.searchParams.set('preview', '1'); history.replaceState(null, '', u); renderAll(); }; }
+  }
+  // Spoiler-free daily hook: countdown to the next door (no hint of its game) and the on-the-day streak.
+  let cdTimer = null;
+  function nextRelease() { return seasonMode() ? doorNums().map(releaseAt).filter(x => x > Date.now()).sort((a, b) => a - b)[0] : null; }
+  function streakNow() { const sc = loadScores(); let k = doorNums().filter(n => unlocked(n)).pop(), d = 0; if (k && !sc[k]?.onDay) k--; for (; k && sc[k]?.onDay; k--) d++; return d; }
+  function tickCountdown() {
+    clearInterval(cdTimer); const at = nextRelease(); if (!at) return;
+    const paint = () => { const el = $('cdown'); if (!el) return clearInterval(cdTimer); const ms = Math.max(0, at - Date.now()); if (!ms) { clearInterval(cdTimer); renderAll(); return; } const h = Math.floor(ms / 36e5), m = Math.floor(ms / 6e4) % 60, sec = Math.floor(ms / 1e3) % 60; el.textContent = `🎁 ${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`; };
+    paint(); cdTimer = setInterval(paint, 1000);
   }
   function renderDoors() {
     const scores = loadScores(), wrap = $('doors'); wrap.replaceChildren();
-    // Doors sit in a shuffled order with random wrapping, like a real Advent calendar (stable per culture and year).
-    shuffle(doorNums(), seeded(`${cal}:${seasonYear}:grid`)).forEach(n => {
+    // Doors in number order, all the same size; each keeps its own random wrapping paper (stable per culture).
+    doorNums().forEach(n => {
       const type = doorType(n), open = unlocked(n), done = seasonMode() && scores[n];
       const b = document.createElement('button'); b.type = 'button';
       const rnd = seeded(`${cal}:${n}:paper`), finale = type === 'predict';
-      b.className = `door ${PAPER[Math.floor(rnd() * PAPER.length)]}${finale ? ' big' : ''}${open ? '' : ' locked'}${isToday(n) ? ' today' : ''}${done ? ' done' : ''}`;
+      b.className = `door ${PAPER[Math.floor(rnd() * PAPER.length)]}${open ? '' : ' locked'}${isToday(n) ? ' today' : ''}${done ? ' done' : ''}`;
       b.style.setProperty('--rib', RIBBON[Math.floor(rnd() * RIBBON.length)]);
             // The game behind a door stays a surprise: only number, "today", points or the opening date are shown.
       const label = !open ? '🔒 ' + fmtDate(n) : done ? t('done', { pts: scores[n].pts }) : isToday(n) ? t('today') : '';
@@ -471,17 +490,16 @@
     const speedDiv = door.type === 'emoji' ? 350 : door.type === 'listen' ? 260 : 200;
 
     const voiceOk = door.type === 'listen' && 'speechSynthesis' in window;
-    root.innerHTML = `<div class="split"><div>
-        <div class="feed" id="feed"></div>
-        <div class="row">${door.type === 'listen' ? `<label class="toggle"><input type="checkbox" id="useVoice" ${voiceOk ? 'checked' : 'disabled'}> ${esc(t('voice'))}</label>` : ''}<button class="btn primary" id="go">▶ ${esc(t('start'))}</button><span class="muted" id="status"></span></div>
-      </div><div>
-        <div class="card" id="card"></div>
-        <div class="stats"><div class="stat"><small>${esc(t('points'))}</small><b id="pts">0</b></div><div class="stat"><small>${esc(t('found'))}</small><b id="fnd">0/${appearing.length}</b></div></div>
-        <p class="note" id="note"></p></div></div>`;
+    // One control bar (live status + score, pinned on phones); before the start the feed area IS the Start button.
+    root.innerHTML = `<div class="gbar"><span class="live" id="live"></span><span class="muted" id="status"></span><div class="grow"></div>
+        ${door.type === 'listen' ? `<label class="toggle"><input type="checkbox" id="useVoice" ${voiceOk ? 'checked' : 'disabled'}> ${esc(t('voice'))}</label>` : ''}
+        <div class="stat"><small>${esc(t('points'))}</small><b id="pts">0</b></div><div class="stat"><small>${esc(t('found'))}</small><b id="fnd">0/${appearing.length}</b></div></div>
+      <div class="split"><div class="feed" id="feed"><button class="go-big" id="go" type="button"><span>▶</span>${esc(t('start'))}</button></div>
+        <div><div class="card" id="card"></div><p class="note" id="note"></p></div></div>`;
     const card = $('card'), feed = $('feed'), note = msg => { $('note').textContent = msg; };
     function drawCard() {
       card.replaceChildren();
-      cardPhrases.forEach(p => { const b = document.createElement('button'); b.type = 'button'; b.className = `sq${p === star ? ' star' : ''}${found.has(p) ? ' ok' : ''}`; b.textContent = (p === star ? '★ ' : '') + p; b.onclick = () => tap(p, b); card.appendChild(b); });
+      cardPhrases.forEach(p => { const b = document.createElement('button'); b.type = 'button'; const starFound = p === star && found.has(p); b.className = `sq${starFound ? ' star' : ''}${found.has(p) ? ' ok' : ''}`; b.textContent = (starFound ? '★ ' : '') + p; b.onclick = () => tap(p, b); card.appendChild(b); });
       requestAnimationFrame(() => fitSquares(card));
     }
     function lines() { const L = []; for (let r = 0; r < 4; r++) { L.push([0, 1, 2, 3].map(c => r * 4 + c)); L.push([0, 1, 2, 3].map(x => x * 4 + r)); } L.push([0, 5, 10, 15], [3, 6, 9, 12]); return L; }
@@ -503,17 +521,18 @@
       seg.phrases.forEach(p => { if (appearedAt[p] === undefined) appearedAt[p] = Date.now(); });
       if (door.type === 'chat') { showChat(seg); }
       else if (door.type === 'emoji') {
-        const prev = segs[idx - 2]; feed.innerHTML = `<div class="riddle">${seg.emoji}<small>${idx} / ${segs.length}</small></div>${prev ? `<div class="past">${prev.emoji} = ${esc(prev.phrases[0])}</div>` : ''}`;
+        feed.innerHTML = `<div class="riddle">${seg.emoji}<small>${idx} / ${segs.length}</small></div>`;
       } else { feed.querySelectorAll('.cap.now').forEach(c => c.classList.remove('now')); const c = document.createElement('div'); c.className = 'cap now'; c.textContent = seg.text; feed.appendChild(c); }
       feed.scrollTop = feed.scrollHeight;
     }
     function end() {
-      if (ended) return; ended = true; running = false; clearTimeout(timer); try { speechSynthesis.cancel(); } catch {}
-      if (door.type === 'emoji') { const last = segs[segs.length - 1]; feed.insertAdjacentHTML('beforeend', `<div class="past">${last.emoji} = ${esc(last.phrases[0])}</div>`); }
+      if (ended) return; ended = true; running = false; $('live').classList.remove('on'); clearTimeout(timer); try { speechSynthesis.cancel(); } catch {}
+      // Answers only once the round is over.
+      if (door.type === 'emoji') feed.innerHTML = segs.map(s => `<div class="past">${s.emoji} = ${esc(s.phrases[0])}</div>`).join('');
       $('status').textContent = '';
       const grid = [0, 1, 2, 3].map(r => [0, 1, 2, 3].map(c => { const p = cardPhrases[r * 4 + c]; return found.has(p) ? (p === star ? '⭐' : '🎄') : '❄️'; }).join('')).join('\n');
       door.shareLine = `${t('t_' + door.type)} · ${found.size}/${appearing.length}${bingo ? ' · BINGO' : ''}\n${grid}`;
-      done({ parts: [[t('b_speed'), P.speed], [t('b_star'), P.star], [t('b_bingo'), P.bingo], [t('b_full'), P.full], [t('b_wrong'), P.wrong]] });
+      done({ parts: [[t('b_speed'), P.speed], ...(P.star ? [[t('b_star'), P.star]] : []), [t('b_bingo'), P.bingo], [t('b_full'), P.full], [t('b_wrong'), P.wrong]] });
     }
     // Pacing: chat lines every ~2.6s, emoji riddles every ~7s, listening follows the speech (or reading time).
     // ---- human chat feed ----
@@ -570,7 +589,7 @@
       const checkVoice = () => { const has = speechSynthesis.getVoices().some(v => C().voice.some(l => v.lang.replace('_', '-').toLowerCase().startsWith(l.toLowerCase()))); if (!has && speechSynthesis.getVoices().length) { $('useVoice').checked = false; $('useVoice').disabled = true; $('status').textContent = t('noVoice'); } };
       checkVoice(); speechSynthesis.onvoiceschanged = checkVoice;
     }
-    $('go').onclick = () => { if (running || ended) return; running = true; $('go').disabled = true; feed.replaceChildren(); next(); };
+    $('go').onclick = () => { if (running || ended) return; running = true; $('live').classList.add('on'); feed.replaceChildren(); next(); };
     drawCard();
     return () => { running = false; ended = true; clearTimeout(timer); try { speechSynthesis.cancel(); } catch {} };
   }

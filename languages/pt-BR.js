@@ -115,6 +115,8 @@ export default {
     "nav.play": "Jogar junto",
     "nav.activity": "Atividade",
     "menu.open": "Menu",
+    "hero.premise": "Ouviu um jargão na reunião? Marque. Quem completar uma linha primeiro ganha.",
+    "hero.solo": "Jogar sozinho",
     "share.native": "Compartilhar",
     "share.copy": "Copiar",
     "share.image": "Salvar imagem do resultado",

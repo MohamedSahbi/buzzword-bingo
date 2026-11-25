@@ -1,0 +1,2 @@
+// Nederlands: ideeën voor de voorspellingsbingo op Eerste Kerstdag (openbaar: alleen suggesties, geen antwoorden).
+export default ['Iemand valt in slaap op de bank', 'De stoppen slaan door', 'Het stokbrood is als eerste op', 'Iemand zegt „ik zit vol”', 'Ik krijg sokken', 'Er blijft vlees over', 'Home Alone staat op tv', 'De Top 2000 staat aan', 'Een kerstbal valt kapot', 'Het eten is later dan gepland', 'De hond krijgt een stukje vlees', 'Discussie bij een spelletje', 'Iemand begint over het weer', 'Restjes gaan mee naar huis', 'Er komt nog ijstaart na'];

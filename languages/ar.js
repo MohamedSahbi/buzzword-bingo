@@ -115,6 +115,8 @@ export default {
     "nav.play": "العب مع الآخرين",
     "nav.activity": "النشاط",
     "menu.open": "القائمة",
+    "hero.premise": "سمعت عبارة رنّانة في الاجتماع؟ علّمها. أول من يُكمل صفًّا يفوز.",
+    "hero.solo": "العب وحدك",
     "share.native": "مشاركة",
     "share.copy": "نسخ",
     "share.image": "حفظ صورة النتيجة",

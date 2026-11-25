@@ -115,6 +115,8 @@ export default {
     "nav.play": "साथ में खेलें",
     "nav.activity": "गतिविधि",
     "menu.open": "मेन्यू",
+    "hero.premise": "मीटिंग में कोई बज़वर्ड सुना? उसे टिक करें। पहली पूरी लाइन वाला जीतता है।",
+    "hero.solo": "अकेले खेलें",
     "share.native": "शेयर करें",
     "share.copy": "कॉपी करें",
     "share.image": "रिज़ल्ट की इमेज सेव करें",

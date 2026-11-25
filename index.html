@@ -69,6 +69,11 @@
     body[data-tab=play] #paneCard,body[data-tab=play] #paneActivity{display:none}
     body[data-tab=activity] #paneCard,body[data-tab=activity] #panePlay,body[data-tab=activity] #panePlayers{display:none}
   }
+    .hero{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:-6px 0 18px;padding:14px 18px;border-radius:16px;background:linear-gradient(100deg,#eaf2ff,#f6f9fc);border:1px solid var(--line)}
+    .hero .premise{margin:0;font-size:17px;font-weight:800;color:#1b2d40;flex:1 1 320px}
+    .hero-actions{display:flex;gap:8px;flex-wrap:wrap}.hero-actions .btn{flex:none;text-decoration:none}
+    .hero .btn.primary{background:var(--brand);color:#fff}.hero .btn.advent{background:#0d2236;color:#f2b84b}
+    @media (max-width:860px){.hero{margin:0 0 12px;padding:12px}.hero .premise{font-size:15px}.hero-actions{width:100%}.hero-actions .btn{flex:1;text-align:center}}
   </style>
 </head>
 <body>
@@ -85,6 +90,12 @@
         <div class="pill conn-pill"><span id="connectionDot" class="dot"></span><span id="connectionText"></span></div>
       </div>
     </header>
+
+    <!-- One-line premise and the two ways to play (plus the Advent calendar in season). -->
+    <section class="hero" id="hero"><p class="premise" data-i18n="hero.premise"></p>
+      <div class="hero-actions"><button id="heroSolo" class="btn primary" type="button">🎯 <span data-i18n="hero.solo"></span></button>
+        <button id="heroTeam" class="btn" type="button">👥 <span data-i18n="nav.play"></span></button>
+        <a id="heroAdvent" class="btn advent hidden" href="advent.html">🎄 <span data-i18n="advent.open"></span></a></div></section>
 
     <div class="layout">
       <section class="panel game" id="paneCard">
@@ -201,7 +212,7 @@
     if (lastStatus) els.status.textContent = t(lastStatus.key, lastStatus.vars);
     syncRoomUi(); renderBoard(); renderPlayers(); renderFeed();
   }
-  function openLangSettings(){ els.siteLang.value = siteLang; els.cardLang.value = cardPref; els.langRoomNote.classList.toggle('hidden', !room); els.langModal.classList.add('show') }
+  function openLangSettings(){ els.siteLang.value = siteLang; els.cardLang.value = cardPref; els.langRoomNote.classList.toggle('hidden', !room); els.cardLang.disabled = !!room; els.langModal.classList.add('show') }
   function saveLangSettings(){
     const newSite = pickLang(els.siteLang.value) || 'en', newPref = els.cardLang.value;
     const cardsChange = !room && (newPref === 'auto' ? newSite : newPref) !== soloCardLang();
@@ -333,7 +344,7 @@
     const active=!!room; els.roomBanner.classList.toggle('show',active); els.leaveRoom.classList.toggle('hidden',!active); els.joinRoom.classList.toggle('hidden',active); els.openCreate.classList.toggle('hidden',active); els.joinCode.parentElement.classList.toggle('hidden',active);
     els.endRoom.classList.toggle('hidden',!active||room.meta.hostId!==uid);
     els.connectionDot.classList.toggle('on',active);els.connectionText.textContent=active?t('conn.live',{code:roomCode}):t('conn.solo'); els.topic.disabled=active;
-    if(active){els.roomCode.textContent=roomCode;els.roomMode.textContent=`${t(room.meta.mode==='shared'?'roomShared':'roomIndividual')} · ${langLabel(currentLang())}`;els.roomHost.textContent=t('hostedBy',{name:room.meta.hostName});els.topic.value=TOPIC_KEYS.includes(room.meta.topic)?room.meta.topic:'mixed';showTab(true)}
+    if(active){els.roomCode.textContent=roomCode;els.roomMode.textContent=`${t(room.meta.mode==='shared'?'roomShared':'roomIndividual')} · 🔒 ${langLabel(currentLang())}`;els.roomHost.textContent=t('hostedBy',{name:room.meta.hostName});els.topic.value=TOPIC_KEYS.includes(room.meta.topic)?room.meta.topic:'mixed';showTab(true)}
     updateHostControls();
   }
   function updateHostControls(){ const isHost=room?.meta.hostId===uid; els.newCard.textContent=t(room?'newGame':'newCard'); els.newCard.disabled=!!room&&!isHost;els.resetMarks.disabled=!!room&&!isHost }
@@ -440,6 +451,11 @@
   els.soundBtn.addEventListener('click',toggleSound); els.bossBtn.addEventListener('click',()=>toggleBoss(true)); els.boss.addEventListener('click',()=>toggleBoss(false));
   els.langBtn.addEventListener('click',openLangSettings); els.langDone.addEventListener('click',saveLangSettings); els.langModal.addEventListener('click',e=>{if(e.target===els.langModal)saveLangSettings()});
   els.topic.addEventListener('change',freshSolo); els.newCard.addEventListener('click',()=>room?hostNewGame():freshSolo()); els.resetMarks.addEventListener('click',()=>room?hostReset():resetSoloMarks()); els.print.addEventListener('click',()=>print());
+  // Hero: solo jumps to the card, team opens the room controls (on phones via the bottom tabs).
+  const phone=()=>matchMedia('(max-width:860px)').matches;
+  $('heroSolo').addEventListener('click',()=>{ if(room) return; showTab(false); if(phone()) setTab('card'); els.board.scrollIntoView({behavior:'smooth',block:'center'}) });
+  $('heroTeam').addEventListener('click',()=>{ showTab(true); if(phone()) setTab('play'); else els.multiTab.scrollIntoView({behavior:'smooth',block:'center'}); setTimeout(()=>els.playerName.focus(),300) });
+  { const m=new Date().getMonth(); $('heroAdvent').classList.toggle('hidden', !(m===10||m===11||m===0)); }
   els.soloTab.addEventListener('click',()=>showTab(false)); els.multiTab.addEventListener('click',()=>showTab(true)); els.startSolo.addEventListener('click',freshSolo);
   els.openCreate.addEventListener('click',async()=>{if(await requireFirebase()){els.createTopic.value=els.topic.value;els.createLang.value=soloCardLang();els.createModal.classList.add('show')}}); els.cancelCreate.addEventListener('click',()=>els.createModal.classList.remove('show')); els.createModal.addEventListener('click',e=>{if(e.target===els.createModal)els.createModal.classList.remove('show')}); els.createRoom.addEventListener('click',createRoom);
   els.joinCode.addEventListener('input',e=>e.target.value=cleanCode(e.target.value)); els.joinRoom.addEventListener('click',()=>joinRoom()); els.leaveRoom.addEventListener('click',openLeave); els.endRoom.addEventListener('click',openEndRoom); els.hostModal.addEventListener('click',e=>{if(e.target===els.hostModal)closeModal()});

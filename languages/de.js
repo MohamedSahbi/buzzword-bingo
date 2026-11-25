@@ -115,6 +115,8 @@ export default {
     "nav.play": "Zusammen spielen",
     "nav.activity": "Aktivität",
     "menu.open": "Menü",
+    "hero.premise": "Fällt im Meeting ein Buzzword? Abhaken! Wer zuerst eine Reihe voll hat, gewinnt.",
+    "hero.solo": "Allein spielen",
     "share.native": "Teilen",
     "share.copy": "Kopieren",
     "share.image": "Ergebnis als Bild speichern",

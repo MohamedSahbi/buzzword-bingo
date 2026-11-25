@@ -115,6 +115,8 @@ export default {
     "nav.play": "Hrát s ostatními",
     "nav.activity": "Dění",
     "menu.open": "Menu",
+    "hero.premise": "Zazní na poradě otřepaná fráze? Odškrtni ji. Kdo má první celou řadu, vyhrává.",
+    "hero.solo": "Hrát sám",
     "share.native": "Sdílet",
     "share.copy": "Kopírovat",
     "share.image": "Uložit obrázek s výsledkem",

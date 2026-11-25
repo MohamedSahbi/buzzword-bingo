@@ -116,6 +116,8 @@ export default {
     "nav.play": "Maglaro nang sabay",
     "nav.activity": "Mga nangyayari",
     "menu.open": "Menu",
+    "hero.premise": "May narinig kang buzzword sa meeting? I-tick mo. Unang makabuo ng linya, panalo!",
+    "hero.solo": "Maglaro mag-isa",
     "share.native": "I-share",
     "share.copy": "Kopyahin",
     "share.image": "I-save ang result image",

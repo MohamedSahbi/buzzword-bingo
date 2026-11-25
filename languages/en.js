@@ -115,6 +115,8 @@ export default {
     "nav.play": "Play together",
     "nav.activity": "Activity",
     "menu.open": "Menu",
+    "hero.premise": "Hear a buzzword in a meeting? Tick it. First full line wins.",
+    "hero.solo": "Play solo",
     "share.native": "Share",
     "share.copy": "Copy",
     "share.image": "Save result image",

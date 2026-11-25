@@ -115,6 +115,8 @@ export default {
     "nav.play": "같이 하기",
     "nav.activity": "활동",
     "menu.open": "메뉴",
+    "hero.premise": "회의에서 자주 듣는 말이 나오면 체크! 먼저 한 줄을 완성하면 승리.",
+    "hero.solo": "혼자 하기",
     "share.native": "공유하기",
     "share.copy": "복사",
     "share.image": "결과 이미지 저장",

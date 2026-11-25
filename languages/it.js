@@ -115,6 +115,8 @@ export default {
     "nav.play": "Gioca insieme",
     "nav.activity": "Attività",
     "menu.open": "Menu",
+    "hero.premise": "Senti una parola di moda in riunione? Segnala. Vince chi completa per primo una linea.",
+    "hero.solo": "Gioca da solo",
     "share.native": "Condividi",
     "share.copy": "Copia",
     "share.image": "Salva l’immagine del risultato",

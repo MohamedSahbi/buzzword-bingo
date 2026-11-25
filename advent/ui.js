@@ -10,10 +10,12 @@ import it from './ui/it.js';
 import ar from './ui/ar.js';
 import fil from './ui/fil.js';
 import ko from './ui/ko.js';
+import nl from './ui/nl.js';
+import nlBE from './ui/nl-BE.js';
 import es from './ui/es.js';
 
 export const ADVENT_UI = {
-  ja, 'pt-BR': ptBR, 'pt-PT': ptPT, hi, fr, de, it, ar, fil, ko, es,
+  ja, 'pt-BR': ptBR, 'pt-PT': ptPT, hi, fr, de, it, ar, fil, ko, nl, 'nl-BE': nlBE, es,
   en: {
     shareNative: 'Share',
     shareAttach: "Picture saved: attach it to your post.",
@@ -22,9 +24,9 @@ export const ADVENT_UI = {
     opensOn: 'The calendar opens on 1 December.', previewBtn: 'Play the practice calendar', previewOn: 'Practice calendar: every door is open and scores are not saved. The real calendar has different doors.', previewExit: 'Back to the real calendar',
     locked: 'Opens on {date}', today: 'Today', done: '{pts} pts', play: 'Play', replay: 'Play again (practice)', backToCal: '← Calendar',
     t_chat: 'Chat bingo', t_listen: 'Listening bingo', t_emoji: 'Emoji riddles', t_wrap: 'Gift Wrap', t_predict: 'Prediction bingo',
-    h_chat: 'A group chat plays out. Tap a square when its phrase appears. Fast taps score more; wrong taps cost 5. The ★ square is worth +25.',
-    h_listen: 'Listen (or read the captions). Tap a square when you hear its phrase. The ★ square is worth +25.',
-    h_emoji: 'Each emoji riddle hides one square. Crack it and tap the square before the next riddle. The ★ square is worth +25.',
+    h_chat: 'A group chat plays out. Tap a square when its phrase appears. Fast taps score more; wrong taps cost 5.',
+    h_listen: 'Listen (or read the captions). Tap a square when you hear its phrase.',
+    h_emoji: 'Each emoji riddle hides one square. Crack it and tap the square before the next riddle.',
     h_wrap: 'Wrap 4 items that belong together into a gift box. Each box has a hidden tag. You have 4 rolls of tape.',
     h_predict: 'Prediction rooms are coming soon. Until then, play this day’s chat bingo.',
     start: 'Start', points: 'Points', found: 'Found', tapeLeft: 'Tape left', wrapBtn: 'Wrap', shuffle: 'Shuffle',
@@ -50,9 +52,9 @@ export const ADVENT_UI = {
     opensOn: 'Kalendář se otevře 1. prosince.', previewBtn: 'Hrát cvičný kalendář', previewOn: 'Cvičný kalendář: všechna okénka jsou otevřená a body se neukládají. Skutečný kalendář má jiná okénka.', previewExit: 'Zpět ke skutečnému kalendáři',
     locked: 'Otevře se {date}', today: 'Dnes', done: '{pts} b.', play: 'Hrát', replay: 'Hrát znovu (trénink)', backToCal: '← Kalendář',
     t_chat: 'Chatové bingo', t_listen: 'Bingo na poslech', t_emoji: 'Emoji hádanky', t_wrap: 'Balení dárků', t_predict: 'Bingo předpovědí',
-    h_chat: 'Odehraje se skupinový chat. Klepněte na políčko, jakmile se jeho fráze objeví. Rychlost = víc bodů, špatné klepnutí −5. Políčko ★ má +25.',
-    h_listen: 'Poslouchejte (nebo čtěte titulky). Klepněte na políčko, jakmile frázi uslyšíte. Políčko ★ má +25.',
-    h_emoji: 'Každá emoji hádanka skrývá jedno políčko. Rozluštěte ji a klepněte dřív, než přijde další. Políčko ★ má +25.',
+    h_chat: 'Odehraje se skupinový chat. Klepněte na políčko, jakmile se jeho fráze objeví. Rychlost = víc bodů, špatné klepnutí −5.',
+    h_listen: 'Poslouchejte (nebo čtěte titulky). Klepněte na políčko, jakmile frázi uslyšíte.',
+    h_emoji: 'Každá emoji hádanka skrývá jedno políčko. Rozluštěte ji a klepněte dřív, než přijde další.',
     h_wrap: 'Zabalte do dárku 4 věci, které k sobě patří. Každý dárek má skrytou jmenovku. Máte 4 role izolepy.',
     h_predict: 'Místnosti pro předpovědi brzy přidáme. Zatím si zahrajte chatové bingo k tomuto dni.',
     start: 'Začít', points: 'Body', found: 'Nalezeno', tapeLeft: 'Izolepa', wrapBtn: 'Zabalit', shuffle: 'Zamíchat',
