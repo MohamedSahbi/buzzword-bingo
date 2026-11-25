@@ -1,0 +1,37 @@
+name: Add a language
+description: Ask for Buzzword Bingo in another language (website and bingo phrases).
+title: "Add language: "
+labels: ["language-request"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks! When the maintainer approves this request, an AI agent drafts the language and opens a pull request.
+        A native speaker then reviews it before it goes live.
+  - type: input
+    id: code
+    attributes:
+      label: Language code
+      description: Two-letter ISO 639-1 code, e.g. pl, pt, nl, tr, uk
+      placeholder: pl
+    validations:
+      required: true
+  - type: input
+    id: name
+    attributes:
+      label: Language name
+      description: In English, e.g. Polish
+      placeholder: Polish
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes for the AI
+      description: Optional. Region or audience, e.g. "Brazilian Portuguese", "Moroccan office culture".
+  - type: checkboxes
+    id: review
+    attributes:
+      label: Review
+      options:
+        - label: I (or someone I know) can review the result as a native speaker
