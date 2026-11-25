@@ -1,0 +1,40 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "rooms": {
+      "$roomCode": {
+        ".read": "auth != null",
+        ".validate": "$roomCode.matches(/^[A-Z2-9]{6}$/)",
+        "meta": {
+          ".write": "auth != null && ((!data.exists() && newData.child('hostId').val() === auth.uid) || data.child('hostId').val() === auth.uid)",
+          ".validate": "newData.hasChildren(['hostId','hostName','topic','mode','seed','createdAt'])"
+        },
+        "players": {
+          "$uid": {
+            ".write": "auth != null && (auth.uid === $uid || root.child('rooms').child($roomCode).child('meta').child('hostId').val() === auth.uid)",
+            ".validate": "!newData.exists() || (newData.child('name').isString() && newData.child('name').val().length <= 24)"
+          }
+        },
+        "sharedMarks": {
+          ".write": "auth != null && root.child('rooms').child($roomCode).child('meta').child('hostId').val() === auth.uid",
+          "$index": {
+            ".write": "auth != null",
+            ".validate": "!newData.exists() || ($index.matches(/^(?:[0-9]|1[0-9]|2[0-4])$/) && newData.hasChildren(['uid','name']))"
+          }
+        },
+        "winners": {
+          ".write": "auth != null && root.child('rooms').child($roomCode).child('meta').child('hostId').val() === auth.uid",
+          "$uid": { ".write": "auth != null && auth.uid === $uid" }
+        },
+        "activity": {
+          ".write": "auth != null && root.child('rooms').child($roomCode).child('meta').child('hostId').val() === auth.uid",
+          "$event": {
+            ".write": "auth != null && newData.child('uid').val() === auth.uid",
+            ".validate": "!newData.exists() || (newData.child('text').isString() && newData.child('text').val().length <= 160)"
+          }
+        }
+      }
+    }
+  }
+}
