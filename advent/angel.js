@@ -1,10 +1,12 @@
 // "Anděl, nebo čert?" / "Nice or naughty?": a quick-fire side game on the Advent page, playable any day.
 // Everyday deeds flash up one by one; sort each into 😇 or 😈 before the timer runs out.
-// You score for agreeing with the book (Mikuláš's golden book, Santa's list…): +10 per match,
-// +5 for a fast answer, +5 per answer while on a streak of 3 or more matches.
+// Scoring (drains while you think): a match is worth +20 when the deed appears, falling with the timer bar to +5
+// at the last moment; ×1.5 on a streak of 3+ matches, ×2 on 6+. A wrong pick costs 5. Too slow: nothing.
 // Content per culture lives in advent/deeds/<code>.js; see advent/deeds/en.js for the format.
 
-const ROUNDS = 15, SECONDS = 4;
+const ROUNDS = 15, SECONDS = 4, MAX = 20, MIN = 5, WRONG = 5;
+const live = ms => Math.max(MIN, Math.round(MAX - (MAX - MIN) * Math.min(1, ms / (SECONDS * 1000))));
+const mult = streak => streak >= 6 ? 2 : streak >= 3 ? 1.5 : 1;
 
 export function mountAngel(root, ctx) {
   const { pack, esc, magic, sfx, bestKey, onExit, share: shareTo } = ctx;
@@ -27,33 +29,37 @@ export function mountAngel(root, ctx) {
     let i = 0, score = 0, streak = 0, answered = false, t0 = 0;
     const log = [];
     root.innerHTML = `<div class="angel-top"><span id="aRound"></span><span id="aStreak"></span><b id="aScore">0</b></div>
-      <div class="angel-bar"><i id="aBar"></i></div>
+      <div class="angel-bar"><i id="aBar"></i><b id="aLive"></b></div>
       <div class="angel-card" id="aCard"></div>
       <div class="angel-btns"><button class="angel-pick a" id="aA" type="button">😇<span>${esc(u.angel)}</span></button><button class="angel-pick d" id="aD" type="button">😈<span>${esc(u.devil)}</span></button></div>
       <p class="muted angel-keys">${esc(u.keys)}</p>`;
     const $ = id => root.querySelector('#' + id);
 
+    function countTo(el, from, to) { const t1 = performance.now(); const step = () => { const k = Math.min(1, (performance.now() - t1) / 400); el.textContent = Math.round(from + (to - from) * k); if (k < 1 && alive) requestAnimationFrame(step); }; requestAnimationFrame(step); el.classList.remove('bump'); void el.offsetWidth; if (to > from) el.classList.add('bump'); }
     function show() {
       if (!alive) return;
       if (i >= deck.length) return done();
       answered = false; t0 = performance.now();
       $('aRound').textContent = `${i + 1} / ${deck.length}`;
-      $('aStreak').textContent = streak >= 3 ? `🔥 ${streak}` : '';
+      $('aStreak').textContent = streak >= 3 ? `🔥 ${streak} · ×${mult(streak + 1)}` : '';
       const c = $('aCard'); c.className = 'angel-card in'; c.textContent = deck[i][0];
       $('aBar').style.transition = 'none'; $('aBar').style.width = '100%'; void $('aBar').offsetWidth;
       $('aBar').style.transition = `width ${SECONDS}s linear`; $('aBar').style.width = '0%';
-      clearInterval(timer); timer = setInterval(() => { if (performance.now() - t0 >= SECONDS * 1000) answer(null); }, 100);
+      const tick = () => { const ms = performance.now() - t0, v = Math.round(live(ms) * mult(streak + 1)); const l = $('aLive'); l.textContent = `+${v}`; l.style.color = ms > SECONDS * 650 ? '#b3261e' : ms > SECONDS * 350 ? '#a86500' : '#0f5132'; if (ms >= SECONDS * 1000) answer(null); };
+      clearInterval(timer); tick(); timer = setInterval(tick, 50);
     }
     function answer(pick) {
       if (answered || !alive) return; answered = true; clearInterval(timer);
       const [text, book] = deck[i], ms = performance.now() - t0, c = $('aCard');
       let pts = 0;
       if (pick === book) {
-        streak++; pts = 10 + (ms < 1500 ? 5 : 0) + (streak >= 3 ? 5 : 0); score += pts; sfx.ok();
-        c.className = 'angel-card ok'; if (streak === 5 || streak === 10) magic(c, false);
-      } else { streak = 0; sfx.bad(); c.className = 'angel-card no'; }
-      c.innerHTML = `${esc(text)}<small>${book === 'a' ? '😇' : '😈'} ${esc(u.bookSays)}${pts ? ` · +${pts}` : pick ? '' : ` · ⏱ ${esc(u.tooSlow)}`}</small>`;
-      $('aScore').textContent = score;
+        streak++; pts = Math.round(live(ms) * mult(streak)); sfx.ok();
+        c.className = 'angel-card ok'; if (streak === 3 || streak === 6 || streak === 10) magic(c, false);
+      } else { streak = 0; c.className = 'angel-card no'; if (pick) { pts = -Math.min(WRONG, score); sfx.bad(); } }
+      c.innerHTML = `${esc(text)}<small>${book === 'a' ? '😇' : '😈'} ${esc(u.bookSays)}${pick ? '' : ` · ⏱ ${esc(u.tooSlow)}`}</small>`;
+      $('aLive').textContent = '';
+      if (pts) { const f = document.createElement('span'); f.className = 'angel-float' + (pts < 0 ? ' neg' : ''); f.textContent = (pts > 0 ? '+' : '') + pts; c.appendChild(f); }
+      const from = score; score += pts; countTo($('aScore'), from, score);
       log.push({ text, book, pick });
       i++; setTimeout(show, 900);
     }
