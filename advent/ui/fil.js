@@ -1,6 +1,6 @@
 // Filipino: Advent calendar interface text.
 export default {
-  title: 'Advent calendar', back: '← Buzzword Bingo', culture: 'Kalendaryo',
+  title: 'Kalendaryo ng Adbiyento', back: '← Buzzword Bingo', culture: 'Kalendaryo',
   opensOn: 'Magbubukas ang kalendaryo sa 1 Disyembre.', previewBtn: 'Laruin ang practice calendar', previewOn: 'Practice calendar: bukas ang lahat ng pinto at hindi nase-save ang puntos. Iba ang mga pinto sa totoong kalendaryo.', previewExit: 'Bumalik sa totoong kalendaryo',
   locked: 'Bubukas sa {date}', today: 'Ngayon', done: '{pts} pts', play: 'Laro', replay: 'Laruin ulit (practice)', backToCal: '← Kalendaryo',
   t_chat: 'Chat bingo', t_listen: 'Pakinig bingo', t_emoji: 'Emoji bugtong', t_wrap: 'Balot-Regalo', t_predict: 'Hula bingo',
