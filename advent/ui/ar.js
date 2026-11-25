@@ -24,4 +24,5 @@ export default {
   sound: 'الصوت', soloScore: 'نتيجتك',
   nav_cal: 'الروزنامة', nav_score: 'النتيجة والفريق', menu: 'القائمة',
   shareNative: "مشاركة",
+  shareImage: "حفظ صورة النتيجة",
 };

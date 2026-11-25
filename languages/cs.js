@@ -117,6 +117,7 @@ export default {
     "menu.open": "Menu",
     "share.native": "Sdílet",
     "share.copy": "Kopírovat",
+    "share.image": "Uložit obrázek s výsledkem",
     "share.copied": "Zkopírováno",
   },
   topics: {

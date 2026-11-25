@@ -117,6 +117,7 @@ export default {
     "menu.open": "मेन्यू",
     "share.native": "शेयर करें",
     "share.copy": "कॉपी करें",
+    "share.image": "रिज़ल्ट की इमेज सेव करें",
     "share.copied": "कॉपी हो गया",
   },
   topics: {

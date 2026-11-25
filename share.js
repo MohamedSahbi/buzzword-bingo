@@ -1,5 +1,6 @@
 // Share buttons for results: the phone's own share sheet (when the browser offers it), then direct links to the
 // big networks, then copy. Nothing is sent anywhere until the player taps a button; no trackers or SDKs are loaded.
+import { resultCardBlob, canShareFiles } from './result-card.js';
 const enc = encodeURIComponent;
 // Logos are simple 24×24 paths (white on the brand colour); the name stays as tooltip and accessible label.
 const ICON = {
@@ -10,6 +11,7 @@ const ICON = {
   telegram: '<path fill="#fff" d="M21.5 3.5 2.8 10.7c-1.3.5-1.3 1.2-.2 1.5l4.8 1.5 1.8 5.6c.2.6.1.9.8.9.5 0 .7-.2 1-.5l2.3-2.2 4.8 3.5c.9.5 1.5.2 1.7-.8l3.1-14.7c.3-1.3-.5-1.9-1.4-1.5zM8.9 13.5l9.6-6.1c.5-.3.9-.1.5.2l-8.2 7.4-.3 3.4-1.6-4.9z"/>',
   native: '<path fill="#fff" d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11A2.99 2.99 0 0 0 21 5a3 3 0 1 0-5.91.7L8.04 9.81A3 3 0 1 0 6 15c.79 0 1.5-.31 2.04-.81l7.12 4.16a2.92 2.92 0 1 0 2.84-2.27z"/>',
   copy: '<path fill="#132433" d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8V7h11v14z"/>',
+  image: '<path fill="#3a2500" d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zm0 16H5V5h14v14zm-5.04-6.71-2.75 3.54-1.96-2.36L6.5 17h11l-3.54-4.71z"/>',
   done: '<path fill="#0f5132" d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/>',
 };
 const svg = k => `<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">${ICON[k]}</svg>`;
@@ -28,21 +30,27 @@ function style() {
   s.textContent = `.sharebar{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 4px}
   .sharebar a,.sharebar button{display:inline-grid;place-items:center;width:40px;height:40px;border:0;border-radius:50%;padding:0;cursor:pointer;color:#fff;transition:transform .12s}
   .sharebar a:hover,.sharebar button:hover{transform:translateY(-2px)}
-  .sharebar .native{background:#132433}.sharebar .copy{background:#e9eef3;color:#132433}
+  .sharebar .native{background:#132433}.sharebar .image{background:#f2b84b}.sharebar .copy{background:#e9eef3;color:#132433}
   .sharebar a:focus-visible,.sharebar button:focus-visible{outline:3px solid #f2b84b;outline-offset:2px}`;
   document.head.appendChild(s);
 }
 
-// el: container; text: the result (no link); url: page to link to; labels: { share, copy, copied }
-export function shareBar(el, { text, url, labels }) {
+// el: container; text: the result (no link); url: page to link to; labels: { share, copy, copied, image }
+// card (optional): result card for resultCardBlob(); shared as a picture on phones, downloadable everywhere.
+export function shareBar(el, { text, url, labels, card = null }) {
   style();
   const canNative = typeof navigator.share === 'function';
   el.innerHTML = `<div class="sharebar" role="group" aria-label="${labels.share}">
     ${canNative ? `<button type="button" class="native" data-act="native" title="${labels.share}" aria-label="${labels.share}">${svg('native')}</button>` : ''}
     ${TARGETS.map(([id, name, color, link]) => `<a href="${link(text, url)}" target="_blank" rel="noopener noreferrer" style="background:${color}" data-net="${id}" title="${name}" aria-label="${name}">${svg(id)}</a>`).join('')}
+    ${card ? `<button type="button" class="image" data-act="image" title="${labels.image}" aria-label="${labels.image}">${svg('image')}</button>` : ''}
     <button type="button" class="copy" data-act="copy" title="${labels.copy}" aria-label="${labels.copy}">${svg('copy')}</button></div>`;
   const native = el.querySelector('[data-act=native]');
-  if (native) native.onclick = async () => { try { await navigator.share({ text, url }); } catch {} };
+  const file = async () => new File([await resultCardBlob(card)], 'buzzword-bingo-result.png', { type: 'image/png' });
+  // Phones: share the picture with the text and link when the browser allows files, otherwise text and link.
+  if (native) native.onclick = async () => { try { if (card && canShareFiles()) await navigator.share({ files: [await file()], text: `${text}\n${url}` }); else await navigator.share({ text, url }); } catch {} };
+  const img = el.querySelector('[data-act=image]');
+  if (img) img.onclick = async () => { const f = await file(); if (canShareFiles()) { try { await navigator.share({ files: [f] }); return; } catch (e) { if (e?.name === 'AbortError') return; } } const a = document.createElement('a'); a.href = URL.createObjectURL(f); a.download = f.name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); };
   const copy = el.querySelector('[data-act=copy]');
   copy.onclick = async () => { try { await navigator.clipboard.writeText(`${text}\n${url}`); copy.innerHTML = svg('done'); copy.title = labels.copied; copy.setAttribute('aria-label', labels.copied); } catch {} };
 }

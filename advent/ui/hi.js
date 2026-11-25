@@ -24,4 +24,5 @@ export default {
   sound: 'आवाज़', soloScore: 'आपका स्कोर',
   nav_cal: 'कैलेंडर', nav_score: 'स्कोर और टीम', menu: 'मेन्यू',
   shareNative: "शेयर करें",
+  shareImage: "रिज़ल्ट की इमेज सेव करें",
 };

@@ -117,6 +117,7 @@ export default {
     "menu.open": "Menú",
     "share.native": "Compartir",
     "share.copy": "Copiar",
+    "share.image": "Guardar imagen del resultado",
     "share.copied": "Copiado",
   },
   topics: {

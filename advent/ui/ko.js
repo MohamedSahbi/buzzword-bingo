@@ -24,4 +24,5 @@ export default {
   nav_cal: '캘린더', nav_score: '점수 & 팀', menu: '메뉴',
   sound: '소리', soloScore: '내 점수',
   shareNative: "공유하기",
+  shareImage: "결과 이미지 저장",
 };

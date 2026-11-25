@@ -88,7 +88,7 @@ export function mountAngel(root, ctx) {
       if (record || matches >= 13) { sfx.bingo(); magic(root.querySelector('#aFinal'), true); }
       root.querySelector('#aAgain').onclick = play;
       root.querySelector('#aExit').onclick = onExit;
-      if (shareTo) shareTo(root.querySelector('#aShareBox'), share);
+      if (shareTo) shareTo(root.querySelector('#aShareBox'), share, { kicker: '😇😈', title: pack.title, big: String(score), bigLabel: u.matches.replace('{n}', matches).replace('{of}', log.length), lines: [verdict, times.length ? `⚡ Ø ${(times.reduce((a, b) => a + b, 0) / times.length / 1000).toFixed(2)} s · 🏎 ${(Math.min(...times) / 1000).toFixed(2)} s` : ''], strip: log.map(l => l.pick === l.book ? '✅' : '❌').join('') });
     }
     show();
   }

@@ -117,6 +117,7 @@ export default {
     "menu.open": "メニュー",
     "share.native": "シェア",
     "share.copy": "コピー",
+    "share.image": "結果を画像で保存",
     "share.copied": "コピーしました",
   },
   topics: {

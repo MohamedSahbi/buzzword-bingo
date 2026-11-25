@@ -297,7 +297,7 @@
     const grid=[0,1,2,3,4].map(r=>[0,1,2,3,4].map(c=>{const i=r*5+c;return lines.has(i)?'🟩':(i===12||marks[i])?'🟨':'⬜'}).join('')).join('\n');
     const text=`${t('win')} · Buzzword Bingo · ${t(`topic.${topic}`)}\n${grid}`;
     if(text===lastShare) return; lastShare=text;
-    shareBar(box,{text,url:location.origin+location.pathname,labels:{share:escapeHtml(t('share.native')),copy:escapeHtml(t('share.copy')),copied:escapeHtml(t('share.copied'))}});
+    shareBar(box,{text,url:location.origin+location.pathname,card:{theme:'bingo',kicker:'Buzzword Bingo',title:t('win'),big:'B I N G O',bigLabel:t(`topic.${topic}`),lines:grid.split('\n'),footer:(location.host+location.pathname).replace(/\/$/,'')},labels:{share:escapeHtml(t('share.native')),copy:escapeHtml(t('share.copy')),copied:escapeHtml(t('share.copied')),image:escapeHtml(t('share.image'))}});
   }
 
   async function toggleMark(i){

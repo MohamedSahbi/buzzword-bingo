@@ -118,6 +118,7 @@ export default {
     "menu.open": "Menu",
     "share.native": "I-share",
     "share.copy": "Kopyahin",
+    "share.image": "I-save ang result image",
     "share.copied": "Nakopya na",
   },
   topics: {

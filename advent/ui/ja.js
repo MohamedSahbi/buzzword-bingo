@@ -24,4 +24,5 @@ export default {
   sound: '音', soloScore: 'あなたの得点',
   nav_cal: 'カレンダー', nav_score: 'スコアとチーム', menu: 'メニュー',
   shareNative: "シェア",
+  shareImage: "結果を画像で保存",
 };

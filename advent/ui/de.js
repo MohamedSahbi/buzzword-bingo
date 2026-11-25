@@ -24,4 +24,5 @@ export default {
   sound: 'Ton', soloScore: 'Deine Punkte',
   nav_cal: 'Kalender', nav_score: 'Punkte & Team', menu: 'Menü',
   shareNative: "Teilen",
+  shareImage: "Ergebnis als Bild speichern",
 };

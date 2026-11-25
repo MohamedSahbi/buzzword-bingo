@@ -24,4 +24,5 @@ export default {
   nav_cal: 'Calendario', nav_score: 'Puntos y equipo', menu: 'Menú',
   sound: 'Sonido', soloScore: 'Tu puntuación',
   shareNative: "Compartir",
+  shareImage: "Guardar imagen del resultado",
 };

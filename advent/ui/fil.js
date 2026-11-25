@@ -24,4 +24,5 @@ export default {
   sound: 'Tunog', soloScore: 'Iskor mo',
   nav_cal: 'Kalendaryo', nav_score: 'Iskor at team', menu: 'Menu',
   shareNative: "I-share",
+  shareImage: "I-save ang result image",
 };
