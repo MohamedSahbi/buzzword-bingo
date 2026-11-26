@@ -314,7 +314,8 @@
   let cal = 'en';          // calendar culture (which doors)
   let uiLang = 'en';       // website language (all interface text), shared with the main page
   let preview = params.get('preview') === '1';   // practice mode
-  const C = () => (!preview && metas[cal]) ? metas[cal] : CALENDARS[cal] || Object.values(CALENDARS)[0];
+  // Practice calendars exist per culture; a regional code without its own (en-US) uses its base language's (en).
+  const C = () => (!preview && metas[cal]) ? metas[cal] : CALENDARS[cal] || CALENDARS[String(cal).split('-')[0]] || CALENDARS.en;
   const seasonMode = () => !preview && !!metas[cal];
   const uiOf = c => ADVENT_UI[c] || ADVENT_UI[String(c).split('-')[0]] || ADVENT_UI.en;
   const t = (k, v = {}) => (uiOf(uiLang)[k] ?? ADVENT_UI.en[k] ?? k).replace(/\{(\w+)\}/g, (_, x) => v[x] ?? '');
