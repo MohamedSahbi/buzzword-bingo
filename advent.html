@@ -372,7 +372,7 @@
     root.querySelectorAll('.sq').forEach(el => {
       el.style.fontSize = ''; const cs = getComputedStyle(el); let size = parseFloat(cs.fontSize); const max = el.clientWidth - 8;
       const widest = s => { _m.font = `${cs.fontWeight} ${s}px ${cs.fontFamily}`; return Math.max(...el.textContent.split(/\s+/).map(w => _m.measureText(w).width)); };
-      const min = el.clientWidth < 70 ? 9.5 : 7;
+      const min = el.clientWidth < 90 ? 10.5 : 8;
       while (size > min && widest(size) > max) { size -= 0.5; el.style.fontSize = size + 'px'; }
     });
   }
