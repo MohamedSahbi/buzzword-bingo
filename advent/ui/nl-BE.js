@@ -29,4 +29,5 @@ export default {
   rotateTip: "Tip: draai je gsm op zijn kant, dan zie je de chat en de hele kaart tegelijk.",
   fullscreen: "Volledig scherm",
   study: "Bekijk je kaart", ready: "Ik ben klaar", b_ready: "Eerder klaar",
+  liveBtn: "Live samen spelen", liveIntro: "Iedereen in de kamer speelt dit deurtje op hetzelfde moment. Je score telt zoals altijd.", liveCreate: "Live kamer maken", liveStart: "Start voor iedereen",
 };

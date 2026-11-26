@@ -57,7 +57,7 @@
         ".validate": "$code.matches(/^[A-Z2-9]{6}$/)",
         "meta": {
           ".write": "auth != null && !data.exists() && newData.child('createdBy').val() === auth.uid",
-          ".validate": "newData.hasChildren(['name','lang','createdBy','createdAt','expiresAt']) && newData.child('name').isString() && newData.child('name').val().length <= 30 && newData.child('lang').isString() && newData.child('lang').val().length <= 3 && newData.child('expiresAt').isNumber() && newData.child('expiresAt').val() <= now + 5184000000"
+          ".validate": "newData.hasChildren(['name','lang','createdBy','createdAt','expiresAt']) && newData.child('name').isString() && newData.child('name').val().length <= 30 && newData.child('lang').isString() && newData.child('lang').val().length <= 5 && newData.child('expiresAt').isNumber() && newData.child('expiresAt').val() <= now + 5184000000"
         },
         "members": {
           "$uid": {
@@ -67,7 +67,28 @@
               "$door": {
                 ".validate": "$door.matches(/^([1-9]|[12][0-9]|3[01])$/) && newData.isNumber() && newData.val() >= 0 && newData.val() <= 5000"
               }
+            },
+            "ghosts": {
+              "$door": {
+                ".validate": "$door.matches(/^p?([1-9]|[12][0-9]|3[01])$/) && newData.isString() && newData.val().length <= 1500 && newData.val().matches(/^[0-9:,-]*$/)"
+              }
             }
+          }
+        }
+      }
+    },
+    "live": {
+      "$code": {
+        ".read": "auth != null",
+        ".validate": "$code.matches(/^[A-Z2-9]{6}$/)",
+        "meta": {
+          ".write": "auth != null && ((!data.exists() && newData.child('host').val() === auth.uid) || data.child('host').val() === auth.uid)",
+          ".validate": "newData.hasChildren(['host','cal','door','createdAt']) && newData.child('cal').isString() && newData.child('cal').val().length <= 5 && newData.child('door').isNumber() && newData.child('door').val() >= 1 && newData.child('door').val() <= 31 && (!newData.child('startAt').exists() || newData.child('startAt').isNumber())"
+        },
+        "players": {
+          "$uid": {
+            ".write": "auth != null && auth.uid === $uid && root.child('live/' + $code + '/meta').exists()",
+            ".validate": "!newData.exists() || (newData.child('name').isString() && newData.child('name').val().length <= 24 && newData.child('pts').isNumber() && newData.child('pts').val() >= 0 && newData.child('pts').val() <= 20000 && newData.child('found').isNumber() && newData.child('found').val() <= 20)"
           }
         }
       }

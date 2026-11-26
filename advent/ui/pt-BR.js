@@ -29,4 +29,5 @@ export default {
   rotateTip: "Dica: vire o celular na horizontal para ver a conversa e a cartela inteira.",
   fullscreen: "Tela cheia",
   study: "Olhe a sua cartela", ready: "Estou pronto", b_ready: "Pronto antes",
+  liveBtn: "Jogar ao vivo juntos", liveIntro: "Todos na sala jogam esta janela ao mesmo tempo. Sua pontuação conta normalmente.", liveCreate: "Criar sala ao vivo", liveStart: "Começar para todos",
 };

@@ -29,4 +29,5 @@ export default {
   rotateTip: "Dica: roda o telemóvel na horizontal para veres a conversa e o cartão inteiro.",
   fullscreen: "Ecrã inteiro",
   study: "Olha para o teu cartão", ready: "Estou pronto", b_ready: "Pronto mais cedo",
+  liveBtn: "Jogar em direto juntos", liveIntro: "Todos na sala jogam esta janela ao mesmo tempo. A tua pontuação conta como sempre.", liveCreate: "Criar sala em direto", liveStart: "Começar para todos",
 };

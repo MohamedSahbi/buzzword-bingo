@@ -59,6 +59,12 @@ try {
   const oldPreds = Object.fromEntries(Object.entries(preds).filter(([, r]) => !r?.meta?.expiresAt || r.meta.expiresAt < Date.now()).map(([c]) => [c, null]));
   if (Object.keys(oldPreds).length && !dryRun) await db.ref('predict').update(oldPreds);
   console.log(`${Object.keys(preds).length} prediction room(s) checked, ${Object.keys(oldPreds).length} ${dryRun ? 'would be ' : ''}deleted (expired).`);
+
+  // Live Advent rooms (everyone plays one door together) are deleted after a day.
+  const lives = (await db.ref('live').get()).val() || {};
+  const oldLive = Object.fromEntries(Object.entries(lives).filter(([, r]) => !r?.meta?.createdAt || r.meta.createdAt < Date.now() - 864e5).map(([c]) => [c, null]));
+  if (Object.keys(oldLive).length && !dryRun) await db.ref('live').update(oldLive);
+  console.log(`${Object.keys(lives).length} live room(s) checked, ${Object.keys(oldLive).length} ${dryRun ? 'would be ' : ''}deleted (older than a day).`);
 } finally {
   await app.delete();
 }

@@ -29,4 +29,5 @@ export default {
   rotateTip: "Tip: ipahiga ang phone para makita mo ang chat at buong card nang sabay.",
   fullscreen: "Full screen",
   study: "Tingnan mo muna ang card", ready: "Ready na ako", b_ready: "Maagang ready",
+  liveBtn: "Sabay-sabay na live", liveIntro: "Lahat sa room ay sabay na maglalaro ng pintong ito. Bilang pa rin ang score mo gaya ng dati.", liveCreate: "Gumawa ng live room", liveStart: "Simulan para sa lahat",
 };

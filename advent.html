@@ -205,6 +205,9 @@
   .study{margin:auto;text-align:center;display:grid;justify-items:center;gap:8px}.study p{margin:0;font-weight:800;color:var(--ink)}
   .study .ring{--p:1;width:74px;height:74px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--berry) calc(var(--p)*360deg),#e3e9ef 0);transition:background .2s}
   .study .ring b{display:grid;place-items:center;width:58px;height:58px;border-radius:50%;background:#fff;font-size:24px}
+  .race{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 0}.race:empty{display:none}.race .chip{background:#fff;border:1px solid var(--line);border-radius:999px;padding:3px 10px;font-size:13px;color:#132433}.race .chip b{font-variant-numeric:tabular-nums}
+  .lobby{margin:auto;display:grid;gap:8px;max-width:340px;text-align:center;color:#132433}.lobby p{margin:0}.lobby input{width:100%;border:1px solid #bcc8d5;border-radius:10px;padding:8px 10px;font:inherit}.lobby .row{display:flex;gap:6px}.lobby .err{color:var(--berry);font-size:13px}
+  .live-btn{padding:6px 10px;font-size:13px}@media (max-width:560px){.live-btn span{display:none}}
   .rotate-tip{font-size:12px;color:var(--muted);flex:1 1 140px;min-width:0}
   @media (max-width:860px){body.playing #title,body.playing #subtitle,body.playing #banner,body.playing #angelEntry{display:none}.layout{grid-template-columns:1fr}.split{grid-template-columns:1fr}.feed{height:clamp(170px,30vh,260px)}.gbar{position:sticky;top:66px;box-shadow:0 6px 16px #0003}}
   @media (max-width:520px){.doors{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.door .num{width:40px;height:40px;font-size:18px}.door .lab{display:none}.items,.boxes{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -529,7 +532,7 @@
       onFinish: res => finishDoor(n, { parts: res.parts }, { shareLine: res.shareLine }),
     });
   }
-  function closeDoor() { stopGame(); stopGame = () => {}; document.body.classList.remove('playing'); $('playView').classList.add('hidden'); $('calendarView').classList.remove('hidden'); renderDoors(); renderSolo(); renderTeam(); }
+  function closeDoor() { stopGame(); stopGame = () => {}; leaveLive(); document.body.classList.remove('playing'); $('playView').classList.add('hidden'); $('calendarView').classList.remove('hidden'); renderDoors(); renderSolo(); renderTeam(); }
   // Score = game parts + on-the-day bonus + streak bonus (10 per consecutive earlier door also played on its day, max 50).
   function finishDoor(n, res, door) {
     const onDay = isToday(n), parts = [...res.parts];
@@ -540,6 +543,7 @@
     }
     const total = Math.max(0, Math.min(500, parts.reduce((a, [, v]) => a + v, 0)));
     const first = seasonMode() && unlocked(n) && saveScore(n, total, onDay);
+    if (lastRun?.n === n && (first || !seasonMode())) saveGhost(n, lastRun);
     if (first) pushTeamScore(n, total);
     sfx.bell();
     const share = `🎄 ${t('title')} · ${C().label} · ${n}.\n${door.shareLine}\n⭐ ${total}`;
@@ -577,11 +581,13 @@
     const upright = matchMedia('(max-width:860px) and (orientation:portrait) and (pointer:coarse)').matches;
     root.innerHTML = `<div class="gbar"><span class="live" id="live"></span>${upright ? `<span class="rotate-tip" id="rotTip">🔄 ${esc(t('rotateTip'))}</span>` : ''}<span class="muted" id="status"></span><div class="grow"></div>
         ${door.type === 'listen' ? `<label class="toggle"><input type="checkbox" id="useVoice" ${voiceOk ? 'checked' : 'disabled'}> ${esc(t('voice'))}</label>` : ''}
-        ${canFullscreen() ? `<button class="fs-btn" id="fsBtn" type="button" title="${esc(t('fullscreen'))}" aria-label="${esc(t('fullscreen'))}">⛶</button>` : ''}<div class="stat"><small>${esc(t('points'))}</small><b id="pts">0</b></div><div class="stat"><small>${esc(t('found'))}</small><b id="fnd">0/${appearing.length}</b></div></div>
+        <button class="btn live-btn" id="liveBtn" type="button" title="${esc(t('liveBtn'))}">👥 <span>${esc(t('liveBtn'))}</span></button>${canFullscreen() ? `<button class="fs-btn" id="fsBtn" type="button" title="${esc(t('fullscreen'))}" aria-label="${esc(t('fullscreen'))}">⛶</button>` : ''}<div class="stat"><small>${esc(t('points'))}</small><b id="pts">0</b></div><div class="stat"><small>${esc(t('found'))}</small><b id="fnd">0/${appearing.length}</b></div></div>
+      <div class="race" id="race"></div>
       <div class="split"><div class="feed" id="feed"><button class="go-big" id="go" type="button"><span>▶</span>${esc(t('start'))}</button></div>
         <div class="cardwrap"><div class="card" id="card"></div><p class="note" id="note"></p></div></div>`;
     const card = $('card'), feed = $('feed'), note = msg => { $('note').textContent = msg; };
     if ($('fsBtn')) $('fsBtn').onclick = () => toggleFullscreen({ landscape: true });
+    $('liveBtn').onclick = () => { onLive = () => liveChanged(); lobby(); };
     function drawCard() {
       card.replaceChildren();
       cardPhrases.forEach(p => { const b = document.createElement('button'); b.type = 'button'; const starFound = p === star && found.has(p); b.className = `sq${starFound ? ' star' : ''}${found.has(p) ? ' ok' : ''}`; b.textContent = (starFound ? '★ ' : '') + p; b.onclick = () => tap(p, b); card.appendChild(b); });
@@ -608,9 +614,10 @@
         if (!full && found.size === appearing.length) { full = true; pts += 100; P.full = 100; msg = t('fullCard'); setTimeout(() => magic(card, true), 350); }
         note(msg); drawCard();
         // Emoji: solving the current riddle moves straight on (no waiting for its timer).
-        if (door.type === 'emoji' && running && segs[idx - 1]?.phrases?.includes(p)) { clearTimeout(timer); timer = setTimeout(next, 700); }
+        if (door.type === 'emoji' && running && !live && segs[idx - 1]?.phrases?.includes(p)) { clearTimeout(timer); timer = setTimeout(next, 700); }
       }
       $('pts').textContent = pts; $('fnd').textContent = `${found.size}/${appearing.length}`;
+      tl.push([Date.now() - beganAt, pts, found.size]); pushLive({ pts, found: found.size, ...(bingo && !live?.sentBingo ? { bingoAt: liveNow() } : {}) }); if (bingo && live) live.sentBingo = true;
     }
     function show(seg) {
       seg.phrases.forEach(p => { if (appearedAt[p] === undefined) appearedAt[p] = Date.now(); });
@@ -621,7 +628,7 @@
       feed.scrollTop = feed.scrollHeight;
     }
     function end() {
-      if (ended) return; ended = true; running = false; $('live').classList.remove('on'); $('playView').classList.remove('running'); clearTimeout(timer); try { speechSynthesis.cancel(); } catch {}
+      if (ended) return; ended = true; running = false; clearInterval(raceTimer); lastRun = { n, tl: [...tl], pts }; pushLive({ pts, found: found.size }); $('live').classList.remove('on'); $('playView').classList.remove('running'); clearTimeout(timer); try { speechSynthesis.cancel(); } catch {}
       // Answers only once the round is over.
       if (door.type === 'emoji') feed.innerHTML = segs.map(s => `<div class="past">${s.emoji} = ${esc(s.phrases[0])}</div>`).join('');
       $('status').textContent = '';
@@ -635,13 +642,13 @@
     // Emoji-only lines show as big emoji. Timestamps start at door.start (e.g. '09:02') and move on 0–3 minutes.
     const COLORS = ['#b3261e', '#1d6f42', '#1f4f8a', '#7a2f8f', '#9a5b00', '#0e6e75', '#a0306a'];
     const colorOf = w => COLORS[[...w].reduce((a, c) => a + c.charCodeAt(0), 0) % COLORS.length];
-    const clockRnd = seeded(`${cal}:${n}:clock`); let clock = (() => { const [h, m] = String(door.start || '09:02').split(':').map(Number); return h * 60 + m; })();
+    const clockRnd = seeded(`${cal}:${n}:clock`), pace = seeded(`${cal}:${n}:pace`); let clock = (() => { const [h, m] = String(door.start || '09:02').split(':').map(Number); return h * 60 + m; })();
     const isEmojiOnly = s => s.trim() && !/[\p{L}\p{N}]/u.test(s);
     function chatPause(nextSeg) {
       if (!nextSeg) return 600;
-      if (/^§react/.test(nextSeg.raw)) return 500 + Math.random() * 500;
+      if (/^§react/.test(nextSeg.raw)) return 500 + pace() * 500;
       const len = nextSeg.text.replace(/^§\w+\s*/, '').length;
-      return (300 + Math.random() * 1200 + Math.min(2600, 600 + len * 35)) * 1.25;   // pause + typing time, relaxed pace
+      return (300 + pace() * 1200 + Math.min(2600, 600 + len * 35)) * 1.25;   // pause + typing time; seeded so live rooms stay in sync
     }
     function showTyping(who) { const el = document.createElement('div'); el.className = 'typing'; el.innerHTML = `${esc(t('typing', { who }))} <i></i><i></i><i></i>`; feed.appendChild(el); feed.scrollTop = feed.scrollHeight; return el; }
     function showChat(seg) {
@@ -671,6 +678,7 @@
       const useVoice = $('useVoice')?.checked;
       const readTime = Math.max(2400, text.length * 65);
       if (!useVoice) { timer = setTimeout(next, readTime); return; }
+      if (live) { try { const u = new SpeechSynthesisUtterance(text); u.lang = C().locale; speechSynthesis.cancel(); speechSynthesis.speak(u); } catch {} timer = setTimeout(next, readTime); return; }
       try {
         const u = new SpeechSynthesisUtterance(text); u.lang = C().locale;
         const v = speechSynthesis.getVoices().find(v => C().voice.some(l => v.lang.replace('_', '-').toLowerCase().startsWith(l.toLowerCase())));
@@ -686,19 +694,58 @@
     }
     // Study phase: the card is veiled until Start, then players get a short look before the round begins.
     // "I'm ready" skips the rest: +3 points per second not needed (max 45).
-    const STUDY = 15; card.classList.add('veiled'); P.ready = 0;
-    function study(done) {
-      card.classList.remove('veiled'); let left = STUDY; const t0 = Date.now();
-      feed.innerHTML = `<div class="study"><div class="ring" style="--p:1"><b id="stLeft">${left}</b></div><p>${esc(t('study'))}</p><button class="btn primary" id="stReady" type="button">✓ ${esc(t('ready'))}</button></div>`;
+    const STUDY_SOLO = 15; card.classList.add('veiled'); P.ready = 0;
+    function study(done, together = false) {
+      const STUDY = together ? 10 : STUDY_SOLO; card.classList.remove('veiled'); let left = STUDY; const t0 = Date.now();
+      feed.innerHTML = `<div class="study"><div class="ring" style="--p:1"><b id="stLeft">${left}</b></div><p>${esc(t('study'))}</p>${together ? '' : `<button class="btn primary" id="stReady" type="button">✓ ${esc(t('ready'))}</button>`}</div>`;
       const fin = () => { clearInterval(iv); const rest = Math.max(0, STUDY - Math.floor((Date.now() - t0) / 1000)); if (rest) { P.ready = Math.min(45, rest * 3); pts += P.ready; $('pts').textContent = pts; } done(); };
       const iv = setInterval(() => { left = STUDY - Math.floor((Date.now() - t0) / 1000); const r = feed.querySelector('.ring'); if (r) { r.style.setProperty('--p', Math.max(0, left / STUDY)); $('stLeft').textContent = Math.max(0, left); } if (left <= 0) { clearInterval(iv); P.ready = 0; done(); } }, 200);
-      $('stReady').onclick = fin; stopStudy = () => clearInterval(iv);
+      if ($('stReady')) $('stReady').onclick = fin; stopStudy = () => clearInterval(iv);
     }
     let stopStudy = () => {};
-    $('go').onclick = () => { if (running || ended) return; $('go').remove(); requestAnimationFrame(fitGame); study(begin); };
-    function begin() { if (running || ended) return; running = true; $('rotTip')?.remove(); $('live').classList.add('on'); $('playView').classList.add('running'); window.scrollTo({ top: 0 }); requestAnimationFrame(fitGame); feed.replaceChildren(); next(); };
+    $('go').onclick = () => { if (running || ended) return; $('go').remove(); $('liveBtn')?.remove(); leaveLive(); requestAnimationFrame(fitGame); study(begin); };
+    // ---- race strip: live players and teammates' ghosts (points and finds only, never which squares) ----
+    const ghosts = ghostsFor(n), tl = []; let beganAt = 0, raceTimer = null;
+    function renderRace() {
+      const el = $('race'); if (!el) return clearInterval(raceTimer);
+      const el_ = beganAt ? Date.now() - beganAt : 0, chips = [];
+      if (live) Object.entries(live.players).filter(([id]) => id !== live.uid).forEach(([, p]) => chips.push({ icon: '🔴', name: p.name, pts: p.pts || 0, found: p.found || 0, crown: p.bingoAt && Object.values(live.players).every(q => !q.bingoAt || q.bingoAt >= p.bingoAt) }));
+      ghosts.forEach(g => { const at = [...g.tl].reverse().find(e => e[0] <= el_) || [0, 0, 0]; chips.push({ icon: '👻', name: g.name, pts: at[1], found: at[2] }); });
+      el.innerHTML = chips.sort((a, b) => b.pts - a.pts).map(c => `<span class="chip">${c.icon} ${esc(c.name)} <b>${c.pts}</b> · ${c.found}${c.crown ? ' 👑' : ''}</span>`).join('');
+    }
+    renderRace(); raceTimer = setInterval(renderRace, 300);
+    // ---- live lobby (any door): create or join, host starts the same round for everyone ----
+    function lobby(msg = '') {
+      if (running || ended) return;
+      const inRoom = live && live.meta?.door === n, host = inRoom && live.meta.host === live.uid;
+      const players = inRoom ? Object.values(live.players).map(p => `<span class="chip">🔴 ${esc(p.name)}</span>`).join('') : '';
+      feed.innerHTML = `<div class="lobby"><b>👥 ${esc(t('liveBtn'))}</b><p class="muted">${esc(t('liveIntro'))}</p>${inRoom
+        ? `<p><b>${esc(t('p_room', { code: live.code }))}</b> <button class="btn" id="lvCopy" type="button">${esc(t('p_invite'))}</button></p><div class="race">${players}</div>${host ? `<button class="btn primary" id="lvStart" type="button">▶ ${esc(t('liveStart'))}</button>` : `<p class="muted">${esc(t('p_waiting'))}</p>`}`
+        : `<label class="muted">${esc(t('yourName'))}<input id="lvName" value="${esc(localStorage.getItem('bingoName') || '')}" maxlength="24"></label>
+           <button class="btn primary" id="lvCreate" type="button">${esc(t('liveCreate'))}</button>
+           <div class="row"><input id="lvCode" placeholder="${esc(t('p_joinCode'))}" maxlength="6"><button class="btn" id="lvJoin" type="button">${esc(t('p_join'))}</button></div>`}
+        <p class="err">${esc(msg)}</p></div>`;
+      const nameOk = () => { const v = $('lvName')?.value.trim(); if (v) { $('pName').value = v; localStorage.setItem('bingoName', v.slice(0, 24)); } };
+      if ($('lvCreate')) $('lvCreate').onclick = async () => { nameOk(); try { await createLive(n); onLive = liveChanged; lobby(); } catch (e) { lobby(e.message); } };
+      if ($('lvJoin')) $('lvJoin').onclick = async () => { nameOk(); try { await joinLive(cleanCode($('lvCode').value)); onLive = liveChanged; lobby(); } catch (e) { lobby(e.message); } };
+      if ($('lvCopy')) $('lvCopy').onclick = async () => { try { await navigator.clipboard.writeText(liveLink()); $('lvCopy').textContent = t('copied'); } catch {} };
+      if ($('lvStart')) $('lvStart').onclick = async () => { const { D, db } = await firebase(); await D.update(D.ref(db, `live/${live.code}/meta`), { startAt: liveNow() + 4000 }); };
+    }
+    // A start time from the host: count down, then the same study time and round for everyone.
+    let liveScheduled = false;
+    function liveChanged() {
+      if (!live || live.meta?.door !== n) return;
+      if (live.meta.startAt && !liveScheduled && !running && !ended) {
+        liveScheduled = true; $('go')?.remove(); $('liveBtn')?.remove();
+        const tick = () => { const left = Math.ceil((live.meta.startAt - liveNow()) / 1000); if (left > 0) { feed.innerHTML = `<div class="study"><div class="ring"><b>${left}</b></div></div>`; setTimeout(tick, 250); } else study(begin, true); };
+        tick();
+      } else if (!liveScheduled) lobby();
+      renderRace();
+    }
+    if (live && live.meta?.door === n) { onLive = liveChanged; setTimeout(liveChanged, 0); }
+    function begin() { if (running || ended) return; running = true; beganAt = Date.now(); $('rotTip')?.remove(); $('liveBtn')?.remove(); $('live').classList.add('on'); $('playView').classList.add('running'); window.scrollTo({ top: 0 }); requestAnimationFrame(fitGame); feed.replaceChildren(); next(); };
     drawCard();
-    return () => { running = false; ended = true; stopStudy(); clearTimeout(timer); try { speechSynthesis.cancel(); } catch {} };
+    return () => { running = false; ended = true; clearInterval(raceTimer); stopStudy(); clearTimeout(timer); try { speechSynthesis.cancel(); } catch {} };
   }
 
   // ---------- engine 2: Gift Wrap ----------
@@ -767,6 +814,43 @@
     await D.update(D.ref(db, `teams/${code}/members/${uid}`), { name: myName(), joinedAt: Date.now(), ...(Object.keys(doors).length ? { doors } : {}) });
     localStorage.setItem(teamKey(), code);
     const u = new URL(location.href); u.searchParams.delete('team'); history.replaceState(null, '', u);
+  }
+  // ---- Live rooms (everyone plays one door at the same moment) and ghost races ----
+  // Ghosts store only a timeline "ms:points:found,…" — never which squares or phrases — so they spoil nothing.
+  let live = null, lastRun = null, onLive = null;
+  const ghostKey = n => (seasonMode() ? '' : 'p') + n;
+  const makeCode = () => { const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; return [...crypto.getRandomValues(new Uint32Array(6))].map(x => chars[x % chars.length]).join(''); };
+  const liveNow = () => Date.now() + (live?.offset || 0);
+  async function joinLive(code) {
+    const { D, db, uid } = await firebase(); leaveLive();
+    const offset = await new Promise(r => D.onValue(D.ref(db, '.info/serverTimeOffset'), x => r(x.val() || 0), { onlyOnce: true }));
+    if (!(await D.get(D.ref(db, `live/${code}/meta`))).exists()) throw new Error(t('teamNotFound'));
+    live = { code, offset, uid, meta: null, players: {} };
+    await D.set(D.ref(db, `live/${code}/players/${uid}`), { name: myName(), pts: 0, found: 0 });
+    live.unsub = D.onValue(D.ref(db, `live/${code}`), x => { const v = x.val(); if (!live || !v?.meta) return; live.meta = v.meta; live.players = v.players || {}; onLive?.(); });
+  }
+  async function createLive(n) {
+    const { D, db, uid } = await firebase(); let code;
+    do { code = makeCode(); } while ((await D.get(D.ref(db, `live/${code}/meta`))).exists());
+    await D.set(D.ref(db, `live/${code}/meta`), { host: uid, cal, door: n, practice: !seasonMode(), createdAt: Date.now() });
+    await joinLive(code);
+  }
+  function leaveLive() { live?.unsub?.(); live = null; onLive = null; }
+  function pushLive(data) { if (!live) return; firebase().then(({ D, db, uid }) => D.update(D.ref(db, `live/${live.code}/players/${uid}`), data)).catch(() => {}); }
+  const liveLink = () => { const u = new URL(location.origin + location.pathname); u.searchParams.set('live', live.code); u.searchParams.set('lang', cal); if (!seasonMode()) u.searchParams.set('preview', '1'); return u.href; };
+  // Teammates' ghosts for this door: up to 3, best first, parsed to [[ms, pts, found], …].
+  function ghostsFor(n) {
+    if (!team?.members) return [];
+    return Object.entries(team.members).filter(([id, m]) => id !== fb?.uid && m.ghosts?.[ghostKey(n)])
+      .map(([, m]) => ({ name: m.name, tl: m.ghosts[ghostKey(n)].split(',').filter(Boolean).map(x => x.split(':').map(Number)) }))
+      .sort((a, b) => (b.tl.at(-1)?.[1] || 0) - (a.tl.at(-1)?.[1] || 0)).slice(0, 3);
+  }
+  async function saveGhost(n, run) {
+    if (!team?.code || !run?.tl?.length) return;
+    try { const { D, db, uid } = await firebase(); const mine = team.members?.[uid]?.ghosts?.[ghostKey(n)];
+      const best = mine ? Number(mine.split(',').filter(Boolean).at(-1)?.split(':')[1] || 0) : -1;
+      if (seasonMode() ? !mine : run.pts > best) await D.set(D.ref(db, `teams/${team.code}/members/${uid}/ghosts/${ghostKey(n)}`), run.tl.map(e => e.join(':')).join(',').slice(0, 1500));
+    } catch {}
   }
   function myName() { const n = ($('pName').value || localStorage.getItem('bingoName') || 'Elf').trim().slice(0, 24); localStorage.setItem('bingoName', n); return n; }
   async function pushTeamScore(n, pts) { if (!team?.code) return; try { const { D, db, uid } = await firebase(); await D.set(D.ref(db, `teams/${team.code}/members/${uid}/doors/${n}`), pts); } catch (e) { teamError(e); } }
@@ -842,6 +926,12 @@
   addEventListener('storage', e => { if (e.key === 'bingoSiteLang' || e.key === 'bingoCardLang') syncLang(); }); addEventListener('pageshow', syncLang); document.addEventListener('visibilitychange', () => { if (!document.hidden) syncLang(); });
   $('soundBtn').onclick = () => { soundOn = !soundOn; localStorage.setItem('bingoSound', soundOn ? 'on' : 'off'); syncSound(); if (soundOn) sfx.ok(); };
   renderAll();
+  // Live invite link: join the room, then open its door (the room decides the calendar for this visit).
+  const liveParam = cleanCode(params.get('live'));
+  if (liveParam) joinLive(liveParam).then(() => {
+    const go = () => { if (!live?.meta) return false; onLive = null; if (live.meta.cal !== cal && known(live.meta.cal)) { cal = live.meta.cal; renderAll(); } openDoor(live.meta.door); return true; };
+    if (!go()) onLive = () => { go(); };
+  }).catch(e => alert(e.message));
   const predictLink = cleanCode(params.get('predict'));
   if (predictLink && predictDoor()) openPredict(predictDoor(), null, predictLink);
   const invited = cleanCode(params.get('team')), saved = localStorage.getItem(teamKey());

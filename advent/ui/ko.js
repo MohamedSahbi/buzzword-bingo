@@ -29,4 +29,5 @@ export default {
   rotateTip: "팁: 휴대폰을 가로로 돌리면 채팅과 카드 전체를 한 번에 볼 수 있어요.",
   fullscreen: "전체 화면",
   study: "카드를 살펴보세요", ready: "준비됐어요", b_ready: "빨리 준비 완료",
+  liveBtn: "다 같이 라이브로", liveIntro: "방에 있는 모두가 같은 순간에 이 칸을 플레이해요. 점수는 평소처럼 기록돼요.", liveCreate: "라이브 방 만들기", liveStart: "모두 시작",
 };

@@ -29,4 +29,5 @@ export default {
   rotateTip: "Consejo: gira el móvil en horizontal para ver el chat y todo el cartón a la vez.",
   fullscreen: "Pantalla completa",
   study: "Mira tu cartón", ready: "Estoy listo/a", b_ready: "Listo/a antes",
+  liveBtn: "Jugar en directo juntos", liveIntro: "Todos en la sala juegan esta ventana a la vez. Tu puntuación cuenta como siempre.", liveCreate: "Crear sala en directo", liveStart: "Empezar para todos",
 };
