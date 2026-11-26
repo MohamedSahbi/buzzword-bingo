@@ -216,6 +216,12 @@
     .bingo-door .sq{font-size:13px}
   }
   .made-by{text-align:center;font-size:12px;opacity:.65;margin:18px 0 90px}.made-by a{color:inherit}
+  /* Language pop-up: identical to the main page's */
+  .modal{position:fixed;inset:0;background:#0d1f36aa;display:none;place-items:center;padding:20px;z-index:60}.modal.show{display:grid}
+  .modal-card{width:min(520px,100%);background:#fff;color:#132433;border-radius:18px;padding:22px;box-shadow:0 24px 70px #0005}.modal-card h2{margin-top:0}
+  .modal-actions{display:flex;gap:9px;justify-content:flex-end;margin-top:16px}.modal .stack{display:grid;gap:10px}
+  .modal .field{display:grid;gap:5px;width:100%}.modal .field label{font-size:12px;font-weight:750;color:#5a6b7b;text-transform:uppercase;letter-spacing:.06em}
+  .modal select{font:inherit;width:100%;border:1px solid #bcc8d5;border-radius:10px;padding:10px 11px;background:#fff;color:#132433}
 </style>
 </head>
 <body>
@@ -226,14 +232,19 @@
   setTimeout(() => sessionStorage.removeItem('bbReloaded'), 15000);
 </script>
 <div class="snow" id="snow" aria-hidden="true"></div>
+<div id="langModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="langTitle">
+  <div class="modal-card"><h2 id="langTitle"></h2><div class="stack">
+    <div class="field"><label for="siteLang" id="siteLangLabel"></label><select id="siteLang"></select></div>
+    <div class="field"><label for="cardLang" id="cardLangLabel"></label><select id="cardLang"></select></div>
+  </div><div class="modal-actions"><button id="langDone" class="btn primary" type="button"></button></div></div>
+</div>
 <div class="shell">
   <header class="appbar">
     <a href="./" id="backLink"></a>
     <div class="grow"></div>
     <button id="menuBtn" class="pill menu-btn" type="button" aria-expanded="false">☰</button>
     <div class="hdr-actions" id="hdrActions">
-      <label class="pill" title="Language"><span aria-hidden="true">🌐</span> <select id="uiLang" class="pill" aria-label="Language" style="padding:2px 6px;border:0;background:transparent"></select></label>
-      <label class="pill"><span id="cultureLabel"></span> <select id="culture" class="pill" style="padding:2px 6px;border:0;background:transparent"></select></label>
+      <button id="langBtn" class="pill" type="button">🌐 <span id="langBtnText"></span></button>
       <button id="soundBtn" class="pill" type="button"></button>
       <button id="practiceBtn" class="pill m-only" type="button"></button>
       <button id="angelMenu" class="pill" type="button"></button>
@@ -286,7 +297,7 @@
   import { firebaseConfig } from './firebase-config.js';
   import { mountPredict } from './advent/predict.js';
   import { PREDICT_IDEAS } from './advent/predict-ideas.js';
-  import { LANGUAGES } from './languages/index.js';
+  import { LANGUAGES, translate } from './languages/index.js';
   import { mountAngel } from './advent/angel.js';
   import { shareBar } from './share.js';
   import { canFullscreen, toggleFullscreen } from './fullscreen.js';
@@ -395,7 +406,7 @@
   function renderAll() {
     document.documentElement.lang = C().locale || cal; document.documentElement.dir = uiLang === 'ar' ? 'rtl' : 'ltr';
     document.title = `${t('title')} · Buzzword Bingo`;
-    $('backLink').textContent = t('back'); $('cultureLabel').textContent = t('culture');
+    $('backLink').textContent = t('back'); $('langBtnText').textContent = LANGUAGES[uiLang]?.label || uiLang;
     $('title').innerHTML = `🎄 <span>${esc(t('title'))}</span>`;
     $('subtitle').textContent = C().tagline;
     $('navCal').textContent = t('nav_cal'); $('navScore').textContent = t('nav_score'); menuBtn.setAttribute('aria-label', t('menu')); $('practiceBtn').textContent = '🎯 ' + (preview ? t('previewExit') : t('previewBtn')); $('practiceBtn').classList.toggle('hidden', !metas[cal]);
@@ -772,20 +783,44 @@
   document.body.classList.add('is-loading');
   await loadMetas();
   document.body.classList.remove('is-loading');
-  cal = known(params.get('lang')) || known(localStorage.getItem('bingoAdventLang')) || known(localStorage.getItem('bingoSiteLang')) || known(navigator.language) || known((navigator.language || 'en').slice(0, 2)) || 'en';
+  // One language model for the whole site (same as the main page):
+  //   bingoSiteLang = interface text;  bingoCardLang = 'auto' (same as website) or a code for cards / the calendar.
+  // A ?lang= invite link picks the calendar for this visit only and never overwrites the player's settings.
   const uiKnown = c => c && ADVENT_UI[c] ? c : (c && ADVENT_UI[String(c).split('-')[0]] ? String(c).split('-')[0] : null);
-  uiLang = uiKnown(localStorage.getItem('bingoSiteLang')) || uiKnown(params.get('lang')) || uiKnown(navigator.language) || 'en';
-  localStorage.setItem('bingoSiteLang', uiLang);   // one shared choice for the game and the Advent calendar
-  // Language changed on the main page (other tab, or this page restored with the back button): follow it.
-  const syncUiLang = () => { const s = uiKnown(localStorage.getItem('bingoSiteLang')); if (!s || s === uiLang) return; uiLang = s; $('uiLang').value = s; renderAll(); };
-  addEventListener('storage', e => { if (e.key === 'bingoSiteLang') syncUiLang(); }); addEventListener('pageshow', syncUiLang); document.addEventListener('visibilitychange', () => { if (!document.hidden) syncUiLang(); });
-  Object.keys(ADVENT_UI).forEach(k => { const o = document.createElement('option'); o.value = k; o.textContent = LANGUAGES[k]?.label || k; $('uiLang').append(o); });
-  $('uiLang').value = uiLang;
-  $('uiLang').onchange = e => { uiLang = e.target.value; localStorage.setItem('bingoSiteLang', uiLang); renderAll(); };
+  if (!localStorage.getItem('bingoCardLang') && known(localStorage.getItem('bingoAdventLang'))) localStorage.setItem('bingoCardLang', localStorage.getItem('bingoAdventLang'));
+  localStorage.removeItem('bingoAdventLang');
+  const readSite = () => uiKnown(localStorage.getItem('bingoSiteLang')) || uiKnown(params.get('lang')) || uiKnown(navigator.language) || 'en';
+  const readPref = () => localStorage.getItem('bingoCardLang') || 'auto';
+  // 'auto' follows the website language, preferring the browser's own region (en + en-US browser → US calendar).
+  const cultureFor = (site, pref) => pref !== 'auto' ? (known(pref) || known(site) || 'en')
+    : ((String(navigator.language).split('-')[0] === site && known(navigator.language)) || known(site) || 'en');
+  let invite = known(params.get('lang'));
+  uiLang = readSite(); localStorage.setItem('bingoSiteLang', uiLang);
+  cal = invite || cultureFor(uiLang, readPref());
   const allCodes = [...new Set([...Object.keys(metas), ...Object.keys(CALENDARS)])];
-  allCodes.forEach(k => { const o = document.createElement('option'); o.value = k; o.textContent = (metas[k] || CALENDARS[k]).label; $('culture').append(o); });
-  $('culture').value = cal;
-  $('culture').onchange = e => { cal = e.target.value; localStorage.setItem('bingoAdventLang', cal); closeDoor(); renderAll(); };
+  function fillLangModal() {
+    $('langTitle').textContent = translate(uiLang, 'settings.title'); $('siteLangLabel').textContent = translate(uiLang, 'settings.site');
+    $('cardLangLabel').textContent = translate(uiLang, 'settings.cards'); $('langDone').textContent = translate(uiLang, 'settings.done');
+    $('siteLang').innerHTML = Object.keys(LANGUAGES).filter(k => ADVENT_UI[k]).map(k => `<option value="${k}">${esc(LANGUAGES[k].label)}</option>`).join('');
+    $('cardLang').innerHTML = `<option value="auto">${esc(translate(uiLang, 'settings.same', { lang: LANGUAGES[uiLang]?.label || uiLang }))}</option>` + allCodes.map(k => `<option value="${k}">${esc((metas[k] || CALENDARS[k]).label)}</option>`).join('');
+    $('siteLang').value = uiLang; const pref = readPref(); $('cardLang').value = pref !== 'auto' && known(pref) ? known(pref) : 'auto';
+  }
+  $('langBtn').onclick = () => { fillLangModal(); $('langModal').classList.add('show'); };
+  $('siteLang').onchange = () => { const keep = $('cardLang').value; uiLang = $('siteLang').value; fillLangModal(); $('siteLang').value = uiLang; $('cardLang').value = keep; };
+  $('langModal').onclick = e => { if (e.target.id === 'langModal') $('langModal').classList.remove('show'); };
+  $('langDone').onclick = () => {
+    uiLang = $('siteLang').value; const pref = $('cardLang').value;
+    localStorage.setItem('bingoSiteLang', uiLang); localStorage.setItem('bingoCardLang', pref);
+    invite = null; const next = cultureFor(uiLang, pref); $('langModal').classList.remove('show');
+    if (next !== cal) { cal = next; closeDoor(); } renderAll();
+  };
+  // Changed on the main page (other tab, or this page restored with the back button): follow it.
+  const syncLang = () => {
+    const site = readSite(), next = invite || cultureFor(site, readPref());
+    if (site === uiLang && next === cal) return;
+    uiLang = site; if (next !== cal) { cal = next; closeDoor(); } renderAll();
+  };
+  addEventListener('storage', e => { if (e.key === 'bingoSiteLang' || e.key === 'bingoCardLang') syncLang(); }); addEventListener('pageshow', syncLang); document.addEventListener('visibilitychange', () => { if (!document.hidden) syncLang(); });
   $('soundBtn').onclick = () => { soundOn = !soundOn; localStorage.setItem('bingoSound', soundOn ? 'on' : 'off'); syncSound(); if (soundOn) sfx.ok(); };
   renderAll();
   const predictLink = cleanCode(params.get('predict'));

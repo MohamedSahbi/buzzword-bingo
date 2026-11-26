@@ -201,11 +201,12 @@
   let siteLang = pickLang(localStorage.getItem('bingoSiteLang')) || detectLanguage();
   localStorage.setItem('bingoSiteLang', siteLang);   // one shared choice for the game and the Advent calendar
   let cardPref = localStorage.getItem('bingoCardLang') || 'auto';
-  if (cardPref !== 'auto' && !LANGUAGES[cardPref]) cardPref = 'auto';
+  // A calendar-only choice from the Advent page (e.g. en-US) plays bingo cards in its base language (en).
+  const cardCode = pref => pref === 'auto' ? null : (LANGUAGES[pref] ? pref : LANGUAGES[String(pref).split('-')[0]] ? String(pref).split('-')[0] : null);
   let lastStatus = null;
   function pickLang(l){ return LANGUAGES[l] ? l : null }
   const t = (key, vars) => translate(siteLang, key, vars);
-  function soloCardLang(){ return cardPref === 'auto' ? siteLang : cardPref }
+  function soloCardLang(){ return cardCode(cardPref) || siteLang }
   function langLabel(code){ return LANGUAGES[code]?.label || code }
 
   function applyI18n(){
@@ -221,10 +222,10 @@
     if (lastStatus) els.status.textContent = t(lastStatus.key, lastStatus.vars);
     syncRoomUi(); renderBoard(); renderPlayers(); renderFeed();
   }
-  function openLangSettings(){ els.siteLang.value = siteLang; els.cardLang.value = cardPref; els.langRoomNote.classList.toggle('hidden', !room); els.cardLang.disabled = !!room; els.langModal.classList.add('show') }
+  function openLangSettings(){ els.siteLang.value = siteLang; els.cardLang.value = cardCode(cardPref) || 'auto'; els.langRoomNote.classList.toggle('hidden', !room); els.cardLang.disabled = !!room; els.langModal.classList.add('show') }
   function saveLangSettings(){
-    const newSite = pickLang(els.siteLang.value) || 'en', newPref = els.cardLang.value;
-    const cardsChange = !room && (newPref === 'auto' ? newSite : newPref) !== soloCardLang();
+    const newSite = pickLang(els.siteLang.value) || 'en', picked = els.cardLang.value, newPref = picked === cardCode(cardPref) ? cardPref : picked;   // keep a regional calendar choice (en-US) unless changed
+    const cardsChange = !room && (cardCode(newPref) || newSite) !== soloCardLang();
     siteLang = newSite; cardPref = newPref; localStorage.setItem('bingoSiteLang', siteLang); localStorage.setItem('bingoCardLang', cardPref);
     els.langModal.classList.remove('show'); applyI18n(); if (cardsChange) freshSolo();
   }
@@ -466,8 +467,8 @@
   $('heroTeam').addEventListener('click',()=>{ showTab(true); if(phone()) setTab('play'); else els.multiTab.scrollIntoView({behavior:'smooth',block:'center'}); setTimeout(()=>els.playerName.focus(),300) });
   { const m=new Date().getMonth(); $('heroAdvent').classList.toggle('hidden', !(m===10||m===11||m===0)); }
   // Language changed on the Advent page (other tab, or this page restored with the back button): follow it.
-  const syncSiteLang=()=>{ const s=pickLang(localStorage.getItem('bingoSiteLang')); if(!s||s===siteLang) return; const solo=!room&&cardPref==='auto'; siteLang=s; applyI18n(); if(solo) freshSolo(); };
-  addEventListener('storage',e=>{ if(e.key==='bingoSiteLang') syncSiteLang() }); addEventListener('pageshow',syncSiteLang); document.addEventListener('visibilitychange',()=>{ if(!document.hidden) syncSiteLang() });
+  const syncSiteLang=()=>{ const s=pickLang(localStorage.getItem('bingoSiteLang'))||siteLang, p=localStorage.getItem('bingoCardLang')||'auto'; if(s===siteLang&&p===cardPref) return; const before=soloCardLang(); siteLang=s; cardPref=p; applyI18n(); if(!room&&soloCardLang()!==before) freshSolo(); };
+  addEventListener('storage',e=>{ if(e.key==='bingoSiteLang'||e.key==='bingoCardLang') syncSiteLang() }); addEventListener('pageshow',syncSiteLang); document.addEventListener('visibilitychange',()=>{ if(!document.hidden) syncSiteLang() });
   if(canFullscreen()){ $('fsBtn').classList.remove('hidden'); $('fsBtn').addEventListener('click',()=>toggleFullscreen()); }
   els.soloTab.addEventListener('click',()=>showTab(false)); els.multiTab.addEventListener('click',()=>showTab(true)); els.startSolo.addEventListener('click',freshSolo);
   els.openCreate.addEventListener('click',async()=>{if(await requireFirebase()){els.createTopic.value=els.topic.value;els.createLang.value=soloCardLang();els.createModal.classList.add('show')}}); els.cancelCreate.addEventListener('click',()=>els.createModal.classList.remove('show')); els.createModal.addEventListener('click',e=>{if(e.target===els.createModal)els.createModal.classList.remove('show')}); els.createRoom.addEventListener('click',createRoom);
