@@ -65,7 +65,7 @@
             ".validate": "!newData.exists() || (newData.child('name').isString() && newData.child('name').val().length <= 24)",
             "doors": {
               "$door": {
-                ".validate": "$door.matches(/^([1-9]|[12][0-9]|3[01])$/) && newData.isNumber() && newData.val() >= 0 && newData.val() <= 500"
+                ".validate": "$door.matches(/^([1-9]|[12][0-9]|3[01])$/) && newData.isNumber() && newData.val() >= 0 && newData.val() <= 5000"
               }
             }
           }

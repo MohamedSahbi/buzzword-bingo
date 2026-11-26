@@ -115,7 +115,10 @@
   .riddle{align-self:center;text-align:center;margin:auto;font-size:64px;line-height:1.1}
   .riddle small{display:block;font-size:13px;color:var(--muted);margin-top:8px}
   .past{font-size:13px;color:var(--muted);text-align:center}
-  .card{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+  .cardwrap{position:relative;min-width:0}.card{position:relative;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+  .pts-float{position:absolute;transform:translate(-50%,-10%);font-weight:900;font-size:22px;color:#0f5132;text-align:center;pointer-events:none;white-space:nowrap;animation:ptsUp 1.1s ease-out forwards;text-shadow:0 2px 0 #fff,0 0 8px #fff;z-index:3}
+  .pts-float small{display:block;font-size:12px;font-weight:800;color:#5a6b7b}
+  @keyframes ptsUp{from{opacity:1;transform:translate(-50%,-10%) scale(1.1)}to{opacity:0;transform:translate(-50%,-120%) scale(1)}}
   .sq{aspect-ratio:1;border-radius:10px;border:1px solid var(--line);background:#fbfdff;color:var(--ink);font:inherit;font-size:12.5px;font-weight:700;line-height:1.15;padding:4px;cursor:pointer;overflow:hidden}
   .sq.ok{background:#c9efd9;border-color:#2e9d62;color:#0c3d22}
   .sq.bad{background:#f7c9c5}
@@ -175,6 +178,20 @@
     body.playing .tabbar{display:none}body.playing{padding-bottom:12px}
     body[data-tab=cal] .side{display:none}
     body[data-tab=score] #calendarView>section,body[data-tab=score] #banner{display:none}
+  }
+  @media (max-width:860px){
+    /* Phones: chat (left) and card (right) side by side, filling the screen; the card stays 4×4 so lines still mean bingo. */
+    .bingo-door h2{font-size:19px;margin:4px 0}.bingo-door > p.muted{font-size:13px;margin:4px 0 0!important}.bingo-door.running > p.muted,.bingo-door.running > .note{display:none}
+    .bingo-door .split{grid-template-columns:minmax(0,.68fr) minmax(0,1fr);gap:8px;height:calc(100dvh - 215px);min-height:360px;margin-top:8px}
+    .bingo-door.running .split{height:calc(100dvh - 175px)}
+    .bingo-door .feed{height:100%;padding:6px;gap:5px;font-size:12.5px}
+    .bingo-door .cardwrap{height:100%;display:flex;flex-direction:column}
+    .bingo-door .card{flex:1;grid-template-rows:repeat(4,minmax(0,1fr));gap:4px}
+    .bingo-door .sq{aspect-ratio:auto;font-size:11px;padding:2px;line-height:1.1;border-radius:8px}
+    .bingo-door .note{font-size:12px;margin:4px 0 0}
+    .bingo-door .msg{font-size:12.5px;max-width:100%;padding:5px 8px;border-radius:11px}.bingo-door .riddle{font-size:clamp(28px,10vw,46px);overflow-wrap:anywhere}.bingo-door .past{font-size:12px}
+    .bingo-door .go-big{font-size:17px;padding:12px 16px;gap:8px}.bingo-door .gbar{margin-top:8px;padding:6px 8px;gap:6px}
+    .bingo-door .gbar .stat{padding:2px 8px}.bingo-door .gbar .stat small{font-size:10px}.bingo-door .gbar .stat b{font-size:16px}
   }
   @media (max-width:860px){body.playing #title,body.playing #subtitle,body.playing #banner,body.playing #angelEntry{display:none}.layout{grid-template-columns:1fr}.split{grid-template-columns:1fr}.feed{height:clamp(170px,30vh,260px)}.gbar{position:sticky;top:66px;box-shadow:0 6px 16px #0003}}
   @media (max-width:520px){.doors{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.door .num{width:40px;height:40px;font-size:18px}.door .lab{display:none}.items,.boxes{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -399,7 +416,7 @@
   }
   // Side game: playable any day, also before 1 December and in practice mode. Scores stay on this device.
   function openAngel() {
-    stopGame(); stopGame = () => {};
+    stopGame(); stopGame = () => {}; $('playView').classList.remove('bingo-door', 'running');
     const p = deedsFor(cal), v = $('playView'); $('calendarView').classList.add('hidden'); v.classList.remove('hidden'); document.body.classList.add('playing');
     v.innerHTML = `<div class="row" style="margin:0 0 10px"><button class="btn" id="backCal">${esc(t('backToCal'))}</button></div>
       <span class="kind">😇😈 ${esc(p.ui.angel)} / ${esc(p.ui.devil)}</span><h2>${esc(p.title)}</h2><div id="game"></div>`;
@@ -417,7 +434,7 @@
   let stopGame = () => {}, skipPredict = false;
   const predictDoor = () => doorNums().find(n => doorType(n) === 'predict');
   async function openDoor(n) {
-    stopGame(); stopGame = () => {};
+    stopGame(); stopGame = () => {}; $('playView').classList.remove('bingo-door', 'running');
     let door, predictNote = '';
     try { door = await loadDoor(n); } catch { $('banner').innerHTML = `<span>🔒 ${esc(t('locked', { date: fmtDate(n) }))}</span>`; $('banner').classList.remove('hidden'); return; }
     if (door.type === 'predict' && !skipPredict) { openPredict(n, door); return; }
@@ -431,12 +448,13 @@
     $('backCal').onclick = closeDoor;
     window.scrollTo({ top: 0, behavior: 'smooth' });
     const finish = res => finishDoor(n, res, door);
+    v.classList.add('bingo-door');
     if (door.type === 'wrap') stopGame = playWrap(door, $('game'), finish, n);
     else stopGame = playReveal(door, $('game'), finish, n);
   }
   // Prediction finale: can be prepared days before its door opens (room, sealed cards); scores count once the door is open.
   function openPredict(n, door = null, startCode = '') {
-    stopGame(); stopGame = () => {};
+    stopGame(); stopGame = () => {}; $('playView').classList.remove('bingo-door', 'running');
     const v = $('playView'); $('calendarView').classList.add('hidden'); v.classList.remove('hidden'); document.body.classList.add('playing');
     v.innerHTML = `<div class="row" style="margin:0 0 10px"><button class="btn" id="backCal">${esc(t('backToCal'))}</button><div class="grow"></div><span class="muted">${esc(fmtDate(n))}</span></div>
       <span class="kind">${n}. · ⭐ ${esc(t('t_predict'))}</span><h2>${esc(door?.title || t('t_predict'))}</h2><div id="game" style="margin-top:8px"></div><div id="result"></div>`;
@@ -455,9 +473,9 @@
   function finishDoor(n, res, door) {
     const onDay = isToday(n), parts = [...res.parts];
     if (onDay) {
-      parts.push([t('b_onday'), 20]);
+      parts.push([t('b_onday'), 100]);
       const sc = loadScores(); let days = 0; for (let k = n - 1; sc[k]?.onDay; k--) days++;
-      if (days) parts.push([t('b_streak', { days: days + 1 }), Math.min(50, days * 10)]);
+      if (days) parts.push([t('b_streak', { days: days + 1 }), Math.min(250, days * 50)]);
     }
     const total = Math.max(0, Math.min(500, parts.reduce((a, [, v]) => a + v, 0)));
     const first = seasonMode() && unlocked(n) && saveScore(n, total, onDay);
@@ -487,7 +505,11 @@
     const star = door.star && appearing.includes(door.star) ? door.star : appearing[Math.floor(appearing.length / 2)];
     const appearedAt = {}, found = new Set(); let pts = 0, bingo = false, full = false, idx = 0, timer = null, running = false, ended = false;
     const P = { speed: 0, star: 0, bingo: 0, full: 0, wrong: 0 };
-    const speedDiv = door.type === 'emoji' ? 350 : door.type === 'listen' ? 260 : 200;
+    // Reaction scoring: a phrase is worth 100 the moment it appears and drains fast (emoji riddles need thinking time,
+    // so they drain slower). Quick taps in a row build a combo: ×1.5 from 3, ×2 from 5. Wrong tap −10.
+    const TAU = door.type === 'emoji' ? 4.5 : door.type === 'listen' ? 3 : 2.5;
+    const worth = sec => Math.max(10, Math.round(100 * Math.exp(-sec / TAU)));
+    let combo = 0; const mult = () => combo >= 5 ? 2 : combo >= 3 ? 1.5 : 1;
 
     const voiceOk = door.type === 'listen' && 'speechSynthesis' in window;
     // One control bar (live status + score, pinned on phones); before the start the feed area IS the Start button.
@@ -495,24 +517,32 @@
         ${door.type === 'listen' ? `<label class="toggle"><input type="checkbox" id="useVoice" ${voiceOk ? 'checked' : 'disabled'}> ${esc(t('voice'))}</label>` : ''}
         <div class="stat"><small>${esc(t('points'))}</small><b id="pts">0</b></div><div class="stat"><small>${esc(t('found'))}</small><b id="fnd">0/${appearing.length}</b></div></div>
       <div class="split"><div class="feed" id="feed"><button class="go-big" id="go" type="button"><span>▶</span>${esc(t('start'))}</button></div>
-        <div><div class="card" id="card"></div><p class="note" id="note"></p></div></div>`;
+        <div class="cardwrap"><div class="card" id="card"></div><p class="note" id="note"></p></div></div>`;
     const card = $('card'), feed = $('feed'), note = msg => { $('note').textContent = msg; };
     function drawCard() {
       card.replaceChildren();
       cardPhrases.forEach(p => { const b = document.createElement('button'); b.type = 'button'; const starFound = p === star && found.has(p); b.className = `sq${starFound ? ' star' : ''}${found.has(p) ? ' ok' : ''}`; b.textContent = (starFound ? '★ ' : '') + p; b.onclick = () => tap(p, b); card.appendChild(b); });
       requestAnimationFrame(() => fitSquares(card));
     }
+    // Floating "+82 ⚡ 0.6 s" over the tapped square (survives the card redraw: it lives on the card container).
+    function floatPts(el, big, small) {
+      const host = card.parentElement, r = el.getBoundingClientRect(), c = host.getBoundingClientRect(), f = document.createElement('span');
+      f.className = 'pts-float'; f.innerHTML = `${esc(big)}<small>${esc(small)}</small>`;
+      f.style.left = (r.left - c.left + r.width / 2) + 'px'; f.style.top = (r.top - c.top) + 'px'; host.appendChild(f); setTimeout(() => f.remove(), 1100);
+    }
     function lines() { const L = []; for (let r = 0; r < 4; r++) { L.push([0, 1, 2, 3].map(c => r * 4 + c)); L.push([0, 1, 2, 3].map(x => x * 4 + r)); } L.push([0, 5, 10, 15], [3, 6, 9, 12]); return L; }
     function tap(p, el) {
       if (!running && !ended || found.has(p) || ended) return;
       const at = appearedAt[p];
-      if (at === undefined) { pts = Math.max(0, pts - 5); P.wrong -= 5; sfx.bad(); el.classList.add('bad', 'shake'); setTimeout(() => el.classList.remove('bad', 'shake'), 400); note(t('notYet')); }
+      if (at === undefined) { const lose = Math.min(10, pts); pts -= lose; P.wrong -= lose; combo = 0; $('pts').textContent = pts; sfx.bad(); el.classList.add('bad', 'shake'); setTimeout(() => el.classList.remove('bad', 'shake'), 400); note(t('notYet')); }
       else {
-        found.add(p); const s = Math.max(5, 30 - Math.round((Date.now() - at) / speedDiv)); pts += s; P.speed += s; let msg = t('speed', { pts: s });
-        if (p === star) { pts += 25; P.star = 25; msg = t('star') + ' · ' + msg; sfx.star(); setTimeout(() => magic(card.children[cardPhrases.indexOf(p)]), 0); } else sfx.ok();
+        found.add(p); const sec = (Date.now() - at) / 1000; combo = sec < TAU ? combo + 1 : 0;
+        const s = Math.round(worth(sec) * mult()); pts += s; P.speed += s; let msg = t('speed', { pts: s });
+        floatPts(el, `+${s}`, `⚡ ${sec.toFixed(1)} s${mult() > 1 ? ` · 🔥×${mult()}` : ''}`);
+        if (p === star) { pts += 100; P.star = 100; msg = t('star') + ' · ' + msg; sfx.star(); setTimeout(() => magic(card.children[cardPhrases.indexOf(p)]), 0); } else sfx.ok();
         const idxs = cardPhrases.map((q, i) => found.has(q) ? i : -1).filter(i => i >= 0);
-        if (!bingo && lines().some(l => l.every(i => idxs.includes(i)))) { bingo = true; pts += 50; P.bingo = 50; msg = t('bingo'); sfx.bingo(); setTimeout(() => magic(card, true), 0); }
-        if (!full && found.size === appearing.length) { full = true; pts += 30; P.full = 30; msg = t('fullCard'); setTimeout(() => magic(card, true), 350); }
+        if (!bingo && lines().some(l => l.every(i => idxs.includes(i)))) { bingo = true; pts += 150; P.bingo = 150; msg = t('bingo'); sfx.bingo(); setTimeout(() => magic(card, true), 0); }
+        if (!full && found.size === appearing.length) { full = true; pts += 100; P.full = 100; msg = t('fullCard'); setTimeout(() => magic(card, true), 350); }
         note(msg); drawCard();
       }
       $('pts').textContent = pts; $('fnd').textContent = `${found.size}/${appearing.length}`;
@@ -526,7 +556,7 @@
       feed.scrollTop = feed.scrollHeight;
     }
     function end() {
-      if (ended) return; ended = true; running = false; $('live').classList.remove('on'); clearTimeout(timer); try { speechSynthesis.cancel(); } catch {}
+      if (ended) return; ended = true; running = false; $('live').classList.remove('on'); $('playView').classList.remove('running'); clearTimeout(timer); try { speechSynthesis.cancel(); } catch {}
       // Answers only once the round is over.
       if (door.type === 'emoji') feed.innerHTML = segs.map(s => `<div class="past">${s.emoji} = ${esc(s.phrases[0])}</div>`).join('');
       $('status').textContent = '';
@@ -589,7 +619,7 @@
       const checkVoice = () => { const has = speechSynthesis.getVoices().some(v => C().voice.some(l => v.lang.replace('_', '-').toLowerCase().startsWith(l.toLowerCase()))); if (!has && speechSynthesis.getVoices().length) { $('useVoice').checked = false; $('useVoice').disabled = true; $('status').textContent = t('noVoice'); } };
       checkVoice(); speechSynthesis.onvoiceschanged = checkVoice;
     }
-    $('go').onclick = () => { if (running || ended) return; running = true; $('live').classList.add('on'); feed.replaceChildren(); next(); };
+    $('go').onclick = () => { if (running || ended) return; running = true; $('live').classList.add('on'); $('playView').classList.add('running'); requestAnimationFrame(() => fitSquares(card)); feed.replaceChildren(); next(); };
     drawCard();
     return () => { running = false; ended = true; clearTimeout(timer); try { speechSynthesis.cancel(); } catch {} };
   }
@@ -698,6 +728,10 @@
   cal = known(params.get('lang')) || known(localStorage.getItem('bingoAdventLang')) || known(localStorage.getItem('bingoSiteLang')) || known(navigator.language) || known((navigator.language || 'en').slice(0, 2)) || 'en';
   const uiKnown = c => c && ADVENT_UI[c] ? c : (c && ADVENT_UI[String(c).split('-')[0]] ? String(c).split('-')[0] : null);
   uiLang = uiKnown(localStorage.getItem('bingoSiteLang')) || uiKnown(params.get('lang')) || uiKnown(navigator.language) || 'en';
+  localStorage.setItem('bingoSiteLang', uiLang);   // one shared choice for the game and the Advent calendar
+  // Language changed on the main page (other tab, or this page restored with the back button): follow it.
+  const syncUiLang = () => { const s = uiKnown(localStorage.getItem('bingoSiteLang')); if (!s || s === uiLang) return; uiLang = s; $('uiLang').value = s; renderAll(); };
+  addEventListener('storage', e => { if (e.key === 'bingoSiteLang') syncUiLang(); }); addEventListener('pageshow', syncUiLang); document.addEventListener('visibilitychange', () => { if (!document.hidden) syncUiLang(); });
   Object.keys(ADVENT_UI).forEach(k => { const o = document.createElement('option'); o.value = k; o.textContent = LANGUAGES[k]?.label || k; $('uiLang').append(o); });
   $('uiLang').value = uiLang;
   $('uiLang').onchange = e => { uiLang = e.target.value; localStorage.setItem('bingoSiteLang', uiLang); renderAll(); };

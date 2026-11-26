@@ -191,6 +191,7 @@
   // ---- Language settings: one place for website language and card language ----
   // siteLang: interface text. cardPref: 'auto' (= follow siteLang) or a language code for bingo phrases.
   let siteLang = pickLang(localStorage.getItem('bingoSiteLang')) || detectLanguage();
+  localStorage.setItem('bingoSiteLang', siteLang);   // one shared choice for the game and the Advent calendar
   let cardPref = localStorage.getItem('bingoCardLang') || 'auto';
   if (cardPref !== 'auto' && !LANGUAGES[cardPref]) cardPref = 'auto';
   let lastStatus = null;
@@ -456,6 +457,9 @@
   $('heroSolo').addEventListener('click',()=>{ if(room) return; showTab(false); if(phone()) setTab('card'); els.board.scrollIntoView({behavior:'smooth',block:'center'}) });
   $('heroTeam').addEventListener('click',()=>{ showTab(true); if(phone()) setTab('play'); else els.multiTab.scrollIntoView({behavior:'smooth',block:'center'}); setTimeout(()=>els.playerName.focus(),300) });
   { const m=new Date().getMonth(); $('heroAdvent').classList.toggle('hidden', !(m===10||m===11||m===0)); }
+  // Language changed on the Advent page (other tab, or this page restored with the back button): follow it.
+  const syncSiteLang=()=>{ const s=pickLang(localStorage.getItem('bingoSiteLang')); if(!s||s===siteLang) return; const solo=!room&&cardPref==='auto'; siteLang=s; applyI18n(); if(solo) freshSolo(); };
+  addEventListener('storage',e=>{ if(e.key==='bingoSiteLang') syncSiteLang() }); addEventListener('pageshow',syncSiteLang); document.addEventListener('visibilitychange',()=>{ if(!document.hidden) syncSiteLang() });
   els.soloTab.addEventListener('click',()=>showTab(false)); els.multiTab.addEventListener('click',()=>showTab(true)); els.startSolo.addEventListener('click',freshSolo);
   els.openCreate.addEventListener('click',async()=>{if(await requireFirebase()){els.createTopic.value=els.topic.value;els.createLang.value=soloCardLang();els.createModal.classList.add('show')}}); els.cancelCreate.addEventListener('click',()=>els.createModal.classList.remove('show')); els.createModal.addEventListener('click',e=>{if(e.target===els.createModal)els.createModal.classList.remove('show')}); els.createRoom.addEventListener('click',createRoom);
   els.joinCode.addEventListener('input',e=>e.target.value=cleanCode(e.target.value)); els.joinRoom.addEventListener('click',()=>joinRoom()); els.leaveRoom.addEventListener('click',openLeave); els.endRoom.addEventListener('click',openEndRoom); els.hostModal.addEventListener('click',e=>{if(e.target===els.hostModal)closeModal()});
