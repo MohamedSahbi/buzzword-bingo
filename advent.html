@@ -182,8 +182,9 @@
   @media (max-width:860px){
     /* Phones: chat (left) and card (right) side by side, filling the screen; the card stays 4×4 so lines still mean bingo. */
     .bingo-door h2{font-size:19px;margin:4px 0}.bingo-door > p.muted{font-size:13px;margin:4px 0 0!important}.bingo-door.running > p.muted,.bingo-door.running > .note{display:none}
-    .bingo-door .split{grid-template-columns:minmax(0,.68fr) minmax(0,1fr);gap:8px;height:calc(100dvh - 215px);min-height:360px;margin-top:8px}
-    .bingo-door.running .split{height:calc(100dvh - 175px)}
+    .bingo-door .split{grid-template-columns:minmax(0,.6fr) minmax(0,1fr);gap:6px;height:var(--fitH,calc(100dvh - 215px));min-height:330px;margin-top:8px}
+    .bingo-door.running > .kind{display:none}.bingo-door.running h2{font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.bingo-door.running > .row{margin:0 0 4px!important}.bingo-door.running > .row .btn{padding:6px 10px}
+    .bingo-door .sq{overflow-wrap:anywhere}
     .bingo-door .feed{height:100%;padding:6px;gap:5px;font-size:12.5px}
     .bingo-door .cardwrap{height:100%;display:flex;flex-direction:column}
     .bingo-door .card{flex:1;grid-template-rows:repeat(4,minmax(0,1fr));gap:4px}
@@ -342,11 +343,19 @@
 
   // Shrink text in a square until its longest word fits (no mid-word breaks).
   const _m = document.createElement('canvas').getContext('2d');
+  // Phones: the split (chat | card) takes exactly the screen height left below it, so all 16 squares stay visible.
+  function fitGame() {
+    const sp = document.querySelector('.bingo-door .split'); if (!sp) return;
+    if (matchMedia('(max-width:860px)').matches) { const top = sp.getBoundingClientRect().top + window.scrollY - window.scrollY; sp.style.setProperty('--fitH', Math.max(330, window.innerHeight - top - 10) + 'px'); }
+    const c = sp.querySelector('.card'); if (c) fitSquares(c);
+  }
+  addEventListener('resize', () => requestAnimationFrame(fitGame));
   function fitSquares(root) {
     root.querySelectorAll('.sq').forEach(el => {
       el.style.fontSize = ''; const cs = getComputedStyle(el); let size = parseFloat(cs.fontSize); const max = el.clientWidth - 8;
       const widest = s => { _m.font = `${cs.fontWeight} ${s}px ${cs.fontFamily}`; return Math.max(...el.textContent.split(/\s+/).map(w => _m.measureText(w).width)); };
-      while (size > 7 && widest(size) > max) { size -= 0.5; el.style.fontSize = size + 'px'; }
+      const min = el.clientWidth < 70 ? 9.5 : 7;
+      while (size > min && widest(size) > max) { size -= 0.5; el.style.fontSize = size + 'px'; }
     });
   }
   // ---------- snow ----------
@@ -451,6 +460,7 @@
     v.classList.add('bingo-door');
     if (door.type === 'wrap') stopGame = playWrap(door, $('game'), finish, n);
     else stopGame = playReveal(door, $('game'), finish, n);
+    requestAnimationFrame(fitGame);
   }
   // Prediction finale: can be prepared days before its door opens (room, sealed cards); scores count once the door is open.
   function openPredict(n, door = null, startCode = '') {
@@ -619,7 +629,7 @@
       const checkVoice = () => { const has = speechSynthesis.getVoices().some(v => C().voice.some(l => v.lang.replace('_', '-').toLowerCase().startsWith(l.toLowerCase()))); if (!has && speechSynthesis.getVoices().length) { $('useVoice').checked = false; $('useVoice').disabled = true; $('status').textContent = t('noVoice'); } };
       checkVoice(); speechSynthesis.onvoiceschanged = checkVoice;
     }
-    $('go').onclick = () => { if (running || ended) return; running = true; $('live').classList.add('on'); $('playView').classList.add('running'); requestAnimationFrame(() => fitSquares(card)); feed.replaceChildren(); next(); };
+    $('go').onclick = () => { if (running || ended) return; running = true; $('live').classList.add('on'); $('playView').classList.add('running'); window.scrollTo({ top: 0 }); requestAnimationFrame(fitGame); feed.replaceChildren(); next(); };
     drawCard();
     return () => { running = false; ended = true; clearTimeout(timer); try { speechSynthesis.cancel(); } catch {} };
   }
