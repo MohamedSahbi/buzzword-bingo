@@ -4,7 +4,7 @@ export default {
   opensOn: 'De kalender gaat open op 1 december.', previewBtn: 'Oefenkalender spelen', previewOn: 'Oefenkalender: alle deurtjes zijn open en punten worden niet opgeslagen. De echte kalender heeft andere deurtjes.', previewExit: 'Terug naar de echte kalender',
   locked: 'Open op {date}', today: 'Vandaag', done: '{pts} ptn', play: 'Spelen', replay: 'Nog een keer (oefenen)', backToCal: '← Kalender',
   t_chat: 'Chatbingo', t_listen: 'Luisterbingo', t_emoji: 'Emoji-raadsels', t_wrap: 'Inpakken maar', t_predict: 'Voorspellingsbingo',
-  h_chat: 'Er speelt een groepsapp af. Tik op een vakje zodra de zin voorbijkomt. Snel tikken levert meer op, verkeerd tikken kost 5.',
+  h_chat: 'Er speelt een groepsapp af. Tik op een vakje zodra de zin voorbijkomt. Snel tikken levert meer op, verkeerd tikken kost 10.',
   h_listen: 'Luister (of lees de ondertiteling). Tik op een vakje zodra je de zin hoort.',
   h_emoji: 'Elk emoji-raadsel verbergt één vakje. Kraak het en tik op het vakje voordat het volgende raadsel komt.',
   h_wrap: 'Pak 4 dingen die bij elkaar horen in één cadeautje. Elk cadeautje heeft een verborgen label. Je hebt 4 rolletjes plakband.',
@@ -26,4 +26,5 @@ export default {
   shareNative: 'Delen',
   shareImage: 'Resultaat als afbeelding opslaan',
   shareAttach: 'Afbeelding opgeslagen: voeg hem toe aan je bericht.',
+  rotateTip: "Tip: draai je telefoon op zijn kant, dan zie je de chat en de hele kaart tegelijk.",
 };

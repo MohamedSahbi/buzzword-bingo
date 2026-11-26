@@ -7,7 +7,7 @@ export default {
   opensOn: 'De kalender gaat open op 1 december.', previewBtn: 'Speel de oefenkalender', previewOn: 'Oefenkalender: alle deurtjes zijn open en de punten worden niet bewaard. De echte kalender heeft andere deurtjes.', previewExit: 'Terug naar de echte kalender',
   locked: 'Gaat open op {date}', today: 'Vandaag', done: '{pts} ptn', play: 'Spelen', replay: 'Opnieuw spelen (oefenen)', backToCal: '← Kalender',
   t_chat: 'Chatbingo', t_listen: 'Luisterbingo', t_emoji: 'Emoji-raadsels', t_wrap: 'Pakjes inpakken', t_predict: 'Voorspellingsbingo',
-  h_chat: 'Een groepschat speelt zich af. Tik op een vakje zodra de uitdrukking verschijnt. Snel tikken geeft meer punten; een foute tik kost 5.',
+  h_chat: 'Een groepschat speelt zich af. Tik op een vakje zodra de uitdrukking verschijnt. Snel tikken geeft meer punten; een foute tik kost 10.',
   h_listen: 'Luister (of lees de ondertitels). Tik op een vakje zodra je de uitdrukking hoort.',
   h_emoji: 'Elk emoji-raadsel verbergt één vakje. Los het op en tik op het vakje voor het volgende raadsel komt.',
   h_wrap: 'Pak 4 dingen die bij elkaar horen in één pakje. Elk pakje heeft een verborgen naamkaartje. Je hebt 4 rollen plakband.',
@@ -26,4 +26,5 @@ export default {
   p_prophet: '🔮 Beste waarzegger: {name}', p_wild: '🤯 Publieksfavoriet: {text}', p_soloIntro: 'Schrijf nu je 9 voorspellingen. Kom vanavond terug en duid aan wat uitgekomen is.', p_tick: 'Duid aan wat uitgekomen is en sluit af.', p_finish: 'Afsluiten', p_need9: 'Vul eerst alle 9 vakjes in.', p_cardsOf: '{name}', b_confirmed: 'Uitgekomen voorspellingen', b_line: 'Rijen',
   nav_cal: 'Kalender', nav_score: 'Score & team', menu: 'Menu',
   sound: 'Geluid', soloScore: 'Jouw score',
+  rotateTip: "Tip: draai je gsm op zijn kant, dan zie je de chat en de hele kaart tegelijk.",
 };

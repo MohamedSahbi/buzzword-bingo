@@ -4,7 +4,7 @@ export default {
   opensOn: 'El calendario se abre el 1 de diciembre.', previewBtn: 'Jugar al calendario de prueba', previewOn: 'Calendario de prueba: todas las ventanas están abiertas y los puntos no se guardan. El calendario de verdad tiene otras ventanas.', previewExit: 'Volver al calendario de verdad',
   locked: 'Se abre el {date}', today: 'Hoy', done: '{pts} ptos.', play: 'Jugar', replay: 'Volver a jugar (práctica)', backToCal: '← Calendario',
   t_chat: 'Bingo de chat', t_listen: 'Bingo de escucha', t_emoji: 'Adivinanzas con emojis', t_wrap: 'Envuelve regalos', t_predict: 'Bingo de predicciones',
-  h_chat: 'Se va a ver un chat de grupo. Pulsa una casilla cuando aparezca su frase. Cuanto más rápido, más puntos; cada fallo resta 5.',
+  h_chat: 'Se va a ver un chat de grupo. Pulsa una casilla cuando aparezca su frase. Cuanto más rápido, más puntos; cada fallo resta 10.',
   h_listen: 'Escucha (o lee los subtítulos). Pulsa una casilla cuando oigas su frase.',
   h_emoji: 'Cada adivinanza de emojis esconde una casilla. Resuélvela y púlsala antes de que llegue la siguiente.',
   h_wrap: 'Envuelve en un regalo 4 cosas que van juntas. Cada regalo lleva una etiqueta oculta. Tienes 4 rollos de celo.',
@@ -26,4 +26,5 @@ export default {
   shareNative: "Compartir",
   shareImage: "Guardar imagen del resultado",
   shareAttach: "Imagen guardada: adjúntala a tu publicación.",
+  rotateTip: "Consejo: gira el móvil en horizontal para ver el chat y todo el cartón a la vez.",
 };

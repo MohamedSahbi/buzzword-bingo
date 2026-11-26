@@ -4,7 +4,7 @@ export default {
   opensOn: 'Le calendrier ouvre le 1er décembre.', previewBtn: 'Essayer le calendrier d’entraînement', previewOn: 'Calendrier d’entraînement : toutes les cases sont ouvertes et les points ne sont pas enregistrés. Le vrai calendrier a d’autres cases.', previewExit: 'Revenir au vrai calendrier',
   locked: 'Ouvre le {date}', today: 'Aujourd’hui', done: '{pts} pts', play: 'Jouer', replay: 'Rejouer (entraînement)', backToCal: '← Calendrier',
   t_chat: 'Bingo du chat', t_listen: 'Bingo à l’écoute', t_emoji: 'Devinettes emoji', t_wrap: 'Paquets cadeaux', t_predict: 'Bingo des pronostics',
-  h_chat: 'Une conversation de groupe défile. Touchez une case dès que son expression apparaît. Plus vous êtes rapide, plus vous marquez ; une erreur coûte 5 points.',
+  h_chat: 'Une conversation de groupe défile. Touchez une case dès que son expression apparaît. Plus vous êtes rapide, plus vous marquez ; une erreur coûte 10 points.',
   h_listen: 'Écoutez (ou lisez les sous-titres). Touchez une case dès que vous entendez son expression.',
   h_emoji: 'Chaque devinette emoji cache une case. Trouvez-la et touchez-la avant la devinette suivante.',
   h_wrap: 'Emballez dans un paquet 4 objets qui vont ensemble. Chaque paquet a une étiquette cachée. Vous avez 4 rouleaux de scotch.',
@@ -26,4 +26,5 @@ export default {
   shareNative: "Partager",
   shareImage: "Enregistrer l’image du résultat",
   shareAttach: "Image enregistrée : joignez-la à votre publication.",
+  rotateTip: "Astuce : tournez votre téléphone à l’horizontale pour voir la conversation et toute la grille.",
 };

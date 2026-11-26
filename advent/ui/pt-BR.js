@@ -4,7 +4,7 @@ export default {
   opensOn: 'O calendário abre em 1º de dezembro.', previewBtn: 'Jogar o calendário de treino', previewOn: 'Calendário de treino: todas as portas estão abertas e os pontos não são salvos. O calendário de verdade tem outras portas.', previewExit: 'Voltar ao calendário de verdade',
   locked: 'Abre em {date}', today: 'Hoje', done: '{pts} pts', play: 'Jogar', replay: 'Jogar de novo (treino)', backToCal: '← Calendário',
   t_chat: 'Bingo do chat', t_listen: 'Bingo de ouvido', t_emoji: 'Charadas de emoji', t_wrap: 'Embrulha aí', t_predict: 'Bingo de palpites',
-  h_chat: 'Uma conversa de grupo vai rolando. Toque no quadrado quando a frase aparecer. Quanto mais rápido, mais pontos; toque errado tira 5.',
+  h_chat: 'Uma conversa de grupo vai rolando. Toque no quadrado quando a frase aparecer. Quanto mais rápido, mais pontos; toque errado tira 10.',
   h_listen: 'Ouça (ou leia as legendas). Toque no quadrado quando ouvir a frase.',
   h_emoji: 'Cada charada de emoji esconde um quadrado. Descubra e toque nele antes da próxima charada.',
   h_wrap: 'Embrulhe num presente 4 itens que combinam. Cada caixa tem uma etiqueta escondida. Você tem 4 rolos de fita.',
@@ -26,4 +26,5 @@ export default {
   shareNative: "Compartilhar",
   shareImage: "Salvar imagem do resultado",
   shareAttach: "Imagem salva: anexe ao seu post.",
+  rotateTip: "Dica: vire o celular na horizontal para ver a conversa e a cartela inteira.",
 };

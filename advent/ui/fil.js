@@ -4,7 +4,7 @@ export default {
   opensOn: 'Magbubukas ang kalendaryo sa 1 Disyembre.', previewBtn: 'Laruin ang practice calendar', previewOn: 'Practice calendar: bukas ang lahat ng pinto at hindi nase-save ang puntos. Iba ang mga pinto sa totoong kalendaryo.', previewExit: 'Bumalik sa totoong kalendaryo',
   locked: 'Bubukas sa {date}', today: 'Ngayon', done: '{pts} pts', play: 'Laro', replay: 'Laruin ulit (practice)', backToCal: '← Kalendaryo',
   t_chat: 'Chat bingo', t_listen: 'Pakinig bingo', t_emoji: 'Emoji bugtong', t_wrap: 'Balot-Regalo', t_predict: 'Hula bingo',
-  h_chat: 'May group chat na mag-uusap. I-tap ang kahon kapag lumabas ang phrase nito. Mas mabilis, mas maraming puntos; bawas 5 sa maling tap.',
+  h_chat: 'May group chat na mag-uusap. I-tap ang kahon kapag lumabas ang phrase nito. Mas mabilis, mas maraming puntos; bawas 10 sa maling tap.',
   h_listen: 'Makinig (o basahin ang captions). I-tap ang kahon kapag narinig mo ang phrase nito.',
   h_emoji: 'May nakatagong kahon sa bawat emoji bugtong. Hulaan ito at i-tap bago dumating ang susunod.',
   h_wrap: 'Ibalot sa isang regalo ang 4 na bagay na magkakasama. May nakatagong tag ang bawat kahon. May 4 kang rolyo ng tape.',
@@ -26,4 +26,5 @@ export default {
   shareNative: "I-share",
   shareImage: "I-save ang result image",
   shareAttach: "Na-save ang picture: i-attach mo sa post mo.",
+  rotateTip: "Tip: ipahiga ang phone para makita mo ang chat at buong card nang sabay.",
 };

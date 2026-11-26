@@ -4,7 +4,7 @@ export default {
   opensOn: 'Il calendario si apre il 1° dicembre.', previewBtn: 'Gioca al calendario di prova', previewOn: 'Calendario di prova: tutte le finestrelle sono aperte e i punti non vengono salvati. Il calendario vero ha finestrelle diverse.', previewExit: 'Torna al calendario vero',
   locked: 'Si apre il {date}', today: 'Oggi', done: '{pts} punti', play: 'Gioca', replay: 'Gioca ancora (prova)', backToCal: '← Calendario',
   t_chat: 'Bingo della chat', t_listen: 'Bingo dell’ascolto', t_emoji: 'Indovinelli emoji', t_wrap: 'Pacchetti regalo', t_predict: 'Bingo delle previsioni',
-  h_chat: 'Si apre una chat di gruppo. Tocca una casella quando compare la sua frase. Più sei veloce, più punti fai; ogni tocco sbagliato costa 5.',
+  h_chat: 'Si apre una chat di gruppo. Tocca una casella quando compare la sua frase. Più sei veloce, più punti fai; ogni tocco sbagliato costa 10.',
   h_listen: 'Ascolta (o leggi i sottotitoli). Tocca una casella quando senti la sua frase.',
   h_emoji: 'Ogni indovinello emoji nasconde una casella. Risolvilo e tocca la casella prima del prossimo.',
   h_wrap: 'Incarta in un pacchetto 4 cose che vanno insieme. Ogni pacchetto ha un bigliettino nascosto. Hai 4 rotoli di scotch.',
@@ -26,4 +26,5 @@ export default {
   shareNative: "Condividi",
   shareImage: "Salva l’immagine del risultato",
   shareAttach: "Immagine salvata: allegala al tuo post.",
+  rotateTip: "Consiglio: gira il telefono in orizzontale per vedere chat e cartella insieme.",
 };

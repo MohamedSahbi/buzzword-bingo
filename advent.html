@@ -189,14 +189,26 @@
     .bingo-door .feed{height:100%;padding:6px;gap:5px;font-size:12.5px}
     .bingo-door .cardwrap{height:100%;display:flex;flex-direction:column}
     .bingo-door .card{flex:1;grid-template-rows:repeat(4,minmax(0,1fr));gap:4px}
-    .bingo-door .sq{aspect-ratio:auto;font-size:11px;padding:2px;line-height:1.1;border-radius:8px}
+    .bingo-door .sq{aspect-ratio:auto;font-size:13px;padding:3px;line-height:1.12;border-radius:8px;hyphens:auto}
     .bingo-door .note{font-size:12px;margin:4px 0 0}
     .bingo-door .msg{font-size:12.5px;max-width:100%;padding:5px 8px;border-radius:11px}.bingo-door .riddle{font-size:clamp(28px,10vw,46px);overflow-wrap:anywhere}.bingo-door .past{font-size:12px}
     .bingo-door .go-big{font-size:17px;padding:12px 16px;gap:8px}.bingo-door .gbar{margin-top:8px;padding:6px 8px;gap:6px}
     .bingo-door .gbar .stat{padding:2px 8px}.bingo-door .gbar .stat small{font-size:10px}.bingo-door .gbar .stat b{font-size:16px}
   }
+  .rotate-tip{font-size:12px;color:var(--muted);flex:1 1 140px;min-width:0}
   @media (max-width:860px){body.playing #title,body.playing #subtitle,body.playing #banner,body.playing #angelEntry{display:none}.layout{grid-template-columns:1fr}.split{grid-template-columns:1fr}.feed{height:clamp(170px,30vh,260px)}.gbar{position:sticky;top:66px;box-shadow:0 6px 16px #0003}}
   @media (max-width:520px){.doors{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.door .num{width:40px;height:40px;font-size:18px}.door .lab{display:none}.items,.boxes{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media (orientation:landscape) and (max-height:560px){
+    body.playing .appbar,body.playing #title,body.playing #subtitle,body.playing #banner,body.playing #angelEntry{display:none}
+    .bingo-door{padding:8px 12px 74px}
+    .bingo-door > .kind,.bingo-door > p.muted,.bingo-door > .note{display:none}
+    .bingo-door > .row{margin:0 0 6px!important}.bingo-door > .row .btn{padding:5px 10px}
+    .bingo-door h2{font-size:16px;margin:0 0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .bingo-door .gbar{position:fixed;left:12px;right:12px;bottom:max(8px,env(safe-area-inset-bottom));top:auto;margin:0;box-shadow:0 -4px 18px #0003;z-index:20}
+    .bingo-door .split{grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);margin-top:0;height:var(--fitH,calc(100dvh - 140px));min-height:200px}
+    .bingo-door .feed{height:100%}.bingo-door .cardwrap{height:100%;display:flex;flex-direction:column}.bingo-door .card{flex:1;grid-template-rows:repeat(4,minmax(0,1fr));gap:5px}.bingo-door .sq{aspect-ratio:auto}
+    .bingo-door .sq{font-size:13px}
+  }
 </style>
 </head>
 <body>
@@ -348,7 +360,11 @@
   // Phones: the split (chat | card) takes exactly the screen height left below it, so all 16 squares stay visible.
   function fitGame() {
     const sp = document.querySelector('.bingo-door .split'); if (!sp) return;
-    if (matchMedia('(max-width:860px)').matches) { const top = sp.getBoundingClientRect().top + window.scrollY - window.scrollY; sp.style.setProperty('--fitH', Math.max(330, window.innerHeight - top - 10) + 'px'); }
+    const land = matchMedia('(orientation:landscape) and (max-height:560px)').matches;
+    if (land || matchMedia('(max-width:860px)').matches) {
+      const bar = document.querySelector('.bingo-door .gbar'), below = land && bar ? bar.offsetHeight + 18 : 10;
+      sp.style.setProperty('--fitH', Math.max(land ? 200 : 330, window.innerHeight - sp.getBoundingClientRect().top - below) + 'px');
+    }
     const c = sp.querySelector('.card'); if (c) fitSquares(c);
   }
   addEventListener('resize', () => requestAnimationFrame(fitGame));
@@ -532,7 +548,8 @@
 
     const voiceOk = door.type === 'listen' && 'speechSynthesis' in window;
     // One control bar (live status + score, pinned on phones); before the start the feed area IS the Start button.
-    root.innerHTML = `<div class="gbar"><span class="live" id="live"></span><span class="muted" id="status"></span><div class="grow"></div>
+    const upright = matchMedia('(max-width:860px) and (orientation:portrait) and (pointer:coarse)').matches;
+    root.innerHTML = `<div class="gbar"><span class="live" id="live"></span>${upright ? `<span class="rotate-tip" id="rotTip">🔄 ${esc(t('rotateTip'))}</span>` : ''}<span class="muted" id="status"></span><div class="grow"></div>
         ${door.type === 'listen' ? `<label class="toggle"><input type="checkbox" id="useVoice" ${voiceOk ? 'checked' : 'disabled'}> ${esc(t('voice'))}</label>` : ''}
         <div class="stat"><small>${esc(t('points'))}</small><b id="pts">0</b></div><div class="stat"><small>${esc(t('found'))}</small><b id="fnd">0/${appearing.length}</b></div></div>
       <div class="split"><div class="feed" id="feed"><button class="go-big" id="go" type="button"><span>▶</span>${esc(t('start'))}</button></div>
@@ -638,7 +655,7 @@
       const checkVoice = () => { const has = speechSynthesis.getVoices().some(v => C().voice.some(l => v.lang.replace('_', '-').toLowerCase().startsWith(l.toLowerCase()))); if (!has && speechSynthesis.getVoices().length) { $('useVoice').checked = false; $('useVoice').disabled = true; $('status').textContent = t('noVoice'); } };
       checkVoice(); speechSynthesis.onvoiceschanged = checkVoice;
     }
-    $('go').onclick = () => { if (running || ended) return; running = true; $('live').classList.add('on'); $('playView').classList.add('running'); window.scrollTo({ top: 0 }); requestAnimationFrame(fitGame); feed.replaceChildren(); next(); };
+    $('go').onclick = () => { if (running || ended) return; running = true; $('rotTip')?.remove(); $('live').classList.add('on'); $('playView').classList.add('running'); window.scrollTo({ top: 0 }); requestAnimationFrame(fitGame); feed.replaceChildren(); next(); };
     drawCard();
     return () => { running = false; ended = true; clearTimeout(timer); try { speechSynthesis.cancel(); } catch {} };
   }

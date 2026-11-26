@@ -4,7 +4,7 @@ export default {
   opensOn: 'Der Kalender öffnet am 1. Dezember.', previewBtn: 'Übungskalender spielen', previewOn: 'Übungskalender: Alle Türchen sind offen, Punkte werden nicht gespeichert. Der echte Kalender hat andere Türchen.', previewExit: 'Zurück zum echten Kalender',
   locked: 'Öffnet am {date}', today: 'Heute', done: '{pts} Pkt.', play: 'Spielen', replay: 'Nochmal spielen (Übung)', backToCal: '← Kalender',
   t_chat: 'Chat-Bingo', t_listen: 'Hör-Bingo', t_emoji: 'Emoji-Rätsel', t_wrap: 'Geschenke einpacken', t_predict: 'Vorhersage-Bingo',
-  h_chat: 'Ein Gruppenchat läuft ab. Tippe auf ein Feld, sobald der Begriff auftaucht. Schnell sein bringt mehr Punkte, falsches Tippen kostet 5.',
+  h_chat: 'Ein Gruppenchat läuft ab. Tippe auf ein Feld, sobald der Begriff auftaucht. Schnell sein bringt mehr Punkte, falsches Tippen kostet 10.',
   h_listen: 'Hör zu (oder lies die Untertitel). Tippe auf ein Feld, sobald du den Begriff hörst.',
   h_emoji: 'Jedes Emoji-Rätsel versteckt ein Feld. Löse es und tippe, bevor das nächste kommt.',
   h_wrap: 'Pack 4 Dinge, die zusammengehören, in ein Geschenk. Jedes Geschenk hat ein verstecktes Schildchen. Du hast 4 Rollen Tesafilm.',
@@ -26,4 +26,5 @@ export default {
   shareNative: "Teilen",
   shareImage: "Ergebnis als Bild speichern",
   shareAttach: "Bild gespeichert: Häng es an deinen Beitrag an.",
+  rotateTip: "Tipp: Dreh dein Handy quer, dann siehst du Chat und ganze Karte zugleich.",
 };
