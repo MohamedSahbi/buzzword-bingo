@@ -183,13 +183,14 @@
   @media (max-width:860px){
     /* Phones: chat (left) and card (right) side by side, filling the screen; the card stays 4×4 so lines still mean bingo. */
     .bingo-door h2{font-size:19px;margin:4px 0}.bingo-door > p.muted{font-size:13px;margin:4px 0 0!important}.bingo-door.running > p.muted,.bingo-door.running > .note{display:none}
-    .bingo-door .split{grid-template-columns:minmax(0,.52fr) minmax(0,1fr);gap:6px;height:var(--fitH,calc(100dvh - 215px));min-height:330px;margin-top:8px}
+    /* Upright: chat strip on top (latest messages, like subtitles), full-width card below, all within the screen. */
+    .bingo-door .split{grid-template-columns:1fr;grid-template-rows:minmax(0,.34fr) minmax(0,1fr);gap:6px;height:var(--fitH,calc(100dvh - 215px));min-height:420px;margin-top:8px}
     .bingo-door.running > .kind{display:none}.bingo-door.running h2{font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.bingo-door.running > .row{margin:0 0 4px!important}.bingo-door.running > .row .btn{padding:6px 10px}
-    .bingo-door .sq{overflow-wrap:anywhere}
+    .bingo-door .sq{overflow-wrap:normal}
     .bingo-door .feed{height:100%;padding:6px;gap:5px;font-size:12.5px}
     .bingo-door .cardwrap{height:100%;display:flex;flex-direction:column}
     .bingo-door .card{flex:1;grid-template-rows:repeat(4,minmax(0,1fr));gap:4px}
-    .bingo-door .sq{aspect-ratio:auto;font-size:13px;padding:3px 2px;line-height:1.12;border-radius:8px;hyphens:manual;-webkit-hyphens:manual}
+    .bingo-door .sq{aspect-ratio:auto;font-size:14px;padding:3px;line-height:1.15;border-radius:9px;hyphens:manual;-webkit-hyphens:manual}
     .bingo-door .note{font-size:12px;margin:4px 0 0}
     .bingo-door .msg{font-size:12.5px;max-width:100%;padding:5px 8px;border-radius:11px}.bingo-door .riddle{font-size:clamp(28px,10vw,46px);overflow-wrap:anywhere}.bingo-door .past{font-size:12px}
     .bingo-door .go-big{font-size:17px;padding:12px 16px;gap:8px}.bingo-door .gbar{margin-top:8px;padding:6px 8px;gap:6px}
@@ -205,7 +206,7 @@
     .bingo-door > .row{margin:0 0 6px!important}.bingo-door > .row .btn{padding:5px 10px}
     .bingo-door h2{font-size:16px;margin:0 0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .bingo-door .gbar{position:fixed;left:12px;right:12px;bottom:max(8px,env(safe-area-inset-bottom));top:auto;margin:0;box-shadow:0 -4px 18px #0003;z-index:20}
-    .bingo-door .split{grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);margin-top:0;height:var(--fitH,calc(100dvh - 140px));min-height:200px}
+    .bingo-door .split{grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);grid-template-rows:none;margin-top:0;height:var(--fitH,calc(100dvh - 140px));min-height:200px}
     .bingo-door .feed{height:100%}.bingo-door .cardwrap{height:100%;display:flex;flex-direction:column}.bingo-door .card{flex:1;grid-template-rows:repeat(4,minmax(0,1fr));gap:5px}.bingo-door .sq{aspect-ratio:auto}
     .bingo-door .sq{font-size:13px}
   }
@@ -372,7 +373,7 @@
     root.querySelectorAll('.sq').forEach(el => {
       el.style.fontSize = ''; const cs = getComputedStyle(el); let size = parseFloat(cs.fontSize); const max = el.clientWidth - 8;
       const widest = s => { _m.font = `${cs.fontWeight} ${s}px ${cs.fontFamily}`; return Math.max(...el.textContent.split(/\s+/).map(w => _m.measureText(w).width)); };
-      const min = el.clientWidth < 90 ? 10 : 8;
+      const min = 9;
       while (size > min && widest(size) > max) { size -= 0.5; el.style.fontSize = size + 'px'; }
     });
   }
