@@ -28,4 +28,5 @@ export default {
   shareAttach: "Imagem guardada: anexa-a à tua publicação.",
   rotateTip: "Dica: roda o telemóvel na horizontal para veres a conversa e o cartão inteiro.",
   fullscreen: "Ecrã inteiro",
+  study: "Olha para o teu cartão", ready: "Estou pronto", b_ready: "Pronto mais cedo",
 };

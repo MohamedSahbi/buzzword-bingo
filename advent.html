@@ -201,6 +201,10 @@
     .bingo-door .gbar .stat{padding:2px 8px}.bingo-door .gbar .stat small{font-size:10px}.bingo-door .gbar .stat b{font-size:16px}
   }
   .fs-btn{border:0;background:#0d2236;color:#fff;width:38px;height:38px;border-radius:10px;font-size:20px;cursor:pointer;flex:none}
+  .card.veiled .sq{color:transparent;text-shadow:0 0 9px #13243388;pointer-events:none}
+  .study{margin:auto;text-align:center;display:grid;justify-items:center;gap:8px}.study p{margin:0;font-weight:800;color:var(--ink)}
+  .study .ring{--p:1;width:74px;height:74px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--berry) calc(var(--p)*360deg),#e3e9ef 0);transition:background .2s}
+  .study .ring b{display:grid;place-items:center;width:58px;height:58px;border-radius:50%;background:#fff;font-size:24px}
   .rotate-tip{font-size:12px;color:var(--muted);flex:1 1 140px;min-width:0}
   @media (max-width:860px){body.playing #title,body.playing #subtitle,body.playing #banner,body.playing #angelEntry{display:none}.layout{grid-template-columns:1fr}.split{grid-template-columns:1fr}.feed{height:clamp(170px,30vh,260px)}.gbar{position:sticky;top:66px;box-shadow:0 6px 16px #0003}}
   @media (max-width:520px){.doors{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.door .num{width:40px;height:40px;font-size:18px}.door .lab{display:none}.items,.boxes{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -603,6 +607,8 @@
         if (!bingo && lines().some(l => l.every(i => idxs.includes(i)))) { bingo = true; pts += 150; P.bingo = 150; msg = t('bingo'); sfx.bingo(); setTimeout(() => magic(card, true), 0); }
         if (!full && found.size === appearing.length) { full = true; pts += 100; P.full = 100; msg = t('fullCard'); setTimeout(() => magic(card, true), 350); }
         note(msg); drawCard();
+        // Emoji: solving the current riddle moves straight on (no waiting for its timer).
+        if (door.type === 'emoji' && running && segs[idx - 1]?.phrases?.includes(p)) { clearTimeout(timer); timer = setTimeout(next, 700); }
       }
       $('pts').textContent = pts; $('fnd').textContent = `${found.size}/${appearing.length}`;
     }
@@ -621,7 +627,7 @@
       $('status').textContent = '';
       const grid = [0, 1, 2, 3].map(r => [0, 1, 2, 3].map(c => { const p = cardPhrases[r * 4 + c]; return found.has(p) ? (p === star ? '⭐' : '🎄') : '❄️'; }).join('')).join('\n');
       door.shareLine = `${t('t_' + door.type)} · ${found.size}/${appearing.length}${bingo ? ' · BINGO' : ''}\n${grid}`;
-      done({ parts: [[t('b_speed'), P.speed], ...(P.star ? [[t('b_star'), P.star]] : []), [t('b_bingo'), P.bingo], [t('b_full'), P.full], [t('b_wrong'), P.wrong]] });
+      done({ parts: [[t('b_speed'), P.speed], ...(P.ready ? [[t('b_ready'), P.ready]] : []), ...(P.star ? [[t('b_star'), P.star]] : []), [t('b_bingo'), P.bingo], [t('b_full'), P.full], [t('b_wrong'), P.wrong]] });
     }
     // Pacing: chat lines every ~2.6s, emoji riddles every ~7s, listening follows the speech (or reading time).
     // ---- human chat feed ----
@@ -635,7 +641,7 @@
       if (!nextSeg) return 600;
       if (/^§react/.test(nextSeg.raw)) return 500 + Math.random() * 500;
       const len = nextSeg.text.replace(/^§\w+\s*/, '').length;
-      return 300 + Math.random() * 1200 + Math.min(2600, 600 + len * 35);   // pause + typing time
+      return (300 + Math.random() * 1200 + Math.min(2600, 600 + len * 35)) * 1.25;   // pause + typing time, relaxed pace
     }
     function showTyping(who) { const el = document.createElement('div'); el.className = 'typing'; el.innerHTML = `${esc(t('typing', { who }))} <i></i><i></i><i></i>`; feed.appendChild(el); feed.scrollTop = feed.scrollHeight; return el; }
     function showChat(seg) {
@@ -678,9 +684,21 @@
       const checkVoice = () => { const has = speechSynthesis.getVoices().some(v => C().voice.some(l => v.lang.replace('_', '-').toLowerCase().startsWith(l.toLowerCase()))); if (!has && speechSynthesis.getVoices().length) { $('useVoice').checked = false; $('useVoice').disabled = true; $('status').textContent = t('noVoice'); } };
       checkVoice(); speechSynthesis.onvoiceschanged = checkVoice;
     }
-    $('go').onclick = () => { if (running || ended) return; running = true; $('rotTip')?.remove(); $('live').classList.add('on'); $('playView').classList.add('running'); window.scrollTo({ top: 0 }); requestAnimationFrame(fitGame); feed.replaceChildren(); next(); };
+    // Study phase: the card is veiled until Start, then players get a short look before the round begins.
+    // "I'm ready" skips the rest: +3 points per second not needed (max 45).
+    const STUDY = 15; card.classList.add('veiled'); P.ready = 0;
+    function study(done) {
+      card.classList.remove('veiled'); let left = STUDY; const t0 = Date.now();
+      feed.innerHTML = `<div class="study"><div class="ring" style="--p:1"><b id="stLeft">${left}</b></div><p>${esc(t('study'))}</p><button class="btn primary" id="stReady" type="button">✓ ${esc(t('ready'))}</button></div>`;
+      const fin = () => { clearInterval(iv); const rest = Math.max(0, STUDY - Math.floor((Date.now() - t0) / 1000)); if (rest) { P.ready = Math.min(45, rest * 3); pts += P.ready; $('pts').textContent = pts; } done(); };
+      const iv = setInterval(() => { left = STUDY - Math.floor((Date.now() - t0) / 1000); const r = feed.querySelector('.ring'); if (r) { r.style.setProperty('--p', Math.max(0, left / STUDY)); $('stLeft').textContent = Math.max(0, left); } if (left <= 0) { clearInterval(iv); P.ready = 0; done(); } }, 200);
+      $('stReady').onclick = fin; stopStudy = () => clearInterval(iv);
+    }
+    let stopStudy = () => {};
+    $('go').onclick = () => { if (running || ended) return; $('go').remove(); requestAnimationFrame(fitGame); study(begin); };
+    function begin() { if (running || ended) return; running = true; $('rotTip')?.remove(); $('live').classList.add('on'); $('playView').classList.add('running'); window.scrollTo({ top: 0 }); requestAnimationFrame(fitGame); feed.replaceChildren(); next(); };
     drawCard();
-    return () => { running = false; ended = true; clearTimeout(timer); try { speechSynthesis.cancel(); } catch {} };
+    return () => { running = false; ended = true; stopStudy(); clearTimeout(timer); try { speechSynthesis.cancel(); } catch {} };
   }
 
   // ---------- engine 2: Gift Wrap ----------

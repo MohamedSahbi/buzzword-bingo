@@ -28,4 +28,5 @@ export default {
   shareAttach: "Imagen guardada: adjúntala a tu publicación.",
   rotateTip: "Consejo: gira el móvil en horizontal para ver el chat y todo el cartón a la vez.",
   fullscreen: "Pantalla completa",
+  study: "Mira tu cartón", ready: "Estoy listo/a", b_ready: "Listo/a antes",
 };

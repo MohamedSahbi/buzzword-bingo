@@ -28,4 +28,5 @@ export default {
   shareAttach: "Immagine salvata: allegala al tuo post.",
   rotateTip: "Consiglio: gira il telefono in orizzontale per vedere chat e cartella insieme.",
   fullscreen: "Schermo intero",
+  study: "Guarda la tua cartella", ready: "Sono pronto/a", b_ready: "Pronto/a prima",
 };

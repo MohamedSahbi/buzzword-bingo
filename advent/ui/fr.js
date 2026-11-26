@@ -28,4 +28,5 @@ export default {
   shareAttach: "Image enregistrée : joignez-la à votre publication.",
   rotateTip: "Astuce : tournez votre téléphone à l’horizontale pour voir la conversation et toute la grille.",
   fullscreen: "Plein écran",
+  study: "Regardez votre grille", ready: "Je suis prêt·e", b_ready: "Prêt·e en avance",
 };

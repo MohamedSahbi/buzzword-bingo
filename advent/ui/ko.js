@@ -28,4 +28,5 @@ export default {
   shareAttach: "이미지를 저장했어요. 게시물에 첨부하세요.",
   rotateTip: "팁: 휴대폰을 가로로 돌리면 채팅과 카드 전체를 한 번에 볼 수 있어요.",
   fullscreen: "전체 화면",
+  study: "카드를 살펴보세요", ready: "준비됐어요", b_ready: "빨리 준비 완료",
 };

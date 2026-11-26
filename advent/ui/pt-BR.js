@@ -28,4 +28,5 @@ export default {
   shareAttach: "Imagem salva: anexe ao seu post.",
   rotateTip: "Dica: vire o celular na horizontal para ver a conversa e a cartela inteira.",
   fullscreen: "Tela cheia",
+  study: "Olhe a sua cartela", ready: "Estou pronto", b_ready: "Pronto antes",
 };
