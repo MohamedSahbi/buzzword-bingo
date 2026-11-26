@@ -27,4 +27,5 @@ export default {
   shareImage: "Guardar imagen del resultado",
   shareAttach: "Imagen guardada: adjúntala a tu publicación.",
   rotateTip: "Consejo: gira el móvil en horizontal para ver el chat y todo el cartón a la vez.",
+  fullscreen: "Pantalla completa",
 };

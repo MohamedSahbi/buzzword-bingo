@@ -117,6 +117,7 @@ export default {
     "menu.open": "Menu",
     "hero.premise": "Hear a buzzword in a meeting? Tick it. First full line wins.",
     "hero.solo": "Play solo",
+    "fullscreen": "Full screen",
     "share.native": "Share",
     "share.copy": "Copy",
     "share.image": "Save result image",

@@ -27,4 +27,5 @@ export default {
   shareImage: "結果を画像で保存",
   shareAttach: "画像を保存しました。投稿に添付してください。",
   rotateTip: "ヒント：スマホを横向きにすると、チャットとカード全体が同時に見られます。",
+  fullscreen: "全画面",
 };

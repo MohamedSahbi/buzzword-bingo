@@ -9,10 +9,14 @@
   <meta property="og:type" content="website">
   <meta property="og:title" content="Buzzword Bingo">
   <meta property="og:description" content="Meeting jargon bingo, solo or live with your team, in 13 languages.">
-  <meta property="og:url" content="https://mohamedsahbi.com/buzzword-bingo/">
-  <meta property="og:image" content="https://mohamedsahbi.com/buzzword-bingo/og-bingo.png">
+  <meta property="og:url" content="https://buzzword-bingo.app/">
+  <meta property="og:image" content="https://buzzword-bingo.app/og-bingo.png">
   <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="icon-192.png">
+  <meta name="theme-color" content="#0d2236"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
+
 
   <style>
     :root{--bg:#eef3f8;--panel:#fff;--ink:#102033;--muted:#5c6b7b;--line:#d7e0e9;--brand:#1267d6;--brand2:#0a4ca7;--good:#087b4d;--warn:#a44c00;--mark:#dcecff;--free:#fff0bf;--shadow:0 14px 35px rgba(21,42,70,.12)}
@@ -74,7 +78,8 @@
     .hero-actions{display:flex;gap:8px;flex-wrap:wrap}.hero-actions .btn{flex:none;text-decoration:none}
     .hero .btn.primary{background:var(--brand);color:#fff}.hero .btn.advent{background:#0d2236;color:#f2b84b}
     @media (max-width:860px){.hero{margin:0 0 12px;padding:12px}.hero .premise{font-size:15px}.hero-actions{width:100%}.hero-actions .btn{flex:1;text-align:center}}
-  </style>
+    .made-by{text-align:center;font-size:12px;opacity:.65;margin:18px 0 90px}.made-by a{color:inherit}
+</style>
 </head>
 <body>
   <main class="shell">
@@ -86,6 +91,7 @@
         <a id="adventLink" class="pill icon-btn" href="advent.html" style="text-decoration:none">🎄 <span data-i18n="advent.open"></span></a>
         <button id="soundBtn" class="pill icon-btn" type="button"></button>
         <button id="bossBtn" class="pill icon-btn" type="button" data-i18n-title="boss.open" data-i18n-aria="boss.open">📊 <span class="m-label" data-i18n="boss.open"></span></button>
+        <button id="fsBtn" class="pill icon-btn hidden" type="button" data-i18n-title="fullscreen" data-i18n-aria="fullscreen">⛶ <span class="m-label" data-i18n="fullscreen"></span></button>
         <button id="printMenu" class="pill icon-btn m-only" type="button">🖨️ <span data-i18n="print"></span></button>
         <div class="pill conn-pill"><span id="connectionDot" class="dot"></span><span id="connectionText"></span></div>
       </div>
@@ -171,10 +177,12 @@
 
   <div id="boss" class="boss" aria-hidden="true"><div class="boss-bar"><b id="bossFile"></b><span class="boss-menu"><span>File</span><span>Edit</span><span>View</span><span>Insert</span><span>Format</span><span>Data</span></span></div><div class="boss-fx">fx&nbsp;&nbsp;=SUM(B2:B8)</div><div class="boss-grid" id="bossGrid"></div><div class="boss-hint" id="bossHint"></div></div>
 
+  <footer class="made-by">© 2026 <a href="https://mohamedsahbi.com" rel="author">Mohamed Sahbi</a></footer>
 <script type="module">
   import { firebaseConfig } from './firebase-config.js';
   import { LANGUAGES, TOPIC_KEYS, translate, topicData, detectLanguage } from './languages/index.js';
   import { shareBar } from './share.js';
+  import { canFullscreen, toggleFullscreen } from './fullscreen.js';
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
   import { getAuth, signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
   import { getDatabase, ref, get, set, update, remove, onValue, onDisconnect, push, runTransaction, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js';
@@ -460,6 +468,7 @@
   // Language changed on the Advent page (other tab, or this page restored with the back button): follow it.
   const syncSiteLang=()=>{ const s=pickLang(localStorage.getItem('bingoSiteLang')); if(!s||s===siteLang) return; const solo=!room&&cardPref==='auto'; siteLang=s; applyI18n(); if(solo) freshSolo(); };
   addEventListener('storage',e=>{ if(e.key==='bingoSiteLang') syncSiteLang() }); addEventListener('pageshow',syncSiteLang); document.addEventListener('visibilitychange',()=>{ if(!document.hidden) syncSiteLang() });
+  if(canFullscreen()){ $('fsBtn').classList.remove('hidden'); $('fsBtn').addEventListener('click',()=>toggleFullscreen()); }
   els.soloTab.addEventListener('click',()=>showTab(false)); els.multiTab.addEventListener('click',()=>showTab(true)); els.startSolo.addEventListener('click',freshSolo);
   els.openCreate.addEventListener('click',async()=>{if(await requireFirebase()){els.createTopic.value=els.topic.value;els.createLang.value=soloCardLang();els.createModal.classList.add('show')}}); els.cancelCreate.addEventListener('click',()=>els.createModal.classList.remove('show')); els.createModal.addEventListener('click',e=>{if(e.target===els.createModal)els.createModal.classList.remove('show')}); els.createRoom.addEventListener('click',createRoom);
   els.joinCode.addEventListener('input',e=>e.target.value=cleanCode(e.target.value)); els.joinRoom.addEventListener('click',()=>joinRoom()); els.leaveRoom.addEventListener('click',openLeave); els.endRoom.addEventListener('click',openEndRoom); els.hostModal.addEventListener('click',e=>{if(e.target===els.hostModal)closeModal()});

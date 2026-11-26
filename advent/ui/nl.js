@@ -27,4 +27,5 @@ export default {
   shareImage: 'Resultaat als afbeelding opslaan',
   shareAttach: 'Afbeelding opgeslagen: voeg hem toe aan je bericht.',
   rotateTip: "Tip: draai je telefoon op zijn kant, dan zie je de chat en de hele kaart tegelijk.",
+  fullscreen: "Volledig scherm",
 };

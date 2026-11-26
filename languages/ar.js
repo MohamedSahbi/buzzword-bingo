@@ -117,6 +117,7 @@ export default {
     "menu.open": "القائمة",
     "hero.premise": "سمعت عبارة رنّانة في الاجتماع؟ علّمها. أول من يُكمل صفًّا يفوز.",
     "hero.solo": "العب وحدك",
+    "fullscreen": "ملء الشاشة",
     "share.native": "مشاركة",
     "share.copy": "نسخ",
     "share.image": "حفظ صورة النتيجة",

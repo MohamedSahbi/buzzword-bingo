@@ -117,6 +117,7 @@ export default {
     "menu.open": "Menu",
     "hero.premise": "Ouviu um jargão na reunião? Marque. Quem completar uma linha primeiro ganha.",
     "hero.solo": "Jogar sozinho",
+    "fullscreen": "Tela cheia",
     "share.native": "Compartilhar",
     "share.copy": "Copiar",
     "share.image": "Salvar imagem do resultado",

@@ -27,4 +27,5 @@ export default {
   shareImage: "Salva l’immagine del risultato",
   shareAttach: "Immagine salvata: allegala al tuo post.",
   rotateTip: "Consiglio: gira il telefono in orizzontale per vedere chat e cartella insieme.",
+  fullscreen: "Schermo intero",
 };

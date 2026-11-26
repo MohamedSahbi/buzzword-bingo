@@ -27,4 +27,5 @@ export default {
   shareImage: "I-save ang result image",
   shareAttach: "Na-save ang picture: i-attach mo sa post mo.",
   rotateTip: "Tip: ipahiga ang phone para makita mo ang chat at buong card nang sabay.",
+  fullscreen: "Full screen",
 };

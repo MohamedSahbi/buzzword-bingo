@@ -8,10 +8,14 @@
   <meta property="og:type" content="website">
   <meta property="og:title" content="Advent calendar · Buzzword Bingo">
   <meta property="og:description" content="A little game behind every door, alone or with your team. Real calendars for 15 cultures.">
-  <meta property="og:url" content="https://mohamedsahbi.com/buzzword-bingo/advent.html">
-  <meta property="og:image" content="https://mohamedsahbi.com/buzzword-bingo/og-advent.png">
+  <meta property="og:url" content="https://buzzword-bingo.app/advent.html">
+  <meta property="og:image" content="https://buzzword-bingo.app/og-advent.png">
   <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="icon-192.png">
+  <meta name="theme-color" content="#0d2236"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
+
 
 <style>
   :root{--night:#0d2236;--night2:#143552;--fir:#0f5132;--berry:#b3261e;--gold:#f2b84b;--snow:#f7fbff;--ink:#132433;--muted:#5a6b7b;--card:#ffffff;--line:#d8e2ea}
@@ -196,6 +200,7 @@
     .bingo-door .go-big{font-size:17px;padding:12px 16px;gap:8px}.bingo-door .gbar{margin-top:8px;padding:6px 8px;gap:6px}
     .bingo-door .gbar .stat{padding:2px 8px}.bingo-door .gbar .stat small{font-size:10px}.bingo-door .gbar .stat b{font-size:16px}
   }
+  .fs-btn{border:0;background:#0d2236;color:#fff;width:38px;height:38px;border-radius:10px;font-size:20px;cursor:pointer;flex:none}
   .rotate-tip{font-size:12px;color:var(--muted);flex:1 1 140px;min-width:0}
   @media (max-width:860px){body.playing #title,body.playing #subtitle,body.playing #banner,body.playing #angelEntry{display:none}.layout{grid-template-columns:1fr}.split{grid-template-columns:1fr}.feed{height:clamp(170px,30vh,260px)}.gbar{position:sticky;top:66px;box-shadow:0 6px 16px #0003}}
   @media (max-width:520px){.doors{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.door .num{width:40px;height:40px;font-size:18px}.door .lab{display:none}.items,.boxes{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -210,6 +215,7 @@
     .bingo-door .feed{height:100%}.bingo-door .cardwrap{height:100%;display:flex;flex-direction:column}.bingo-door .card{flex:1;grid-template-rows:repeat(4,minmax(0,1fr));gap:5px}.bingo-door .sq{aspect-ratio:auto}
     .bingo-door .sq{font-size:13px}
   }
+  .made-by{text-align:center;font-size:12px;opacity:.65;margin:18px 0 90px}.made-by a{color:inherit}
 </style>
 </head>
 <body>
@@ -270,6 +276,7 @@
 </div>
 <nav class="tabbar" id="tabbar"><button type="button" data-tab="cal">🎄 <span id="navCal"></span></button><button type="button" data-tab="score">🏆 <span id="navScore"></span></button></nav>
 
+  <footer class="made-by">© 2026 <a href="https://mohamedsahbi.com" rel="author">Mohamed Sahbi</a></footer>
 <script type="module">
   import { ADVENT_UI } from './advent/ui.js';
   import * as ADVENT_INDEX from './advent/index.js';
@@ -282,6 +289,7 @@
   import { LANGUAGES } from './languages/index.js';
   import { mountAngel } from './advent/angel.js';
   import { shareBar } from './share.js';
+  import { canFullscreen, toggleFullscreen } from './fullscreen.js';
   import { deedsFor } from './advent/deeds/index.js';
 
   // ---------- setup ----------
@@ -369,6 +377,7 @@
     const c = sp.querySelector('.card'); if (c) fitSquares(c);
   }
   addEventListener('resize', () => requestAnimationFrame(fitGame));
+  document.addEventListener('fullscreenchange', () => setTimeout(fitGame, 200));
   function fitSquares(root) {
     root.querySelectorAll('.sq').forEach(el => {
       el.style.fontSize = ''; const cs = getComputedStyle(el); let size = parseFloat(cs.fontSize); const max = el.clientWidth - 8;
@@ -552,10 +561,11 @@
     const upright = matchMedia('(max-width:860px) and (orientation:portrait) and (pointer:coarse)').matches;
     root.innerHTML = `<div class="gbar"><span class="live" id="live"></span>${upright ? `<span class="rotate-tip" id="rotTip">🔄 ${esc(t('rotateTip'))}</span>` : ''}<span class="muted" id="status"></span><div class="grow"></div>
         ${door.type === 'listen' ? `<label class="toggle"><input type="checkbox" id="useVoice" ${voiceOk ? 'checked' : 'disabled'}> ${esc(t('voice'))}</label>` : ''}
-        <div class="stat"><small>${esc(t('points'))}</small><b id="pts">0</b></div><div class="stat"><small>${esc(t('found'))}</small><b id="fnd">0/${appearing.length}</b></div></div>
+        ${canFullscreen() ? `<button class="fs-btn" id="fsBtn" type="button" title="${esc(t('fullscreen'))}" aria-label="${esc(t('fullscreen'))}">⛶</button>` : ''}<div class="stat"><small>${esc(t('points'))}</small><b id="pts">0</b></div><div class="stat"><small>${esc(t('found'))}</small><b id="fnd">0/${appearing.length}</b></div></div>
       <div class="split"><div class="feed" id="feed"><button class="go-big" id="go" type="button"><span>▶</span>${esc(t('start'))}</button></div>
         <div class="cardwrap"><div class="card" id="card"></div><p class="note" id="note"></p></div></div>`;
     const card = $('card'), feed = $('feed'), note = msg => { $('note').textContent = msg; };
+    if ($('fsBtn')) $('fsBtn').onclick = () => toggleFullscreen({ landscape: true });
     function drawCard() {
       card.replaceChildren();
       cardPhrases.forEach(p => { const b = document.createElement('button'); b.type = 'button'; const starFound = p === star && found.has(p); b.className = `sq${starFound ? ' star' : ''}${found.has(p) ? ' ok' : ''}`; b.textContent = (starFound ? '★ ' : '') + p; b.onclick = () => tap(p, b); card.appendChild(b); });

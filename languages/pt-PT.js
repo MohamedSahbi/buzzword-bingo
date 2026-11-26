@@ -117,6 +117,7 @@ export default {
     "menu.open": "Menu",
     "hero.premise": "Ouviste um chavão na reunião? Marca-o. Quem completar primeiro uma linha ganha.",
     "hero.solo": "Jogar sozinho",
+    "fullscreen": "Ecrã inteiro",
     "share.native": "Partilhar",
     "share.copy": "Copiar",
     "share.image": "Guardar imagem do resultado",

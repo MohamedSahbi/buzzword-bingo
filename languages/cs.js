@@ -117,6 +117,7 @@ export default {
     "menu.open": "Menu",
     "hero.premise": "Zazní na poradě otřepaná fráze? Odškrtni ji. Kdo má první celou řadu, vyhrává.",
     "hero.solo": "Hrát sám",
+    "fullscreen": "Celá obrazovka",
     "share.native": "Sdílet",
     "share.copy": "Kopírovat",
     "share.image": "Uložit obrázek s výsledkem",

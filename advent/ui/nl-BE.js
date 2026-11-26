@@ -27,4 +27,5 @@ export default {
   nav_cal: 'Kalender', nav_score: 'Score & team', menu: 'Menu',
   sound: 'Geluid', soloScore: 'Jouw score',
   rotateTip: "Tip: draai je gsm op zijn kant, dan zie je de chat en de hele kaart tegelijk.",
+  fullscreen: "Volledig scherm",
 };

@@ -117,6 +117,7 @@ export default {
     "menu.open": "Menu",
     "hero.premise": "Hoor je een buzzword in een meeting? Afvinken! Wie het eerst een rij vol heeft, wint.",
     "hero.solo": "Alleen spelen",
+    "fullscreen": "Volledig scherm",
     "share.native": "Delen",
     "share.copy": "Kopiëren",
     "share.image": "Resultaat als afbeelding opslaan",

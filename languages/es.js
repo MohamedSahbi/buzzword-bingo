@@ -117,6 +117,7 @@ export default {
     "menu.open": "Menú",
     "hero.premise": "¿Suena una palabra de moda en la reunión? Márcala. Gana quien complete antes una línea.",
     "hero.solo": "Jugar solo",
+    "fullscreen": "Pantalla completa",
     "share.native": "Compartir",
     "share.copy": "Copiar",
     "share.image": "Guardar imagen del resultado",

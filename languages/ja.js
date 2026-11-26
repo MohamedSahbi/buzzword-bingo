@@ -117,6 +117,7 @@ export default {
     "menu.open": "メニュー",
     "hero.premise": "会議でおなじみのフレーズが出たらチェック。最初に一列そろえた人の勝ち！",
     "hero.solo": "ひとりで遊ぶ",
+    "fullscreen": "全画面",
     "share.native": "シェア",
     "share.copy": "コピー",
     "share.image": "結果を画像で保存",

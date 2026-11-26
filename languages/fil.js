@@ -118,6 +118,7 @@ export default {
     "menu.open": "Menu",
     "hero.premise": "May narinig kang buzzword sa meeting? I-tick mo. Unang makabuo ng linya, panalo!",
     "hero.solo": "Maglaro mag-isa",
+    "fullscreen": "Full screen",
     "share.native": "I-share",
     "share.copy": "Kopyahin",
     "share.image": "I-save ang result image",

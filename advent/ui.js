@@ -18,6 +18,7 @@ export const ADVENT_UI = {
   ja, 'pt-BR': ptBR, 'pt-PT': ptPT, hi, fr, de, it, ar, fil, ko, nl, 'nl-BE': nlBE, es,
   en: {
     shareNative: 'Share',
+    fullscreen: "Full screen",
     rotateTip: "Tip: turn your phone sideways to see the chat and the whole card at once.",
     shareAttach: "Picture saved: attach it to your post.",
     shareImage: "Save result image",
@@ -47,6 +48,7 @@ export const ADVENT_UI = {
   },
   cs: {
     shareNative: 'Sdílet',
+    fullscreen: "Celá obrazovka",
     rotateTip: "Tip: otočte telefon na šířku, uvidíte chat i celou kartu najednou.",
     shareAttach: "Obrázek je uložený: přilož ho k příspěvku.",
     shareImage: "Uložit obrázek s výsledkem",

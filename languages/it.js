@@ -117,6 +117,7 @@ export default {
     "menu.open": "Menu",
     "hero.premise": "Senti una parola di moda in riunione? Segnala. Vince chi completa per primo una linea.",
     "hero.solo": "Gioca da solo",
+    "fullscreen": "Schermo intero",
     "share.native": "Condividi",
     "share.copy": "Copia",
     "share.image": "Salva l’immagine del risultato",

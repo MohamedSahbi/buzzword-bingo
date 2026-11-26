@@ -27,4 +27,5 @@ export default {
   shareImage: "Enregistrer l’image du résultat",
   shareAttach: "Image enregistrée : joignez-la à votre publication.",
   rotateTip: "Astuce : tournez votre téléphone à l’horizontale pour voir la conversation et toute la grille.",
+  fullscreen: "Plein écran",
 };

@@ -117,6 +117,7 @@ export default {
     "menu.open": "Menü",
     "hero.premise": "Fällt im Meeting ein Buzzword? Abhaken! Wer zuerst eine Reihe voll hat, gewinnt.",
     "hero.solo": "Allein spielen",
+    "fullscreen": "Vollbild",
     "share.native": "Teilen",
     "share.copy": "Kopieren",
     "share.image": "Ergebnis als Bild speichern",

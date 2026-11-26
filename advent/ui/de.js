@@ -27,4 +27,5 @@ export default {
   shareImage: "Ergebnis als Bild speichern",
   shareAttach: "Bild gespeichert: Häng es an deinen Beitrag an.",
   rotateTip: "Tipp: Dreh dein Handy quer, dann siehst du Chat und ganze Karte zugleich.",
+  fullscreen: "Vollbild",
 };
