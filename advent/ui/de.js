@@ -30,4 +30,5 @@ export default {
   fullscreen: "Vollbild",
   study: "Schau dir deine Karte an", ready: "Bin bereit", b_ready: "Früher bereit",
   liveBtn: "Live zusammen spielen", liveIntro: "Alle im Raum spielen dieses Türchen im selben Moment. Deine Punkte zählen wie immer.", liveCreate: "Live-Raum erstellen", liveStart: "Für alle starten",
+  toBeat: "zu schlagen",
 };

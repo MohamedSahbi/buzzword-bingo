@@ -30,4 +30,5 @@ export default {
   fullscreen: "Plein écran",
   study: "Regardez votre grille", ready: "Je suis prêt·e", b_ready: "Prêt·e en avance",
   liveBtn: "Jouer en direct ensemble", liveIntro: "Tout le monde dans le salon joue cette case au même moment. Vos points comptent comme d’habitude.", liveCreate: "Créer un salon en direct", liveStart: "Lancer pour tout le monde",
+  toBeat: "à battre",
 };

@@ -30,4 +30,5 @@ export default {
   fullscreen: "Volledig scherm",
   study: "Bekijk je kaart", ready: "Ik ben klaar", b_ready: "Eerder klaar",
   liveBtn: "Live samen spelen", liveIntro: "Iedereen in de kamer speelt dit deurtje op hetzelfde moment. Je score telt zoals altijd.", liveCreate: "Live kamer maken", liveStart: "Start voor iedereen",
+  toBeat: "te verslaan",
 };

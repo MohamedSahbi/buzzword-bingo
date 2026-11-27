@@ -30,4 +30,5 @@ export default {
   fullscreen: "全画面",
   study: "カードをよく見て", ready: "準備OK", b_ready: "早めに準備OK",
   liveBtn: "みんなでライブ対戦", liveIntro: "ルームの全員が同時にこの扉をプレイします。スコアはいつも通り記録されます。", liveCreate: "ライブルームを作る", liveStart: "全員でスタート",
+  toBeat: "を超えよう",
 };

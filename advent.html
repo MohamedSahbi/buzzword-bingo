@@ -209,7 +209,7 @@
   .study .ring b{display:grid;place-items:center;width:58px;height:58px;border-radius:50%;background:#fff;font-size:24px}
   .race{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 0}.race:empty{display:none}.race .chip{background:#fff;border:1px solid var(--line);border-radius:999px;padding:3px 10px;font-size:13px;color:#132433}.race .chip b{font-variant-numeric:tabular-nums}
   .lobby{margin:auto;display:grid;gap:8px;max-width:340px;text-align:center;color:#132433}.lobby p{margin:0}.lobby input{width:100%;border:1px solid #bcc8d5;border-radius:10px;padding:8px 10px;font:inherit}.lobby .row{display:flex;gap:6px}.lobby .err{color:var(--berry);font-size:13px}
-  .live-btn{padding:6px 10px;font-size:13px}@media (max-width:560px){.live-btn span{display:none}}
+  .go-wrap{margin:auto;display:grid;justify-items:center;gap:10px}.live-btn{padding:8px 14px;font-size:14px;background:#fff;border:1px solid var(--line)}
   .rotate-tip{display:flex;align-items:center;gap:6px;margin:6px 2px 0;font-size:12px;color:var(--muted)}.rotate-tip span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rotate-tip button{border:0;background:none;color:inherit;font-size:14px;cursor:pointer;padding:2px 6px}
   @media (max-width:860px){.bingo-door{padding-left:max(14px,env(safe-area-inset-left));padding-right:max(14px,env(safe-area-inset-right))}body.playing #title,body.playing #subtitle,body.playing #banner,body.playing #angelEntry{display:none}.layout{grid-template-columns:1fr}.split{grid-template-columns:1fr}.feed{height:clamp(170px,30vh,260px)}.gbar{position:sticky;top:66px;box-shadow:0 6px 16px #0003}}
   @media (max-width:520px){.doors{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.door .num{width:40px;height:40px;font-size:18px}.door .lab{display:none}.items,.boxes{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -221,7 +221,7 @@
     /* Slim stats on the same line as the back button, like a native top bar */
     .bingo-door .gbar{position:absolute;top:8px;right:max(12px,env(safe-area-inset-right));left:auto;margin:0;padding:2px 4px 2px 10px;gap:8px;height:36px;border-radius:999px;box-shadow:none;background:#f4f7fa;flex-wrap:nowrap;z-index:5}
     .bingo-door .gbar .stat{display:flex;align-items:baseline;gap:4px;padding:0 6px;background:none}.bingo-door .gbar .stat small{font-size:11px}.bingo-door .gbar .stat b{font-size:15px}
-    .bingo-door .gbar .grow{display:none}.bingo-door .fs-btn{width:30px;height:30px;font-size:16px;border-radius:50%}.bingo-door .live-btn{padding:4px 8px}.bingo-door .live-btn span{display:none}
+    .bingo-door .gbar .grow{display:none}.bingo-door .fs-btn{width:30px;height:30px;font-size:16px;border-radius:50%}
     .bingo-door .race{margin:0 0 6px}
     .bingo-door .split{grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);grid-template-rows:none;margin-top:0;height:var(--fitH,calc(100dvh - 70px));min-height:200px}
     .bingo-door .feed{height:100%}.bingo-door .cardwrap{height:100%;display:flex;flex-direction:column}.bingo-door .card{flex:1;grid-template-rows:repeat(4,minmax(0,1fr));gap:5px}.bingo-door .sq{aspect-ratio:auto;font-size:13px}
@@ -589,10 +589,10 @@
     const upright = matchMedia('(max-width:860px) and (orientation:portrait) and (pointer:coarse)').matches;
     root.innerHTML = `<div class="gbar"><span class="live" id="live"></span><span class="muted" id="status"></span><div class="grow"></div>
         ${door.type === 'listen' ? `<label class="toggle"><input type="checkbox" id="useVoice" ${voiceOk ? 'checked' : 'disabled'}> ${esc(t('voice'))}</label>` : ''}
-        <button class="btn live-btn" id="liveBtn" type="button" title="${esc(t('liveBtn'))}">👥 <span>${esc(t('liveBtn'))}</span></button>${canFullscreen() ? `<button class="fs-btn" id="fsBtn" type="button" title="${esc(t('fullscreen'))}" aria-label="${esc(t('fullscreen'))}">⛶</button>` : ''}<div class="stat"><small>${esc(t('points'))}</small><b id="pts">0</b></div><div class="stat"><small>${esc(t('found'))}</small><b id="fnd">0/${appearing.length}</b></div></div>
+        ${canFullscreen() ? `<button class="fs-btn" id="fsBtn" type="button" title="${esc(t('fullscreen'))}" aria-label="${esc(t('fullscreen'))}">⛶</button>` : ''}<div class="stat"><small>${esc(t('points'))}</small><b id="pts">0</b></div><div class="stat"><small>${esc(t('found'))}</small><b id="fnd">0/${appearing.length}</b></div></div>
       ${upright && !sessionStorage.getItem('bbRotTip') ? `<p class="rotate-tip" id="rotTip"><span>🔄 ${esc(t('rotateTip'))}</span><button type="button" aria-label="OK" id="rotX">✕</button></p>` : ''}
       <div class="race" id="race"></div>
-      <div class="split"><div class="feed" id="feed"><button class="go-big" id="go" type="button"><span>▶</span>${esc(t('start'))}</button></div>
+      <div class="split"><div class="feed" id="feed"><div class="go-wrap"><button class="go-big" id="go" type="button"><span>▶</span>${esc(t('start'))}</button><button class="btn live-btn" id="liveBtn" type="button">👥 ${esc(t('liveBtn'))}</button></div></div>
         <div class="cardwrap"><div class="card" id="card"></div><p class="note" id="note"></p></div></div>`;
     const card = $('card'), feed = $('feed'), note = msg => { $('note').textContent = msg; };
     if ($('fsBtn')) $('fsBtn').onclick = () => toggleFullscreen();
@@ -720,8 +720,8 @@
       const el = $('race'); if (!el) return clearInterval(raceTimer);
       const el_ = beganAt ? Date.now() - beganAt : 0, chips = [];
       if (live) Object.entries(live.players).filter(([id]) => id !== live.uid).forEach(([, p]) => chips.push({ icon: '🔴', name: p.name, pts: p.pts || 0, found: p.found || 0, crown: p.bingoAt && Object.values(live.players).every(q => !q.bingoAt || q.bingoAt >= p.bingoAt) }));
-      ghosts.forEach(g => { const at = [...g.tl].reverse().find(e => e[0] <= el_) || [0, 0, 0]; chips.push({ icon: '👻', name: g.name, pts: at[1], found: at[2] }); });
-      el.innerHTML = chips.sort((a, b) => b.pts - a.pts).map(c => `<span class="chip">${c.icon} ${esc(c.name)} <b>${c.pts}</b> · ${c.found}${c.crown ? ' 👑' : ''}</span>`).join('');
+      ghosts.forEach(g => { const fin = g.tl.at(-1) || [0, 0, 0], at = beganAt ? ([...g.tl].reverse().find(e => e[0] <= el_) || [0, 0, 0]) : fin; chips.push({ icon: '👻', name: g.name, pts: at[1], found: at[2], target: !beganAt }); });
+      el.innerHTML = chips.sort((a, b) => b.pts - a.pts).map(c => `<span class="chip">${c.icon} ${esc(c.name)} <b>${c.pts}</b>${c.target ? ` ${esc(t('toBeat'))}` : ` · ${c.found}`}${c.crown ? ' 👑' : ''}</span>`).join('');
     }
     renderRace(); raceTimer = setInterval(renderRace, 300);
     // ---- live lobby (any door): create or join, host starts the same round for everyone ----

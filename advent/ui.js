@@ -18,6 +18,7 @@ export const ADVENT_UI = {
   ja, 'pt-BR': ptBR, 'pt-PT': ptPT, hi, fr, de, it, ar, fil, ko, nl, 'nl-BE': nlBE, es,
   en: {
     shareNative: 'Share',
+    toBeat: "to beat",
     liveBtn: "Play live together", liveIntro: "Everyone in the room plays this door at the same moment. Your score counts as usual.", liveCreate: "Create live room", liveStart: "Start for everyone",
     study: "Look at your card", ready: "I’m ready", b_ready: "Ready early",
     fullscreen: "Full screen",
@@ -50,6 +51,7 @@ export const ADVENT_UI = {
   },
   cs: {
     shareNative: 'Sdílet',
+    toBeat: "k překonání",
     liveBtn: "Hrát živě spolu", liveIntro: "Všichni v místnosti hrají toto okénko ve stejnou chvíli. Body se počítají jako obvykle.", liveCreate: "Založit živou místnost", liveStart: "Spustit pro všechny",
     study: "Prohlédněte si kartu", ready: "Jsem připraven/a", b_ready: "Připraven/a dřív",
     fullscreen: "Celá obrazovka",
