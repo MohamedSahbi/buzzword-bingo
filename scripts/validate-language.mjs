@@ -2,11 +2,13 @@
 // (all languages) and add-language.mjs (the AI agent, which feeds errors back to the model).
 export const MIN_WORDS = 24;   // a card has 24 phrases + the free centre square
 export const MAX_LEN = 40;     // longer phrases don't fit a square on phones
-export const TOPICS = ['meeting', 'ai', 'cloud', 'office', 'christmas', 'advent'];
+import { TOPIC_KEYS } from '../languages/index.js';
+// Every topic with its own word list (not the generated "mixed" or player-made "custom"); follows TOPIC_KEYS so new themes are checked automatically.
+export const TOPICS = TOPIC_KEYS.filter(k => !['mixed', 'custom'].includes(k));
 
 const placeholders = s => [...String(s).matchAll(/\{(\w+)\}/g)].map(m => m[1]).sort().join(',');
 
-export function validateLanguage(code, L, en) {
+export function validateLanguage(code, L, en, topics = TOPICS) {
   const errors = [], warnings = [];
   if (L.code !== code) errors.push(`code is "${L.code}" but it is registered as "${code}"`);
   if (!/^[a-z]{2,3}(-[A-Z]{2})?$/.test(code)) errors.push('code must be an ISO code like "pl" or a regional one like "pt-BR"');
@@ -20,7 +22,7 @@ export function validateLanguage(code, L, en) {
   }
   for (const key of Object.keys(L.ui || {})) if (!(key in en.ui)) warnings.push(`ui["${key}"] is not used (not in English)`);
 
-  for (const t of TOPICS) {
+  for (const t of topics) {
     const d = L.topics?.[t];
     if (!d) { errors.push(`topics.${t} is missing`); continue; }
     if (typeof d.free !== 'string' || !d.free.trim()) errors.push(`topics.${t}.free is missing`);

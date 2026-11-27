@@ -1,0 +1,79 @@
+name: Add a theme (AI agent)
+
+# Run it from the Actions tab with a topic key, emoji, English name and a short description.
+# The agent asks Gemini (free tier) to write the theme natively for every language, inserts it into
+# languages/*.js, validates everything and opens a pull request. Nothing goes live until a human merges it.
+on:
+  workflow_dispatch:
+    inputs:
+      key:
+        description: 'Topic key: lowercase letters/digits, e.g. party'
+        required: true
+      emoji:
+        description: 'Emoji for the topic name, e.g. 🎉'
+        required: true
+      name:
+        description: 'Topic name in English, e.g. Team party'
+        required: true
+      description:
+        description: 'What the theme covers, for the writers (e.g. secret Santa, speeches, playlists, snacks)'
+        required: true
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: add-topic-${{ inputs.key }}
+  cancel-in-progress: false
+
+jobs:
+  add-topic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Generate the theme in every language with Gemini
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
+          KEY: ${{ inputs.key }}
+          EMOJI: ${{ inputs.emoji }}
+          NAME: ${{ inputs.name }}
+          DESCRIPTION: ${{ inputs.description }}
+        run: node scripts/add-topic.mjs "$KEY" "$EMOJI" "$NAME" "$DESCRIPTION"
+
+      - name: Validate all languages
+        run: node scripts/check-languages.mjs
+
+      - name: Open a pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+          KEY: ${{ inputs.key }}
+          EMOJI: ${{ inputs.emoji }}
+          NAME: ${{ inputs.name }}
+        run: |
+          BRANCH="add-topic/$KEY-$GITHUB_RUN_ID"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          git add languages/
+          git commit -m "Add theme: $NAME ($KEY)"
+          git push origin "$BRANCH"
+          {
+            echo "Adds the theme **$EMOJI $NAME** (\`$KEY\`) to every language, written natively per culture by the add-topic agent and validated by \`scripts/check-languages.mjs\`."
+            echo
+            echo "### Before merging"
+            echo "- [ ] Skim the English phrases (\`languages/en.js\`) and the languages you can read"
+            echo "- [ ] Phrases are things people in that culture really say, not translations"
+            echo "- [ ] Nothing offensive, vulgar, political or religiously insensitive"
+            echo "- [ ] Try it: open the preview and pick the theme in the topic dropdown"
+            echo
+            echo "Edit \`languages/<code>.js\` directly in this PR to fix anything. See docs/ADDING_A_THEME.md."
+          } > /tmp/pr-body.md
+          PR_URL=$(gh pr create --title "Add theme: $NAME ($KEY)" --body-file /tmp/pr-body.md --base "${{ github.event.repository.default_branch }}" --head "$BRANCH")
+          echo "Opened $PR_URL"
