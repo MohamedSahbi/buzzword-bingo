@@ -300,6 +300,7 @@
 </div>
 <nav class="tabbar" id="tabbar"><button type="button" data-tab="cal">🎄 <span id="navCal"></span></button><button type="button" data-tab="score">🏆 <span id="navScore"></span></button></nav>
 
+  <script>if ('serviceWorker' in navigator) addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));</script>
   <footer class="made-by">© 2026 <a href="https://mohamedsahbi.com" rel="author">Mohamed Sahbi</a></footer>
 <script type="module">
   import { ADVENT_UI } from './advent/ui.js';

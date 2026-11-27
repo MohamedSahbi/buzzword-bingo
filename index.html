@@ -179,6 +179,7 @@
 
   <div id="boss" class="boss" aria-hidden="true"><div class="boss-bar"><b id="bossFile"></b><span class="boss-menu"><span>File</span><span>Edit</span><span>View</span><span>Insert</span><span>Format</span><span>Data</span></span></div><div class="boss-fx">fx&nbsp;&nbsp;=SUM(B2:B8)</div><div class="boss-grid" id="bossGrid"></div><div class="boss-hint" id="bossHint"></div></div>
 
+  <script>if ('serviceWorker' in navigator) addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));</script>
   <footer class="made-by">© 2026 <a href="https://mohamedsahbi.com" rel="author">Mohamed Sahbi</a></footer>
 <script type="module">
   import { firebaseConfig } from './firebase-config.js';
