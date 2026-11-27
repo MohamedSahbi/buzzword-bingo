@@ -69,4 +69,9 @@ export default {
   peekPlayToday: "▶ 오늘 칸 플레이",
   peekBonus: "😇😈 보너스 게임 하기",
   peekStreak: "다시 와서 🔥 {n}일 연속 기록을 이어가세요.",
+  leaveTitle: "이번 판을 나갈까요?",
+  leaveBody: "이 칸의 점수는 기록되지 않아요.",
+  keepPlaying: "계속하기",
+  leaveBtn: "나가기",
+  snowJoke: "알았어요, 알았어요, 눈 온다고요 ❄️",
 };

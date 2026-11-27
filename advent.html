@@ -102,6 +102,9 @@
   .door.locked.rattle{animation:rattle .5s ease-in-out}
   @keyframes rattle{0%,100%{transform:rotate(0)}15%{transform:rotate(-9deg)}30%{transform:rotate(8deg)}45%{transform:rotate(-6deg)}60%{transform:rotate(5deg)}75%{transform:rotate(-2deg)}}
   @media (prefers-reduced-motion:reduce){.peek-gift,.door.locked.rattle{animation:none}}
+  .snow.blizzard i{animation-duration:1.6s!important;opacity:1}.sleigh{position:fixed;top:22%;left:-160px;z-index:80;font-size:44px;pointer-events:none;animation:fly 4.5s linear forwards;white-space:nowrap}
+  @keyframes fly{40%{transform:translate(45vw,-30px)}to{transform:translate(calc(100vw + 320px),20px)}}
+  .snow-joke{position:fixed;left:50%;bottom:110px;transform:translateX(-50%);z-index:80;background:#fff;color:#132433;border-radius:999px;padding:8px 16px;font-weight:600;box-shadow:0 4px 14px #0005}
   @keyframes sheetUp{from{transform:translateY(100%)}}@media (prefers-reduced-motion:reduce){.sheet-card{animation:none}}
   .bell-btn{position:relative;border:1px solid #ffffff33;background:#ffffff14;color:#fff;width:44px;height:44px;border-radius:50%;font-size:18px;cursor:pointer;margin-right:8px}
   .bell-btn:not(.on)::after{content:'';position:absolute;top:8px;right:9px;width:8px;height:8px;border-radius:50%;background:#e24b4a}.bell-btn.on{opacity:.7}
@@ -275,6 +278,9 @@
 <div id="remindSheet" class="sheet" role="dialog" aria-modal="true" aria-labelledby="rsTitle"><div class="sheet-card">
   <div class="sheet-grab" aria-hidden="true"></div><div class="sheet-ic">🔔</div><h2 id="rsTitle"></h2><p id="rsBody" class="muted"></p>
   <button id="rsYes" class="btn primary" type="button"></button><button id="rsNo" class="btn" type="button"></button></div></div>
+<div id="leaveSheet" class="sheet" role="dialog" aria-modal="true" aria-labelledby="lvTitle"><div class="sheet-card">
+  <div class="sheet-grab" aria-hidden="true"></div><div class="sheet-ic">🚪</div><h2 id="lvTitle"></h2><p id="lvBody" class="muted"></p>
+  <button id="lvStay" class="btn primary" type="button"></button><button id="lvGo" class="btn" type="button"></button></div></div>
 <div id="peekSheet" class="sheet" role="dialog" aria-modal="true" aria-labelledby="pkTitle"><div class="sheet-card peek">
   <div class="sheet-grab" aria-hidden="true"></div><div class="peek-gift" id="pkGift" aria-hidden="true">🎁</div><h2 id="pkTitle"></h2><b class="peek-cd" id="pkWhen"></b><p id="pkHint" class="peek-hint"></p><p id="pkMore" class="muted"></p>
   <div id="pkActs" class="peek-acts"></div></div></div>
@@ -370,7 +376,10 @@
   const known = c => (CALENDARS[c] || metas[c] ? c : null);
   let cal = 'en';          // calendar culture (which doors)
   let uiLang = 'en';       // website language (all interface text), shared with the main page
-  let preview = params.get('preview') === '1';   // practice mode
+  let preview = params.get('preview') === '1';   // practice mode (also reached through teammates' live links)
+  // The practice/test calendar has no visible entry for players. Opening advent.html?test=jingle once
+  // unlocks the 🎯 entries on this device (?test=off hides them again).
+  const tester = (() => { const w = params.get('test'); if (w === 'jingle') localStorage.setItem('bbTester', '1'); if (w === 'off') localStorage.removeItem('bbTester'); return localStorage.getItem('bbTester') === '1'; })();
   // Practice calendars exist per culture; a regional code without its own (en-US) uses its base language's (en).
   const C = () => (!preview && metas[cal]) ? metas[cal] : CALENDARS[cal] || CALENDARS[String(cal).split('-')[0]] || CALENDARS.en;
   const seasonMode = () => !preview && !!metas[cal];
@@ -466,6 +475,21 @@
     });
   }
   // ---------- snow ----------
+  // Easter egg: shake the phone (or tap the title 5 times) for a blizzard; every 5th time, or on Christmas Eve, Santa flies by.
+  let flurries = 0, lastFlurry = 0;
+  function blizzard() {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches || Date.now() - lastFlurry < 1500) return; lastFlurry = Date.now(); flurries++;
+    $('snow').classList.add('blizzard'); setTimeout(() => $('snow').classList.remove('blizzard'), 4000);
+    const eve = new Date().getMonth() === 11 && new Date().getDate() === 24;
+    if (flurries % 5 === 0 || (eve && flurries === 1)) {
+      const s = document.createElement('div'); s.className = 'sleigh'; s.textContent = '🦌🦌🛷🎅'; s.style.direction = 'ltr'; document.body.appendChild(s); setTimeout(() => s.remove(), 4700); try { sfx.bell(); } catch {}
+      const j = document.createElement('div'); j.className = 'snow-joke'; j.textContent = t('snowJoke'); document.body.appendChild(j); setTimeout(() => j.remove(), 2600);
+    }
+  }
+  let shakeAt = 0, lastMag = 0;
+  addEventListener('devicemotion', e => { const a = e.accelerationIncludingGravity; if (!a) return; const m = Math.abs(a.x) + Math.abs(a.y) + Math.abs(a.z); if (Math.abs(m - lastMag) > 28 && Date.now() - shakeAt > 250) { shakeAt = Date.now(); blizzard(); } lastMag = m; });
+  let titleTaps = [];
+  $('title').addEventListener('click', () => { const now = Date.now(); titleTaps = titleTaps.filter(x => now - x < 2000).concat(now); if (titleTaps.length >= 5) { titleTaps = []; blizzard(); } });
   for (let i = 0; i < 45; i++) { const f = document.createElement('i'); const s = 3 + Math.random() * 5; f.style.cssText = `left:${Math.random() * 100}%;width:${s}px;height:${s}px;--dx:${(Math.random() * 80 - 40).toFixed(0)}px;animation-duration:${(8 + Math.random() * 10).toFixed(1)}s;animation-delay:-${(Math.random() * 18).toFixed(1)}s`; $('snow').appendChild(f); }
 
   // ---------- calendar view ----------
@@ -477,7 +501,7 @@
     $('backLink').textContent = t('back'); $('langBtnText').textContent = LANGUAGES[uiLang]?.label || uiLang;
     $('title').innerHTML = `🎄 <span>${esc(t('title'))}</span>`;
     $('subtitle').textContent = C().tagline;
-    $('navCal').textContent = t('nav_cal'); $('navScore').textContent = t('nav_score'); menuBtn.setAttribute('aria-label', t('menu')); $('practiceBtn').textContent = '🎯 ' + (preview ? t('previewExit') : t('previewBtn')); $('practiceBtn').classList.toggle('hidden', !metas[cal]);
+    $('navCal').textContent = t('nav_cal'); $('navScore').textContent = t('nav_score'); menuBtn.setAttribute('aria-label', t('menu')); $('practiceBtn').textContent = '🎯 ' + (preview ? t('previewExit') : t('previewBtn')); $('practiceBtn').classList.toggle('hidden', !metas[cal] || !(tester || preview));
     simTick(); syncSound(); renderRemindMenu(); renderReportMenu(); renderBanner(); tickCountdown(); renderAngelEntry(); renderDoors(); renderSolo(); renderTeamStatic(); renderTeam();
   }
   function renderBanner() {
@@ -496,7 +520,7 @@
     else if (Date.now() >= releaseAt(1) && nextRelease()) {
       const st = streakNow(); b.innerHTML = `<span class="cd" id="cdown"></span>${st > 1 ? `<span class="cd">🔥 ${st}</span>` : ''}`; b.classList.remove('hidden');
     }
-    else if (Date.now() < releaseAt(1)) { b.innerHTML = `<span class="ic">⏳</span><span>${esc(t('opensOn'))}</span><span class="cd" id="cdown"></span><button class="pill" id="goPreview">${esc(t('previewBtn'))}</button>`; b.classList.remove('hidden'); $('goPreview').onclick = () => { preview = true; const u = new URL(location.href); u.searchParams.set('preview', '1'); history.replaceState(null, '', u); renderAll(); }; }
+    else if (Date.now() < releaseAt(1)) { b.innerHTML = `<span class="ic">⏳</span><span>${esc(t('opensOn'))}</span><span class="cd" id="cdown"></span>${tester ? `<button class="pill" id="goPreview">${esc(t('previewBtn'))}</button>` : ''}`; b.classList.remove('hidden'); if (tester) $('goPreview').onclick = () => { preview = true; const u = new URL(location.href); u.searchParams.set('preview', '1'); history.replaceState(null, '', u); renderAll(); }; }
   }
   // Spoiler-free daily hook: countdown to the next door (no hint of its game) and the on-the-day streak.
   let cdTimer = null;
@@ -534,6 +558,15 @@
     if ($('pkBonus')) $('pkBonus').onclick = () => { closePeek(); openAngel(); };
     if ($('pkRemind')) $('pkRemind').onclick = () => { closePeek(); askReminders(null); };
     $('peekSheet').classList.add('show');
+  }
+  // Leaving while a round runs asks first; otherwise leave straight away.
+  const roundRunning = () => document.body.classList.contains('playing') && $('playView').classList.contains('running') && !$('playView').querySelector('.ended, .result');
+  function confirmLeave(go) {
+    if (!roundRunning()) return go();
+    $('lvTitle').textContent = t('leaveTitle'); $('lvBody').textContent = t('leaveBody'); $('lvStay').textContent = t('keepPlaying'); $('lvGo').textContent = t('leaveBtn');
+    $('lvStay').onclick = () => $('leaveSheet').classList.remove('show');
+    $('lvGo').onclick = () => { $('leaveSheet').classList.remove('show'); go(); };
+    $('leaveSheet').classList.add('show');
   }
   function closePeek() { clearInterval(peekTimer); $('peekSheet').classList.remove('show'); }
   function renderDoors() {
@@ -617,11 +650,12 @@
   }
   // Side game: playable any day, also before 1 December and in practice mode. Scores stay on this device.
   function openAngel() {
+    if (history.state?.door == null) history.pushState({ door: 'angel' }, '');
     stopGame(); stopGame = () => {}; $('playView').classList.remove('bingo-door', 'running', 'ended');
     const p = deedsFor(cal), v = $('playView'); $('calendarView').classList.add('hidden'); v.classList.remove('hidden'); document.body.classList.add('playing');
     v.innerHTML = `<div class="row" style="margin:0 0 10px"><button class="back-chip" id="backCal" type="button"><span class="arr" aria-hidden="true">‹</span>${esc(t('backToCal').replace(/^\s*[←‹<]\s*/, ''))}</button></div>
       <span class="kind">😇😈 ${esc(p.ui.angel)} / ${esc(p.ui.devil)}</span><h2>${esc(p.title)}</h2><div id="game"></div>`;
-    $('backCal').onclick = closeDoor; window.scrollTo({ top: 0, behavior: 'smooth' });
+    $('backCal').onclick = () => confirmLeave(closeDoor); window.scrollTo({ top: 0, behavior: 'smooth' });
     stopGame = mountAngel($('game'), { pack: p, esc, magic, sfx, bestKey: `bingoAngelBest2:${cal}`, onExit: closeDoor, share: shareTo });
   }
   function renderSolo() {
@@ -635,6 +669,7 @@
   let stopGame = () => {}, skipPredict = false;
   const predictDoor = () => doorNums().find(n => doorType(n) === 'predict');
   async function openDoor(n) {
+    if (history.state?.door == null) history.pushState({ door: n }, '');
     $('playView').dataset.door = n;
     stopGame(); stopGame = () => {}; $('playView').classList.remove('bingo-door', 'running', 'ended');
     let door, predictNote = '';
@@ -647,7 +682,7 @@
     v.innerHTML = `<div class="row" style="margin:0 0 10px"><button class="back-chip" id="backCal" type="button"><span class="arr" aria-hidden="true">‹</span>${esc(t('backToCal').replace(/^\s*[←‹<]\s*/, ''))}</button><div class="grow"></div><span class="muted">${esc(fmtDate(n))}</span></div>
       <span class="kind">${n}. · ${esc(t('t_' + door.type))}</span><h2>${esc(door.title)}</h2><p class="muted" style="margin-top:6px">${esc(t('h_' + door.type))}</p>${predictNote}
       ${played ? `<p class="note">${esc(t('firstOnly'))}</p>` : ''}<div id="game"></div><div id="result"></div>`;
-    $('backCal').onclick = closeDoor;
+    $('backCal').onclick = () => confirmLeave(closeDoor);
     window.scrollTo({ top: 0, behavior: 'smooth' });
     const finish = res => finishDoor(n, res, door);
     v.classList.add('bingo-door');
@@ -661,7 +696,7 @@
     const v = $('playView'); $('calendarView').classList.add('hidden'); v.classList.remove('hidden'); document.body.classList.add('playing');
     v.innerHTML = `<div class="row" style="margin:0 0 10px"><button class="back-chip" id="backCal" type="button"><span class="arr" aria-hidden="true">‹</span>${esc(t('backToCal').replace(/^\s*[←‹<]\s*/, ''))}</button><div class="grow"></div><span class="muted">${esc(fmtDate(n))}</span></div>
       <span class="kind">${n}. · ⭐ ${esc(t('t_predict'))}</span><h2>${esc(door?.title || t('t_predict'))}</h2><div id="game" style="margin-top:8px"></div><div id="result"></div>`;
-    $('backCal').onclick = closeDoor; window.scrollTo({ top: 0, behavior: 'smooth' });
+    $('backCal').onclick = () => confirmLeave(closeDoor); window.scrollTo({ top: 0, behavior: 'smooth' });
     stopGame = mountPredict($('game'), {
       t, esc, firebase, magic, sfx, myName, startCode, title: `${cal}-${seasonYear}-${n}`,
       ideas: PREDICT_IDEAS[cal] || PREDICT_IDEAS.en,
@@ -671,7 +706,9 @@
       onFinish: res => finishDoor(n, { parts: res.parts }, { shareLine: res.shareLine }),
     });
   }
-  function closeDoor() { stopGame(); stopGame = () => {}; leaveLive(); exitFullscreen(); document.body.classList.remove('playing'); $('playView').classList.add('hidden'); $('calendarView').classList.remove('hidden'); simTick(); renderBanner(); tickCountdown(); renderAngelEntry(); renderRemindMenu(); renderDoors(); renderSolo(); renderTeam(); }
+  // Opening a door adds one history entry, so the phone's back button returns to the calendar.
+  let popping = false;
+  function closeDoor() { if (history.state?.door != null && !popping) { popping = true; history.back(); return; } popping = false; stopGame(); stopGame = () => {}; leaveLive(); exitFullscreen(); document.body.classList.remove('playing'); $('playView').classList.add('hidden'); $('calendarView').classList.remove('hidden'); simTick(); renderBanner(); tickCountdown(); renderAngelEntry(); renderRemindMenu(); renderDoors(); renderSolo(); renderTeam(); }
   // Score = game parts + on-the-day bonus + streak bonus (10 per consecutive earlier door also played on its day, max 50).
   function finishDoor(n, res, door) {
     const onDay = isToday(n), parts = [...res.parts];
@@ -1081,6 +1118,9 @@
   }
   $('iosOk').onclick = () => $('iosSheet').classList.remove('show');
   const closeSheet = () => $('remindSheet').classList.remove('show');
+  // Phone/browser back while a door is open: back to the calendar (asking first mid-round), not off the page.
+  addEventListener('popstate', () => { if (!document.body.classList.contains('playing')) return; if (popping) return closeDoor(); if (roundRunning()) { history.pushState({ door: 1 }, ''); confirmLeave(closeDoor); } else { popping = true; closeDoor(); } });
+  $('backLink').addEventListener('click', e => { if (!roundRunning()) return; e.preventDefault(); confirmLeave(() => { location.href = $('backLink').href; }); });
   $('peekSheet').onclick = e => { if (e.target.id === 'peekSheet') closePeek(); };
   $('rsNo').onclick = () => { const mode = $('remindSheet').dataset.mode; closeSheet(); if (mode === 'on') turnOffReminders(); }; $('remindSheet').onclick = e => { if (e.target.id === 'remindSheet') closeSheet(); };
   $('rsYes').onclick = () => { const mode = $('remindSheet').dataset.mode; closeSheet(); if (mode === 'ask') askReminders($('remindBtn')); };

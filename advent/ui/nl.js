@@ -69,4 +69,9 @@ export default {
   peekPlayToday: "▶ Speel het deurtje van vandaag",
   peekBonus: "😇😈 Speel het bonusspel",
   peekStreak: "Kom terug om je reeks 🔥 van {n} dagen vast te houden.",
+  leaveTitle: "Deze ronde verlaten?",
+  leaveBody: "Je score voor dit deurtje telt dan niet.",
+  keepPlaying: "Verder spelen",
+  leaveBtn: "Verlaten",
+  snowJoke: "Ja ja, het sneeuwt al ❄️",
 };

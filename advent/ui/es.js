@@ -69,4 +69,9 @@ export default {
   peekPlayToday: "▶ Jugar la ventana de hoy",
   peekBonus: "😇😈 Jugar al juego extra",
   peekStreak: "Vuelve para mantener tu racha 🔥 de {n} días.",
+  leaveTitle: "¿Salir de esta ronda?",
+  leaveBody: "Tu puntuación de esta ventana no contará.",
+  keepPlaying: "Seguir jugando",
+  leaveBtn: "Salir",
+  snowJoke: "Vale, vale, ya nieva ❄️",
 };

@@ -69,4 +69,9 @@ export default {
   peekPlayToday: "▶ العب نافذة اليوم",
   peekBonus: "😇😈 العب اللعبة الإضافية",
   peekStreak: "عُد غدًا لتحافظ على سلسلتك 🔥 لـ {n} أيام.",
+  leaveTitle: "مغادرة هذه الجولة؟",
+  leaveBody: "لن تُحتسب نقاطك في هذه النافذة.",
+  keepPlaying: "واصل اللعب",
+  leaveBtn: "مغادرة",
+  snowJoke: "حسنًا حسنًا، إنها تثلج ❄️",
 };

@@ -69,4 +69,9 @@ export default {
   peekPlayToday: "▶ Jouer la case du jour",
   peekBonus: "😇😈 Jouer au jeu bonus",
   peekStreak: "Revenez pour garder votre série 🔥 de {n} jours.",
+  leaveTitle: "Quitter cette partie ?",
+  leaveBody: "Votre score pour cette case ne comptera pas.",
+  keepPlaying: "Continuer",
+  leaveBtn: "Quitter",
+  snowJoke: "D’accord, d’accord, il neige ❄️",
 };

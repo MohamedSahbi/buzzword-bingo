@@ -69,4 +69,9 @@ export default {
   peekPlayToday: "▶ Gioca la finestrella di oggi",
   peekBonus: "😇😈 Gioca al gioco bonus",
   peekStreak: "Torna per mantenere la serie 🔥 di {n} giorni.",
+  leaveTitle: "Uscire da questo turno?",
+  leaveBody: "Il punteggio di questa finestrella non conterà.",
+  keepPlaying: "Continua a giocare",
+  leaveBtn: "Esci",
+  snowJoke: "Va bene, va bene, nevica ❄️",
 };

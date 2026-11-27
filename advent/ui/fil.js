@@ -69,4 +69,9 @@ export default {
   peekPlayToday: "▶ Laruin ang pinto ngayon",
   peekBonus: "😇😈 Laruin ang bonus game",
   peekStreak: "Bumalik para ituloy ang 🔥 {n}-araw mong streak.",
+  leaveTitle: "Aalis sa round na ito?",
+  leaveBody: "Hindi mabibilang ang score mo sa pintong ito.",
+  keepPlaying: "Ituloy ang laro",
+  leaveBtn: "Umalis",
+  snowJoke: "Oo na, oo na, umuulan na ng niyebe ❄️",
 };

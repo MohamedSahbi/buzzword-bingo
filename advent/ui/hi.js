@@ -69,4 +69,9 @@ export default {
   peekPlayToday: "▶ आज का दरवाज़ा खेलें",
   peekBonus: "😇😈 बोनस गेम खेलें",
   peekStreak: "अपनी 🔥 {n} दिन की लय बनाए रखने के लिए वापस आएँ।",
+  leaveTitle: "यह राउंड छोड़ें?",
+  leaveBody: "इस दरवाज़े का स्कोर नहीं गिना जाएगा।",
+  keepPlaying: "खेलते रहें",
+  leaveBtn: "छोड़ें",
+  snowJoke: "ठीक है, ठीक है, बर्फ़ गिर रही है ❄️",
 };

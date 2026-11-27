@@ -69,4 +69,9 @@ export default {
   peekPlayToday: "▶ 今日の扉をプレイ",
   peekBonus: "😇😈 ボーナスゲームで遊ぶ",
   peekStreak: "また来て 🔥 {n}日連続 をキープしよう。",
+  leaveTitle: "このラウンドをやめますか？",
+  leaveBody: "この扉のスコアは記録されません。",
+  keepPlaying: "続ける",
+  leaveBtn: "やめる",
+  snowJoke: "わかった、わかった、雪だよ ❄️",
 };

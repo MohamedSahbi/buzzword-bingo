@@ -69,4 +69,9 @@ export default {
   peekPlayToday: "▶ Jogar a janela de hoje",
   peekBonus: "😇😈 Jogar o jogo bônus",
   peekStreak: "Volte para manter sua sequência 🔥 de {n} dias.",
+  leaveTitle: "Sair desta rodada?",
+  leaveBody: "Sua pontuação nesta janela não vai contar.",
+  keepPlaying: "Continuar jogando",
+  leaveBtn: "Sair",
+  snowJoke: "Tá bom, tá bom, está nevando ❄️",
 };

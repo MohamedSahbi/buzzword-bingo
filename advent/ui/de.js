@@ -69,4 +69,9 @@ export default {
   peekPlayToday: "▶ Heutiges Türchen spielen",
   peekBonus: "😇😈 Bonusspiel spielen",
   peekStreak: "Komm wieder und halte deine 🔥 {n}-Tage-Serie.",
+  leaveTitle: "Diese Runde verlassen?",
+  leaveBody: "Deine Punkte für dieses Türchen zählen dann nicht.",
+  keepPlaying: "Weiterspielen",
+  leaveBtn: "Verlassen",
+  snowJoke: "Schon gut, schon gut, es schneit ❄️",
 };

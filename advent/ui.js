@@ -18,6 +18,11 @@ export const ADVENT_UI = {
   ja, 'pt-BR': ptBR, 'pt-PT': ptPT, hi, fr, de, it, ar, fil, ko, nl, 'nl-BE': nlBE, es,
   en: {
     shareNative: 'Share',
+    leaveTitle: "Leave this round?",
+    leaveBody: "Your score for this door won’t count.",
+    keepPlaying: "Keep playing",
+    leaveBtn: "Leave",
+    snowJoke: "Okay, okay, it’s snowing ❄️",
     peekIn: "Opens in {time}",
     peekOn: "Opens on {date}",
     peekAfter: "Opens 3 minutes after you play today’s door.",
@@ -89,6 +94,11 @@ export const ADVENT_UI = {
   },
   cs: {
     shareNative: 'Sdílet',
+    leaveTitle: "Opustit toto kolo?",
+    leaveBody: "Skóre za toto okénko se nezapočítá.",
+    keepPlaying: "Hrát dál",
+    leaveBtn: "Odejít",
+    snowJoke: "No jo, no jo, sněží ❄️",
     peekIn: "Otevře se za {time}",
     peekOn: "Otevře se {date}",
     peekAfter: "Otevře se 3 minuty po odehrání dnešního okénka.",
