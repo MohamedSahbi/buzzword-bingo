@@ -59,6 +59,10 @@
           ".write": "auth != null && !data.exists() && newData.child('createdBy').val() === auth.uid",
           ".validate": "newData.hasChildren(['name','lang','createdBy','createdAt','expiresAt']) && newData.child('name').isString() && newData.child('name').val().length <= 30 && newData.child('lang').isString() && newData.child('lang').val().length <= 5 && newData.child('expiresAt').isNumber() && newData.child('expiresAt').val() <= now + 5184000000"
         },
+        "live": {
+          ".write": "auth != null && root.child('teams/' + $code + '/members/' + auth.uid).exists()",
+          ".validate": "newData.hasChildren(['code','door','cal','by','at']) && newData.child('code').isString() && newData.child('code').val().matches(/^[A-Z2-9]{6}$/) && newData.child('door').isNumber() && newData.child('by').isString() && newData.child('by').val().length <= 24"
+        },
         "members": {
           "$uid": {
             ".write": "auth != null && auth.uid === $uid && root.child('teams/' + $code + '/meta').exists()",

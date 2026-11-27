@@ -210,7 +210,7 @@
   .race{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 0}.race:empty{display:none}.race .chip{background:#fff;border:1px solid var(--line);border-radius:999px;padding:3px 10px;font-size:13px;color:#132433}.race .chip b{font-variant-numeric:tabular-nums}
   .lobby{margin:auto;display:grid;gap:8px;max-width:340px;text-align:center;color:#132433}.lobby p{margin:0}.lobby input{width:100%;border:1px solid #bcc8d5;border-radius:10px;padding:8px 10px;font:inherit}.lobby .row{display:flex;gap:6px}.lobby .err{color:var(--berry);font-size:13px}
   .go-wrap{margin:auto;display:grid;justify-items:center;gap:10px}.live-btn{padding:8px 14px;font-size:14px;background:#fff;border:1px solid var(--line)}
-  .rotate-tip{display:flex;align-items:center;gap:6px;margin:6px 2px 0;font-size:12px;color:var(--muted)}.rotate-tip span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rotate-tip button{border:0;background:none;color:inherit;font-size:14px;cursor:pointer;padding:2px 6px}
+  .rotate-tip{display:flex;}@media (orientation:landscape){.rotate-tip{display:none!important}}.rotate-tip{align-items:center;gap:6px;margin:6px 2px 0;font-size:12px;color:var(--muted)}.rotate-tip span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rotate-tip button{border:0;background:none;color:inherit;font-size:14px;cursor:pointer;padding:2px 6px}
   @media (max-width:860px){.bingo-door{padding-left:max(14px,env(safe-area-inset-left));padding-right:max(14px,env(safe-area-inset-right))}body.playing #title,body.playing #subtitle,body.playing #banner,body.playing #angelEntry{display:none}.layout{grid-template-columns:1fr}.split{grid-template-columns:1fr}.feed{height:clamp(170px,30vh,260px)}.gbar{position:sticky;top:66px;box-shadow:0 6px 16px #0003}}
   @media (max-width:520px){.doors{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.door .num{width:40px;height:40px;font-size:18px}.door .lab{display:none}.items,.boxes{grid-template-columns:repeat(2,minmax(0,1fr))}}
   @media (orientation:landscape) and (max-height:560px){
@@ -268,7 +268,7 @@
   <div id="banner" class="banner hidden"></div>
 
   <div id="calendarView" class="layout">
-    <section><div id="angelEntry" class="angel-entry"></div><div id="doors" class="doors"></div></section>
+    <section><div id="teamLive" class="angel-entry hidden"></div><div id="angelEntry" class="angel-entry"></div><div id="doors" class="doors"></div></section>
     <aside class="side">
       <div class="panel">
         <h2 id="soloTitle"></h2>
@@ -727,6 +727,8 @@
     // ---- live lobby (any door): create or join, host starts the same round for everyone ----
     function lobby(msg = '') {
       if (running || ended) return;
+      // In a team: no form, the team room opens straight away.
+      if (team?.code && !(live && live.meta?.door === n) && !msg) { feed.innerHTML = `<div class="lobby"><b>👥 ${esc(t('liveBtn'))}</b></div>`; createLive(n).then(() => { onLive = liveChanged; lobby(); }).catch(e => lobby(e.message)); return; }
       const inRoom = live && live.meta?.door === n, host = inRoom && live.meta.host === live.uid;
       const players = inRoom ? Object.values(live.players).map(p => `<span class="chip">🔴 ${esc(p.name)}</span>`).join('') : '';
       feed.innerHTML = `<div class="lobby"><b>👥 ${esc(t('liveBtn'))}</b><p class="muted">${esc(t('liveIntro'))}</p>${inRoom
@@ -807,7 +809,13 @@
     $('createTeam').textContent = t('createTeam'); $('joinTeam').textContent = t('join'); $('copyTeam').textContent = t('copyLink'); $('leaveTeam').textContent = t('leaveTeam');
     $('pName').value = $('pName').value || localStorage.getItem('bingoName') || '';
   }
+  function renderTeamLive() {
+    const l = teamLive(), el = $('teamLive'); if (!el) return;
+    el.classList.toggle('hidden', !l || live?.code === l.code);
+    if (l) { el.innerHTML = `<span class="ic">🔴</span><span>${esc(t('liveTeam', { name: l.by, n: l.door }))}</span><button class="btn gold" id="teamLiveJoin" type="button">${esc(t('p_join'))}</button>`; $('teamLiveJoin').onclick = joinTeamLive; }
+  }
   function renderTeam() {
+    renderTeamLive();
     const has = !!team?.meta; $('teamNone').classList.toggle('hidden', has); $('teamSome').classList.toggle('hidden', !has);
     if (!has) return;
     const practice = !seasonMode(), key = practice ? 'practice' : 'doors';
@@ -845,7 +853,12 @@
     do { code = makeCode(); } while ((await D.get(D.ref(db, `live/${code}/meta`))).exists());
     await D.set(D.ref(db, `live/${code}/meta`), { host: uid, cal, door: n, practice: !seasonMode(), createdAt: Date.now() });
     await joinLive(code);
+    // In a team, the room belongs to the team: everyone sees it on their calendar and joins with one tap.
+    if (team?.code) await D.set(D.ref(db, `teams/${team.code}/live`), { code, door: n, cal, practice: !seasonMode(), by: myName(), at: Date.now() }).catch(() => {});
   }
+  // A teammate's open live room (less than 2 hours old, same calendar and mode): show it on the calendar.
+  const teamLive = () => { const l = team?.live; return l && l.code && Date.now() - l.at < 72e5 && l.cal === cal && !!l.practice === !seasonMode() && l.by !== undefined ? l : null; };
+  async function joinTeamLive() { const l = teamLive(); if (!l) return; try { await joinLive(l.code); for (let i = 0; i < 30 && !live?.meta; i++) await new Promise(r => setTimeout(r, 100)); openDoor(l.door); } catch (e) { teamError(e); } }
   function leaveLive() { live?.unsub?.(); live = null; onLive = null; }
   function pushLive(data) { if (!live) return; firebase().then(({ D, db, uid }) => D.update(D.ref(db, `live/${live.code}/players/${uid}`), data)).catch(() => {}); }
   const liveLink = () => { const u = new URL(location.origin + location.pathname); u.searchParams.set('live', live.code); u.searchParams.set('lang', cal); if (!seasonMode()) u.searchParams.set('preview', '1'); return u.href; };

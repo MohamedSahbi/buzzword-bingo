@@ -31,4 +31,5 @@ export default {
   study: "카드를 살펴보세요", ready: "준비됐어요", b_ready: "빨리 준비 완료",
   liveBtn: "다 같이 라이브로", liveIntro: "방에 있는 모두가 같은 순간에 이 칸을 플레이해요. 점수는 평소처럼 기록돼요.", liveCreate: "라이브 방 만들기", liveStart: "모두 시작",
   toBeat: "넘어서기",
+  liveTeam: "{name}님이 {n}번 칸을 라이브로 플레이 중",
 };

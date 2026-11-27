@@ -31,4 +31,5 @@ export default {
   study: "Tingnan mo muna ang card", ready: "Ready na ako", b_ready: "Maagang ready",
   liveBtn: "Sabay-sabay na live", liveIntro: "Lahat sa room ay sabay na maglalaro ng pintong ito. Bilang pa rin ang score mo gaya ng dati.", liveCreate: "Gumawa ng live room", liveStart: "Simulan para sa lahat",
   toBeat: "tatalunin",
+  liveTeam: "Live na nilalaro ni {name} ang pinto {n}",
 };

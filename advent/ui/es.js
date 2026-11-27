@@ -31,4 +31,5 @@ export default {
   study: "Mira tu cartón", ready: "Estoy listo/a", b_ready: "Listo/a antes",
   liveBtn: "Jugar en directo juntos", liveIntro: "Todos en la sala juegan esta ventana a la vez. Tu puntuación cuenta como siempre.", liveCreate: "Crear sala en directo", liveStart: "Empezar para todos",
   toBeat: "a batir",
+  liveTeam: "{name} está jugando en directo la ventana {n}",
 };

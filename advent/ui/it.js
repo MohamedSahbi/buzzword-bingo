@@ -31,4 +31,5 @@ export default {
   study: "Guarda la tua cartella", ready: "Sono pronto/a", b_ready: "Pronto/a prima",
   liveBtn: "Gioca dal vivo insieme", liveIntro: "Tutti nella stanza giocano questa finestrella nello stesso momento. Il punteggio conta come sempre.", liveCreate: "Crea stanza dal vivo", liveStart: "Avvia per tutti",
   toBeat: "da battere",
+  liveTeam: "{name} sta giocando dal vivo la finestrella {n}",
 };
