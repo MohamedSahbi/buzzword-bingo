@@ -1,0 +1,33 @@
+name: Send door reminders
+
+# One push reminder per player when a door opens in their calendar's own timezone.
+# Hourly during the Advent season (late November to the end of December).
+on:
+  schedule:
+    - cron: '7 * 25-31 11 *'
+    - cron: '7 * * 12 *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Only log what would be sent'
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-save --no-audit --no-fund firebase-admin@13
+      - run: node scripts/send-reminders.mjs
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          DATABASE_URL: https://buzzword-bingo-6eb48-default-rtdb.europe-west1.firebasedatabase.app
+          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run && 'true' || 'false' }}

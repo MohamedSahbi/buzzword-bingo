@@ -86,6 +86,12 @@
         }
       }
     },
+    "push": {
+      "$uid": {
+        ".write": "auth != null && auth.uid === $uid",
+        ".validate": "!newData.exists() || (newData.child('token').isString() && newData.child('token').val().length <= 512 && newData.child('cal').isString() && newData.child('cal').val().length <= 5 && (!newData.child('lang').exists() || newData.child('lang').val().length <= 5) && (!newData.child('tz').exists() || newData.child('tz').val().length <= 64))"
+      }
+    },
     "live": {
       "$code": {
         ".read": "auth != null",

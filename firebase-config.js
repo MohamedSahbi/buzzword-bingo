@@ -10,3 +10,7 @@ export const firebaseConfig = {
   messagingSenderId: "175931514661",
   appId: "1:175931514661:web:7dc5227767d187c08f04cc"
 };
+
+// Web Push certificate (public key) from Firebase console → Project settings → Cloud Messaging → Web configuration.
+// Public by design; reminders stay hidden until it is set.
+export const vapidKey = '';
