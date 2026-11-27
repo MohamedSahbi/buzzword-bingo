@@ -16,6 +16,8 @@ export async function subscribe({ app, D, db, uid, vapidKey, prefs }) {
   if (!token) return false;
   await D.set(D.ref(db, `push/${uid}`), { token, ...prefs, at: Date.now() });
   localStorage.setItem('bingoPush', 'on');
+  // Show right away how a reminder will look (local, no server involved).
+  try { await reg.showNotification('Buzzword Bingo', { body: prefs.sample || '🔔', icon: 'icon-192.png', tag: 'sample' }); } catch {}
   return true;
 }
 // Keep the reminder in the player's current calendar and language.

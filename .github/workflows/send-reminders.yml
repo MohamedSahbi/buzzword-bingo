@@ -12,6 +12,10 @@ on:
         description: 'Only log what would be sent'
         type: boolean
         default: true
+      test_send:
+        description: 'Send a sample reminder to every subscriber now (ignores door times)'
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -31,3 +35,4 @@ jobs:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
           DATABASE_URL: https://buzzword-bingo-6eb48-default-rtdb.europe-west1.firebasedatabase.app
           DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run && 'true' || 'false' }}
+          TEST_SEND: ${{ github.event_name == 'workflow_dispatch' && inputs.test_send && 'true' || 'false' }}

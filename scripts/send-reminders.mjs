@@ -10,6 +10,7 @@ import { ADVENT_UI } from '../advent/ui.js';
 const { FIREBASE_SERVICE_ACCOUNT, DATABASE_URL } = process.env;
 if (!FIREBASE_SERVICE_ACCOUNT || !DATABASE_URL) { console.error('FIREBASE_SERVICE_ACCOUNT and DATABASE_URL are required'); process.exit(1); }
 const dryRun = process.env.DRY_RUN === 'true';
+const testAll = process.env.TEST_SEND === 'true';   // send a sample reminder to every subscriber now (testing)
 const WINDOW = 2 * 60 * 60 * 1000;   // a door counts as "just opened" for 2 hours (covers a late or skipped run)
 const SITE = 'https://buzzword-bingo.app';
 
@@ -31,13 +32,13 @@ try {
     metas[sub.cal] ??= (await db.ref(`advent/${sub.cal}/${year}/meta/release`).get()).val() || {};
     const rel = metas[sub.cal];
     // the latest door released within the window
-    const door = Object.entries(rel).map(([n, at]) => [Number(n), at]).filter(([, at]) => at <= now && now - at < WINDOW).sort((a, b) => b[1] - a[1])[0]?.[0];
-    if (!door || sub.last === `${year}-${door}`) continue;
+    const door = testAll ? (Object.keys(rel).length ? Math.max(1, ...Object.entries(rel).filter(([, at]) => at <= now).map(([n]) => Number(n))) : 1) : Object.entries(rel).map(([n, at]) => [Number(n), at]).filter(([, at]) => at <= now && now - at < WINDOW).sort((a, b) => b[1] - a[1])[0]?.[0];
+    if (!door || (!testAll && sub.last === `${year}-${door}`)) continue;
     const msg = { token: sub.token, webpush: { headers: { TTL: '21600', Urgency: 'high' }, data: {
       title: 'Buzzword Bingo', body: text(sub.lang, 'pushDoor', { n: door }), tag: `door-${door}`, url: `${SITE}/advent.html?lang=${encodeURIComponent(sub.cal)}`,
     } } };
     if (dryRun) { console.log(`Would remind ${uid} (${sub.cal}) about door ${door}`); continue; }
-    try { await fcm.send(msg); await db.ref(`push/${uid}/last`).set(`${year}-${door}`); sent++; }
+    try { await fcm.send(msg); if (!testAll) await db.ref(`push/${uid}/last`).set(`${year}-${door}`); sent++; }
     catch (e) {
       if (/registration-token-not-registered|invalid-registration-token|invalid-argument/.test(e.code || '')) { await db.ref(`push/${uid}`).remove(); removed++; }
       else console.warn(`Failed for ${uid}: ${e.code || e.message}`);

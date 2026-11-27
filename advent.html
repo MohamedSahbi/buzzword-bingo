@@ -494,7 +494,7 @@
   }
   async function askReminders(btn) {
     if (needsInstall()) { $('iosSheet').classList.add('show'); return; }
-    try { const f = await firebase(); if (await subscribe({ ...f, vapidKey, prefs: pushPrefs() })) { if (btn) { btn.outerHTML = `<b class="ok-txt">${esc(t('remindOn'))}</b>`; } renderRemindMenu(); } else if (isBlocked()) { const c = $('remindCard'); if (c) c.outerHTML = remindCardHtml(); } } catch (e) { console.warn('reminders', e); }
+    try { const f = await firebase(); if (await subscribe({ ...f, vapidKey, prefs: { ...pushPrefs(), sample: t('pushDoor', { n: doorNums().find(isToday) || 1 }) } })) { if (btn) { btn.outerHTML = `<b class="ok-txt">${esc(t('remindOn'))}</b>`; } renderRemindMenu(); } else if (isBlocked()) { const c = $('remindCard'); if (c) c.outerHTML = remindCardHtml(); } } catch (e) { console.warn('reminders', e); }
   }
   function wireRemind() { const b = $('remindBtn'); if (b) b.onclick = () => askReminders(b); }
   function renderRemindMenu() {
