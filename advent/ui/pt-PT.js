@@ -46,4 +46,7 @@ export default {
   ios3: "Abre o Bingo a partir do ecrã principal e toca em “Lembra-me”",
   gotIt: "Percebi",
   pushDoor: "🎁 A janela {n} está aberta. O jogo de hoje está à tua espera!",
+  nextDoorIn: "A janela {n} abre daqui a {time}",
+  sheetTitle: "Voltas para a próxima janela?",
+  notNow: "Agora não",
 };

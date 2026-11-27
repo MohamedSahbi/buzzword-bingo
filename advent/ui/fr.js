@@ -46,4 +46,7 @@ export default {
   ios3: "Ouvrez Bingo depuis l’écran d’accueil et touchez « Me le rappeler »",
   gotIt: "Compris",
   pushDoor: "🎁 La case {n} est ouverte. Le jeu du jour vous attend !",
+  nextDoorIn: "La case {n} s’ouvre dans {time}",
+  sheetTitle: "Vous revenez pour la prochaine case ?",
+  notNow: "Pas maintenant",
 };

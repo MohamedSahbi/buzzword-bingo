@@ -46,4 +46,7 @@ export default {
   ios3: "Öffne Bingo vom Home-Bildschirm und tippe auf „Erinnere mich“",
   gotIt: "Verstanden",
   pushDoor: "🎁 Türchen {n} ist offen. Das heutige Spiel wartet!",
+  nextDoorIn: "Türchen {n} öffnet in {time}",
+  sheetTitle: "Kommst du zum nächsten Türchen zurück?",
+  notNow: "Jetzt nicht",
 };

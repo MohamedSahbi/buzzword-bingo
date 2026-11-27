@@ -46,4 +46,7 @@ export default {
   ios3: "ホーム画面からBingoを開き、「通知を受け取る」をタップ",
   gotIt: "OK",
   pushDoor: "🎁 扉{n}が開きました。今日のゲームが待っています！",
+  nextDoorIn: "扉{n}が開くまで {time}",
+  sheetTitle: "次の扉にも来ますか？",
+  notNow: "あとで",
 };

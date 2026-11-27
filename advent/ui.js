@@ -18,6 +18,9 @@ export const ADVENT_UI = {
   ja, 'pt-BR': ptBR, 'pt-PT': ptPT, hi, fr, de, it, ar, fil, ko, nl, 'nl-BE': nlBE, es,
   en: {
     shareNative: 'Share',
+    nextDoorIn: "Door {n} opens in {time}",
+    sheetTitle: "Come back for the next door?",
+    notNow: "Not now",
     tellTeam: "Tell the team",
     liveInviteMsg: "🔴 I’m playing door {n} live. Join me!",
     remindTitle: "Never miss a door",
@@ -66,6 +69,9 @@ export const ADVENT_UI = {
   },
   cs: {
     shareNative: 'Sdílet',
+    nextDoorIn: "Okénko {n} se otevře za {time}",
+    sheetTitle: "Vrátíte se k dalšímu okénku?",
+    notNow: "Teď ne",
     tellTeam: "Dát vědět týmu",
     liveInviteMsg: "🔴 Hraju živě okénko {n}. Přidej se!",
     remindTitle: "Ať vám žádné okénko neuteče",

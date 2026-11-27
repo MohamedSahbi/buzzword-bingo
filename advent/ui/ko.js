@@ -46,4 +46,7 @@ export default {
   ios3: "홈 화면에서 Bingo를 열고 ‘알림 받기’를 탭하세요",
   gotIt: "알겠어요",
   pushDoor: "🎁 {n}번 칸이 열렸어요. 오늘의 게임이 기다리고 있어요!",
+  nextDoorIn: "{n}번 칸 열리기까지 {time}",
+  sheetTitle: "다음 칸도 열어 볼래요?",
+  notNow: "나중에",
 };

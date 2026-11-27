@@ -46,4 +46,7 @@ export default {
   ios3: "Buksan ang Bingo mula sa Home Screen at i-tap ang Paalalahanan ako",
   gotIt: "Sige",
   pushDoor: "🎁 Bukas na ang pinto {n}. Naghihintay ang laro ngayong araw!",
+  nextDoorIn: "Bubukas ang pinto {n} sa loob ng {time}",
+  sheetTitle: "Babalik ka ba para sa susunod na pinto?",
+  notNow: "Mamaya na",
 };
