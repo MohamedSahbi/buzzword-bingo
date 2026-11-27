@@ -1,7 +1,9 @@
 // Full screen on phones (Android/desktop; iPhone Safari has no full screen for websites, where 'Add to Home
 // Screen' opens the installed app without browser bars instead). Best practice: never lock the orientation when the
 // layout supports both, and let the browser handle the system bars ('auto'), so a swipe from the edge reveals them.
-export const canFullscreen = () => !!(document.fullscreenEnabled || document.webkitFullscreenEnabled);
+// Installed app (standalone): the phone's bars stay visible by design, so no immersive full-screen button there.
+const installed = () => matchMedia('(display-mode: standalone), (display-mode: fullscreen)').matches || navigator.standalone === true;
+export const canFullscreen = () => !installed() && !!(document.fullscreenEnabled || document.webkitFullscreenEnabled);
 export const isFullscreen = () => !!(document.fullscreenElement || document.webkitFullscreenElement);
 // Show the state on every full-screen button (class 'fs-on'), so leaving full screen is always one obvious tap.
 document.addEventListener('fullscreenchange', () => document.querySelectorAll('.fs-btn,#fsBtn').forEach(b => b.classList.toggle('fs-on', isFullscreen())));
