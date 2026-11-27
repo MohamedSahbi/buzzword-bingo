@@ -38,6 +38,13 @@
     .stack{display:grid;gap:10px}.divider{height:1px;background:var(--line);margin:5px 0}.help{color:var(--muted);font-size:12px;margin:0}.players,.feed{display:grid;gap:7px;max-height:220px;overflow:auto}.player,.event{display:flex;align-items:center;gap:9px;border-bottom:1px solid #edf0f3;padding:6px 2px}.avatar{width:29px;height:29px;display:grid;place-items:center;border-radius:50%;background:#dcecff;color:#155ba8;font-weight:850;font-size:12px}.player-meta,.event-text{min-width:0;flex:1}.name{font-weight:750;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mini{font-size:11px;color:var(--muted)}.host{font-size:10px;background:#fff0bf;padding:2px 5px;border-radius:99px;color:#775200}.event{align-items:start;font-size:12px}.event time{color:var(--muted);white-space:nowrap}
     details{border-top:1px solid var(--line);padding-top:12px}summary{cursor:pointer;font-weight:800}.steps{padding-inline-start:20px;margin-bottom:0}.steps li{margin:7px 0}.hidden{display:none!important}.modal{position:fixed;inset:0;background:#0d1f36aa;display:none;place-items:center;padding:20px;z-index:10}.modal.show{display:grid}.modal-card{width:min(520px,100%);background:#fff;border-radius:18px;padding:22px;box-shadow:0 24px 70px #0005}.modal-card h2{margin-top:0}.modal-actions{display:flex;gap:9px;justify-content:flex-end;margin-top:16px}.notice{padding:10px 12px;border-radius:10px;background:#fff7db;border:1px solid #ecd580;color:#704d00;font-size:13px}
     @media(max-width:850px){.layout{grid-template-columns:1fr}.side{grid-template-columns:repeat(2,minmax(0,1fr))}.side .panel:last-child{grid-column:1/-1}}
+    .field.topic-field{flex:1 1 100%;min-width:0}.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:6px}
+    .tile{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:2px;min-width:0;padding:8px 4px 6px;border:2px solid #c8d3df;border-radius:12px;background:#fbfdff;color:var(--ink);font-weight:700;font-size:11px;line-height:1.15;text-align:center;text-transform:none;letter-spacing:0}
+    .tile .te{font-size:26px;line-height:1.1}.tile .tn{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
+    .tile:hover:not(:disabled){border-color:#70a8e8}.tile[aria-pressed=true]{border-color:var(--brand);background:#eaf2ff;box-shadow:0 0 0 2px #8fc0f5;color:#0b3a6e}.tile:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+    .custom-edit{justify-self:start;margin-top:4px}.custom-ta{width:100%;min-height:160px;border:1px solid #bcc8d5;border-radius:10px;padding:10px 11px;font:inherit;resize:vertical;color:var(--ink)}.custom-meta{display:flex;justify-content:space-between;gap:8px;font-size:13px;font-weight:700;margin-top:4px}.custom-meta .bad{color:#b3261e}.custom-meta .good{color:#1a7f37}
+    .modal.sheet{z-index:12}
+    @media(max-width:580px){.modal.sheet{place-items:end center;padding:0}.sheet .modal-card{width:100%;border-radius:18px 18px 0 0;max-height:92vh;overflow:auto;padding-bottom:calc(18px + env(safe-area-inset-bottom))}.tiles{grid-template-columns:repeat(4,1fr)}}
     @media(max-width:580px){.shell{padding:12px}.topbar{align-items:flex-start}.conn-pill{display:none}.game{padding:12px}.side{grid-template-columns:1fr}.side .panel:last-child{grid-column:auto}.letters,.board{gap:4px}.cell{border-radius:8px;padding:4px;font-size:clamp(8px,2.4vw,12px)}.toolbar .field{width:100%}.right{margin-inline-start:0}.room-banner{align-items:flex-start;flex-direction:column}}
     @media print{body{background:#fff}.shell{padding:0}.topbar,.toolbar,.side,.room-banner,.status{display:none!important}.layout{display:block}.panel{border:0;box-shadow:none}.cell{print-color-adjust:exact}.game{padding:0}}
     .letters{direction:ltr}.top-actions{display:flex;gap:8px;align-items:center}.lang-btn{cursor:pointer;font:inherit;font-size:13px;color:inherit}.lang-btn:hover{filter:brightness(.97)}
@@ -109,7 +116,7 @@
     <div class="layout">
       <section class="panel game" id="paneCard">
         <div class="toolbar">
-          <div class="field"><label for="topic" data-i18n="topic"></label><select id="topic"></select></div>
+          <div class="field topic-field"><label id="topicLabel" data-i18n="topic"></label><select id="topic" class="hidden" aria-hidden="true" tabindex="-1"></select><div id="topicTiles" class="tiles" role="group" aria-labelledby="topicLabel"></div><button id="editCustom" class="btn small custom-edit hidden" type="button" data-i18n="custom.edit"></button></div>
           <button id="newCard" class="btn"></button>
           <button id="resetMarks" class="btn" data-i18n="resetMarks"></button>
           <button id="print" class="btn right" data-i18n="print"></button>
@@ -160,10 +167,18 @@
   <div id="createModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="createTitle">
     <div class="modal-card"><h2 id="createTitle" data-i18n="createTitle"></h2><div class="stack">
       <div class="field"><label for="createLang" data-i18n="cardLang"></label><select id="createLang"></select></div>
-      <div class="field"><label for="createTopic" data-i18n="topic"></label><select id="createTopic"></select></div>
+      <div class="field"><label for="createTopic" data-i18n="topic"></label><select id="createTopic"></select><button id="createEditCustom" class="btn small custom-edit hidden" type="button" data-i18n="custom.edit"></button></div>
       <div class="field"><label for="createMode" data-i18n="gameMode"></label><select id="createMode"><option value="shared" data-i18n="modeShared"></option><option value="individual" data-i18n="modeIndividual"></option></select></div>
       <p class="help" data-i18n="createHelp"></p>
     </div><div class="modal-actions"><button id="cancelCreate" class="btn" data-i18n="cancel"></button><button id="createRoom" class="btn primary" data-i18n="createRoom"></button></div></div>
+  </div>
+
+  <div id="customModal" class="modal sheet" role="dialog" aria-modal="true" aria-labelledby="customTitle">
+    <div class="modal-card"><h2 id="customTitle" data-i18n="custom.title"></h2><div class="stack">
+      <div class="field"><label for="customWords" data-i18n="custom.hint"></label><textarea id="customWords" class="custom-ta" rows="7" maxlength="6000" spellcheck="true"></textarea>
+        <div class="custom-meta"><span id="customCount"></span><span id="customNeed"></span></div></div>
+      <div class="field"><label for="customFree" data-i18n="custom.freeLabel"></label><input id="customFree" maxlength="60" autocomplete="off"></div>
+    </div><div class="modal-actions"><button id="customCancel" class="btn" type="button" data-i18n="cancel"></button><button id="customSave" class="btn primary" type="button" data-i18n="custom.save"></button></div></div>
   </div>
 
   <div id="langModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="langTitle">
@@ -185,6 +200,7 @@
 <script type="module">
   import { firebaseConfig } from './firebase-config.js';
   import { LANGUAGES, TOPIC_KEYS, translate, topicData, detectLanguage } from './languages/index.js';
+  const PICK_KEYS = [...TOPIC_KEYS, 'custom'];
   import { shareBar } from './share.js';
   import { canFullscreen, toggleFullscreen } from './fullscreen.js';
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
@@ -193,7 +209,7 @@
   import { getDatabase, ref, get, set, update, remove, onValue, onDisconnect, push, runTransaction, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js';
 
   const $ = id => document.getElementById(id);
-  const els = ['topic','newCard','resetMarks','print','board','win','status','soloTab','multiTab','soloControls','multiControls','playerName','openCreate','joinCode','joinRoom','leaveRoom','endRoom','players','playerCount','feed','roomBanner','roomCode','roomMode','roomHost','copyInvite','createModal','createTopic','createLang','createMode','cancelCreate','createRoom','startSolo','connectionDot','connectionText','firebaseNotice','hostModal','hostModalTitle','hostModalBody','hostModalActions','langBtn','langBtnText','langModal','siteLang','cardLang','langRoomNote','langDone','soundBtn','bossBtn','boss','bossFile','bossGrid','bossHint'].reduce((o,id)=>(o[id]=$(id),o),{});
+  const els = ['topic','newCard','resetMarks','print','board','win','status','soloTab','multiTab','soloControls','multiControls','playerName','openCreate','joinCode','joinRoom','leaveRoom','endRoom','players','playerCount','feed','roomBanner','roomCode','roomMode','roomHost','copyInvite','createModal','createTopic','createLang','createMode','cancelCreate','createRoom','startSolo','connectionDot','connectionText','firebaseNotice','hostModal','hostModalTitle','hostModalBody','hostModalActions','langBtn','langBtnText','langModal','siteLang','cardLang','langRoomNote','langDone','soundBtn','bossBtn','boss','bossFile','bossGrid','bossHint','topicTiles','editCustom','createEditCustom','customModal','customWords','customFree','customCount','customNeed','customSave','customCancel'].reduce((o,id)=>(o[id]=$(id),o),{});
   const configured = firebaseConfig.apiKey && !firebaseConfig.apiKey.includes('REPLACE_ME');
   let app, auth, db, uid = null, roomCode = null, room = null, unsubscribers = [], soloBoard = [], soloMarks = {}, soloSeed = Date.now().toString();
   // Room lifecycle: hosts can end or hand over a room; if the host is away for HOST_GRACE_MS the
@@ -223,6 +239,7 @@
     els.langBtnText.textContent = langLabel(siteLang); syncSoundBtn();
     if (els.boss.classList.contains('show')) toggleBoss(true);
     for (const sel of [els.topic, els.createTopic]) [...sel.options].forEach(o => o.textContent = t(`topic.${o.value}`));
+    renderTiles(); syncCustomUi(); if (els.customModal.classList.contains('show')) updateCustomCount();
     const auto = [...els.cardLang.options].find(o => o.value === 'auto'); if (auto) auto.textContent = t('settings.same', { lang: langLabel(siteLang) });
     if (lastStatus) els.status.textContent = t(lastStatus.key, lastStatus.vars);
     syncRoomUi(); renderBoard(); renderPlayers(); renderFeed();
@@ -290,7 +307,12 @@
   function hash(str){ let h=2166136261; for(let i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,16777619)} return h>>>0 }
   function rng(seed){ let a=hash(seed); return ()=>{a+=0x6D2B79F5;let x=a;x=Math.imul(x^x>>>15,x|1);x^=x+Math.imul(x^x>>>7,x|61);return((x^x>>>14)>>>0)/4294967296} }
   function shuffled(items,seed){ const a=[...items],r=rng(seed); for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]]} return a }
-  function makeBoard(topicKey,seed,playerId='',lang='en'){ const d=topicData(lang,topicKey); const words=shuffled(d.words,`${seed}:${playerId}`).slice(0,24); words.splice(12,0,d.free); return words }
+  // ---- Custom bingo: user's own phrases (solo: localStorage bingoCustom; rooms: meta.custom) ----
+  const CUSTOM_MIN=24, CUSTOM_MAX=80, CUSTOM_LEN=60;
+  function parseWords(text){ const seen=new Set(), out=[]; for(const raw of String(text).split(/[\n,，、;]+/)){ const w=raw.replace(/\s+/g,' ').trim().slice(0,CUSTOM_LEN).trim(); const k=w.toLowerCase(); if(w&&!seen.has(k)){seen.add(k);out.push(w)} if(out.length>=CUSTOM_MAX)break } return out }
+  function normCustom(c){ if(!c)return null; const words=Object.values(c.words||{}).filter(w=>typeof w==='string'&&w); return words.length>=CUSTOM_MIN?{words,free:typeof c.free==='string'?c.free:''}:null }
+  function loadCustom(){ try{ return normCustom(JSON.parse(localStorage.getItem('bingoCustom'))) }catch{ return null } }
+  function makeBoard(topicKey,seed,playerId='',lang='en',custom=null){ let d; if(topicKey==='custom'){ const c=normCustom(custom); d=c?{words:c.words,free:c.free||t('custom.freeDefault')}:topicData(lang,'mixed') } else d=topicData(lang,topicKey); const words=shuffled(d.words,`${seed}:${playerId}`).slice(0,24); words.splice(12,0,d.free); return words }
   function currentLang(){ return room ? (pickLang(room.meta.lang)||'en') : soloCardLang() }
   function initials(name){ return name.trim().split(/\s+/).slice(0,2).map(x=>x[0]?.toUpperCase()).join('')||'?' }
   function cleanName(){ return (els.playerName.value||localStorage.getItem('bingoName')||'Guest').trim().slice(0,24) }
@@ -299,7 +321,7 @@
   // Status messages are stored as keys so they re-translate when the language changes.
   function setStatus(key,type='',vars={}){ lastStatus={key,vars}; els.status.textContent=t(key,vars); els.status.className=`status ${type}`.trim() }
   function currentMarks(){ if(!room) return soloMarks; if(room.meta.mode==='shared') return room.sharedMarks||{}; return room.players?.[uid]?.marks||{} }
-  function currentBoard(){ if(!room) return soloBoard; const playerSeed=room.meta.mode==='individual'?uid:''; return makeBoard(room.meta.topic,room.meta.seed,playerSeed,currentLang()) }
+  function currentBoard(){ if(!room) return soloBoard; const playerSeed=room.meta.mode==='individual'?uid:''; return makeBoard(room.meta.topic,room.meta.seed,playerSeed,currentLang(),room.meta.custom) }
   function winnerLines(marks){ const hit=i=>i===12||!!marks[i]; const lines=[]; for(let r=0;r<5;r++)lines.push([0,1,2,3,4].map(c=>r*5+c)); for(let c=0;c<5;c++)lines.push([0,1,2,3,4].map(r=>r*5+c)); lines.push([0,6,12,18,24],[4,8,12,16,20]); return lines.filter(line=>line.every(hit)) }
   // Shrink a square's text until its longest word fits (hyphenation isn't available in every browser/language).
   function fitCells(){ els.board.querySelectorAll('.cell > span:first-child').forEach(sp=>{ const cell=sp.parentElement; sp.style.fontSize=''; let size=parseFloat(getComputedStyle(cell).fontSize); const max=cell.clientWidth-6; let guard=20; while(guard-- && size>7 && (sp.scrollWidth>max || [...sp.textContent.split(/\s+/)].some(w=>measure(w,size,cell)>max))){ size-=0.5; sp.style.fontSize=size+'px'; } }) }
@@ -344,22 +366,49 @@
   // `text` (English) is kept for the database rules and older clients.
   async function addActivity(key,vars={}){ if(!roomCode||!db)return; const p=push(ref(db,`rooms/${roomCode}/activity`)); return set(p,{k:key,v:vars,text:translate('en',key,vars).slice(0,160),uid,at:serverTimestamp()}) }
   function saveSolo(){ localStorage.setItem('bingoSolo',JSON.stringify({lang:soloCardLang(),topic:els.topic.value,seed:soloSeed,marks:soloMarks})) }
-  function freshSolo(){ room=null; roomCode=null; soloSeed=crypto.randomUUID(); soloMarks={}; soloBoard=makeBoard(els.topic.value,soloSeed,'',soloCardLang()); saveSolo(); syncRoomUi(); renderBoard(); setStatus('st.freshSolo','success') }
+  function freshSolo(){ room=null; roomCode=null; soloSeed=crypto.randomUUID(); soloMarks={}; soloBoard=makeBoard(els.topic.value,soloSeed,'',soloCardLang(),loadCustom()); saveSolo(); syncRoomUi(); renderBoard(); setStatus('st.freshSolo','success') }
   function resetSoloMarks(){ soloMarks={};saveSolo();renderBoard();setStatus('st.marksReset','success') }
 
   function populateSelects(){
     const add=(sel,v,txt)=>{const o=document.createElement('option');o.value=v;o.textContent=txt;sel.append(o)};
-    TOPIC_KEYS.forEach(k=>{add(els.topic,k,k);add(els.createTopic,k,k)});
+    PICK_KEYS.forEach(k=>{add(els.topic,k,k);add(els.createTopic,k,k)});
     add(els.cardLang,'auto','auto');
     Object.values(LANGUAGES).forEach(l=>{add(els.siteLang,l.code,l.label);add(els.cardLang,l.code,l.label);add(els.createLang,l.code,l.label)});
   }
-  function loadSolo(){ try{const s=JSON.parse(localStorage.getItem('bingoSolo')); if(s&&TOPIC_KEYS.includes(s.topic)&&s.lang===soloCardLang()){els.topic.value=s.topic;soloSeed=s.seed;soloMarks=s.marks||{}}}catch{} soloBoard=makeBoard(els.topic.value,soloSeed,'',soloCardLang()) }
+  function loadSolo(){ try{const s=JSON.parse(localStorage.getItem('bingoSolo')); if(s&&PICK_KEYS.includes(s.topic)&&(s.topic!=='custom'||loadCustom())&&s.lang===soloCardLang()){els.topic.value=s.topic;soloSeed=s.seed;soloMarks=s.marks||{}}}catch{} soloBoard=makeBoard(els.topic.value,soloSeed,'',soloCardLang(),loadCustom()) }
+  // Theme tiles are built from PICK_KEYS (TOPIC_KEYS + custom), so new themes appear automatically.
+  function renderTiles(){
+    els.topicTiles.replaceChildren();
+    PICK_KEYS.forEach(k=>{ const label=t(`topic.${k}`), m=label.match(/^(\S+)\s+(.*)$/), b=document.createElement('button');
+      b.type='button'; b.className='tile'; b.dataset.key=k; b.setAttribute('aria-pressed',String(els.topic.value===k)); b.disabled=els.topic.disabled; b.title=label;
+      const e=document.createElement('span'); e.className='te'; e.textContent=m?m[1]:''; const n=document.createElement('span'); n.className='tn'; n.textContent=m?m[2]:label; b.append(e,n);
+      b.addEventListener('click',()=>{ if(els.topic.disabled||(els.topic.value===k&&k!=='custom'))return; if(els.topic.value!==k)prevTopic=els.topic.value; els.topic.value=k; els.topic.dispatchEvent(new Event('change')) });
+      els.topicTiles.append(b) })
+  }
+  let prevTopic='mixed', customCtx='solo';
+  function syncCustomUi(){
+    [...els.topicTiles.children].forEach(b=>{b.setAttribute('aria-pressed',String(b.dataset.key===els.topic.value));b.disabled=els.topic.disabled});
+    els.editCustom.classList.toggle('hidden',!(els.topic.value==='custom'&&!room));
+    els.createEditCustom.classList.toggle('hidden',els.createTopic.value!=='custom');
+  }
+  function openCustom(ctx){ customCtx=ctx; const c=loadCustom(); els.customWords.value=c?c.words.join('\n'):''; els.customFree.value=c?c.free:''; els.customModal.classList.add('show'); updateCustomCount(); setTimeout(()=>els.customWords.focus(),0) }
+  function updateCustomCount(){ const n=parseWords(els.customWords.value).length, ok=n>=CUSTOM_MIN; els.customCount.textContent=t('custom.count',{n,min:CUSTOM_MIN}); els.customCount.className=ok?'good':'bad'; els.customNeed.textContent=ok?'':t('custom.need',{min:CUSTOM_MIN}); els.customNeed.className=ok?'':'bad'; els.customSave.disabled=!ok }
+  function closeCustom(saved){
+    els.customModal.classList.remove('show');
+    if(!saved&&!loadCustom()){ // nothing usable yet: go back to the previous theme
+      if(customCtx==='create') els.createTopic.value=els.topic.value!=='custom'?els.topic.value:'mixed';
+      else if(els.topic.value==='custom') els.topic.value=(prevTopic!=='custom'&&PICK_KEYS.includes(prevTopic))?prevTopic:'mixed';
+      syncCustomUi() }
+  }
+  function saveCustom(){ const words=parseWords(els.customWords.value); if(words.length<CUSTOM_MIN)return; const free=els.customFree.value.trim().slice(0,CUSTOM_LEN);
+    localStorage.setItem('bingoCustom',JSON.stringify({words,free})); closeCustom(true);
+    if(customCtx==='solo'){ els.topic.value='custom'; syncCustomUi(); freshSolo() } else syncCustomUi() }
   function showTab(multi){ els.soloTab.classList.toggle('active',!multi);els.multiTab.classList.toggle('active',multi);els.soloControls.classList.toggle('hidden',multi);els.multiControls.classList.toggle('hidden',!multi);if(multi&&!configured)els.firebaseNotice.classList.remove('hidden') }
   function syncRoomUi(){
     const active=!!room; els.roomBanner.classList.toggle('show',active); els.leaveRoom.classList.toggle('hidden',!active); els.joinRoom.classList.toggle('hidden',active); els.openCreate.classList.toggle('hidden',active); els.joinCode.parentElement.classList.toggle('hidden',active);
     els.endRoom.classList.toggle('hidden',!active||room.meta.hostId!==uid);
-    els.connectionDot.classList.toggle('on',active);els.connectionText.textContent=active?t('conn.live',{code:roomCode}):t('conn.solo'); els.topic.disabled=active;
-    if(active){els.roomCode.textContent=roomCode;els.roomMode.textContent=`${t(room.meta.mode==='shared'?'roomShared':'roomIndividual')} · 🔒 ${langLabel(currentLang())}`;els.roomHost.textContent=t('hostedBy',{name:room.meta.hostName});els.topic.value=TOPIC_KEYS.includes(room.meta.topic)?room.meta.topic:'mixed';showTab(true)}
+    els.connectionDot.classList.toggle('on',active);els.connectionText.textContent=active?t('conn.live',{code:roomCode}):t('conn.solo'); els.topic.disabled=active; syncCustomUi();
+    if(active){els.roomCode.textContent=roomCode;els.roomMode.textContent=`${t(room.meta.mode==='shared'?'roomShared':'roomIndividual')} · 🔒 ${langLabel(currentLang())}`;els.roomHost.textContent=t('hostedBy',{name:room.meta.hostName});els.topic.value=PICK_KEYS.includes(room.meta.topic)?room.meta.topic:'mixed';syncCustomUi();showTab(true)}
     updateHostControls();
   }
   function updateHostControls(){ const isHost=room?.meta.hostId===uid; els.newCard.textContent=t(room?'newGame':'newCard'); els.newCard.disabled=!!room&&!isHost;els.resetMarks.disabled=!!room&&!isHost }
@@ -384,9 +433,9 @@
   }
   async function requireFirebase(){ if(db&&uid)return true; els.firebaseNotice.classList.remove('hidden');setStatus('st.needConfig','error');return false }
   async function createRoom(){
-    if(!await requireFirebase())return; const name=cleanName(); if(!name){setStatus('st.enterName','error');return} localStorage.setItem('bingoName',name);els.createRoom.disabled=true;
-    try{ let code, snap; do{code=randomCode();snap=await get(ref(db,`rooms/${code}/meta`))}while(snap.exists()); const seed=crypto.randomUUID(); const now=Date.now();
-      await set(ref(db,`rooms/${code}/meta`),{hostId:uid,hostName:name,topic:els.createTopic.value,lang:els.createLang.value,mode:els.createMode.value,seed,createdAt:now,lastActive:serverTimestamp(),version:1});
+    if(els.createTopic.value==='custom'&&!loadCustom()){openCustom('create');return} if(!await requireFirebase())return; const name=cleanName(); if(!name){setStatus('st.enterName','error');return} localStorage.setItem('bingoName',name);els.createRoom.disabled=true;
+    try{ let code, snap; do{code=randomCode();snap=await get(ref(db,`rooms/${code}/meta`))}while(snap.exists()); const seed=crypto.randomUUID(); const now=Date.now(); const cust=els.createTopic.value==='custom'?loadCustom():null;
+      await set(ref(db,`rooms/${code}/meta`),{hostId:uid,hostName:name,topic:els.createTopic.value,lang:els.createLang.value,mode:els.createMode.value,seed,createdAt:now,lastActive:serverTimestamp(),version:1,...(cust?{custom:{words:cust.words,free:cust.free||t('custom.freeDefault')}}:{})});
       await set(ref(db,`rooms/${code}/players/${uid}`),{name,online:true,joinedAt:now,marks:{}}); els.createModal.classList.remove('show'); await connectRoom(code); await addActivity('act.created',{name})
     }catch(e){showError(e)}finally{els.createRoom.disabled=false}
   }
@@ -469,7 +518,11 @@
   populateSelects(); els.playerName.value=localStorage.getItem('bingoName')||''; loadSolo(); applyI18n();
   els.soundBtn.addEventListener('click',toggleSound); els.bossBtn.addEventListener('click',()=>toggleBoss(true)); els.boss.addEventListener('click',()=>toggleBoss(false));
   els.langBtn.addEventListener('click',openLangSettings); els.langDone.addEventListener('click',saveLangSettings); els.langModal.addEventListener('click',e=>{if(e.target===els.langModal)saveLangSettings()});
-  els.topic.addEventListener('change',freshSolo); els.newCard.addEventListener('click',()=>room?hostNewGame():freshSolo()); els.resetMarks.addEventListener('click',()=>room?hostReset():resetSoloMarks()); els.print.addEventListener('click',()=>print());
+  els.topic.addEventListener('change',()=>{ if(els.topic.value==='custom'&&!loadCustom()){syncCustomUi();openCustom('solo');return} syncCustomUi(); freshSolo() });
+  els.editCustom.addEventListener('click',()=>openCustom('solo')); els.createEditCustom.addEventListener('click',()=>openCustom('create'));
+  els.createTopic.addEventListener('change',()=>{ syncCustomUi(); if(els.createTopic.value==='custom'&&!loadCustom())openCustom('create') });
+  els.customWords.addEventListener('input',updateCustomCount); els.customCancel.addEventListener('click',()=>closeCustom(false)); els.customSave.addEventListener('click',saveCustom);
+  els.customModal.addEventListener('click',e=>{if(e.target===els.customModal)closeCustom(false)}); els.customModal.addEventListener('keydown',e=>{if(e.key==='Escape')closeCustom(false)}); els.newCard.addEventListener('click',()=>room?hostNewGame():freshSolo()); els.resetMarks.addEventListener('click',()=>room?hostReset():resetSoloMarks()); els.print.addEventListener('click',()=>print());
   // Hero: solo jumps to the card, team opens the room controls (on phones via the bottom tabs).
   const phone=()=>matchMedia('(max-width:860px)').matches;
   $('heroSolo').addEventListener('click',()=>{ if(room) return; showTab(false); if(phone()) setTab('card'); els.board.scrollIntoView({behavior:'smooth',block:'center'}) });
@@ -480,7 +533,7 @@
   addEventListener('storage',e=>{ if(e.key==='bingoSiteLang'||e.key==='bingoCardLang') syncSiteLang() }); addEventListener('pageshow',syncSiteLang); document.addEventListener('visibilitychange',()=>{ if(!document.hidden) syncSiteLang() });
   if(canFullscreen()){ $('fsBtn').classList.remove('hidden'); $('fsBtn').addEventListener('click',()=>toggleFullscreen()); }
   els.soloTab.addEventListener('click',()=>showTab(false)); els.multiTab.addEventListener('click',()=>showTab(true)); els.startSolo.addEventListener('click',freshSolo);
-  els.openCreate.addEventListener('click',async()=>{if(await requireFirebase()){els.createTopic.value=els.topic.value;els.createLang.value=soloCardLang();els.createModal.classList.add('show')}}); els.cancelCreate.addEventListener('click',()=>els.createModal.classList.remove('show')); els.createModal.addEventListener('click',e=>{if(e.target===els.createModal)els.createModal.classList.remove('show')}); els.createRoom.addEventListener('click',createRoom);
+  els.openCreate.addEventListener('click',async()=>{if(await requireFirebase()){els.createTopic.value=els.topic.value;syncCustomUi();els.createLang.value=soloCardLang();els.createModal.classList.add('show')}}); els.cancelCreate.addEventListener('click',()=>els.createModal.classList.remove('show')); els.createModal.addEventListener('click',e=>{if(e.target===els.createModal)els.createModal.classList.remove('show')}); els.createRoom.addEventListener('click',createRoom);
   els.joinCode.addEventListener('input',e=>e.target.value=cleanCode(e.target.value)); els.joinRoom.addEventListener('click',()=>joinRoom()); els.leaveRoom.addEventListener('click',openLeave); els.endRoom.addEventListener('click',openEndRoom); els.hostModal.addEventListener('click',e=>{if(e.target===els.hostModal)closeModal()});
   els.copyInvite.addEventListener('click',async()=>{const u=new URL(location.href);u.searchParams.set('room',roomCode);await navigator.clipboard.writeText(u.href);setStatus('st.inviteCopied','success')});
 

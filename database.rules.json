@@ -21,6 +21,24 @@
           "lastActive": {
             ".write": "auth != null && root.child('rooms/' + $roomCode + '/players/' + auth.uid + '/name').exists()",
             ".validate": "newData.isNumber() && newData.val() <= now"
+          },
+          "topic": {
+            ".validate": "newData.isString() && newData.val().length <= 20"
+          },
+          "custom": {
+            ".validate": "newData.hasChildren(['words']) && (newData.parent().child('topic').val() === 'custom')",
+            "words": {
+              ".validate": "newData.numChildren() >= 24 && newData.numChildren() <= 80",
+              "$i": {
+                ".validate": "$i.matches(/^[0-9]{1,2}$/) && newData.isString() && newData.val().length >= 1 && newData.val().length <= 60"
+              }
+            },
+            "free": {
+              ".validate": "newData.isString() && newData.val().length <= 60"
+            },
+            "$other": {
+              ".validate": "false"
+            }
           }
         },
         "players": {
