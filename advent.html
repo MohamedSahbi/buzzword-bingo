@@ -301,6 +301,7 @@
       <button id="practiceBtn" class="pill m-only" type="button"></button>
       <button id="angelMenu" class="pill" type="button"></button>
       <button id="remindMenu" class="pill hidden" type="button"></button>
+      <button id="reportMenu" class="pill" type="button"></button>
     </div>
   </header>
   <h1 id="title"></h1>
@@ -350,6 +351,7 @@
   const SEASON_CODES = ADVENT_INDEX.SEASON_CODES || ['en', 'cs'];
   import { firebaseConfig, vapidKey } from './firebase-config.js';
   import { needsInstall, pushSupported, isSubscribed, isBlocked, subscribe, updatePrefs, unsubscribe } from './push.js';
+  import { openReport, reportText } from './report.js';
   import { mountPredict } from './advent/predict.js';
   import { PREDICT_IDEAS } from './advent/predict-ideas.js';
   import { LANGUAGES, translate } from './languages/index.js';
@@ -476,7 +478,7 @@
     $('title').innerHTML = `🎄 <span>${esc(t('title'))}</span>`;
     $('subtitle').textContent = C().tagline;
     $('navCal').textContent = t('nav_cal'); $('navScore').textContent = t('nav_score'); menuBtn.setAttribute('aria-label', t('menu')); $('practiceBtn').textContent = '🎯 ' + (preview ? t('previewExit') : t('previewBtn')); $('practiceBtn').classList.toggle('hidden', !metas[cal]);
-    simTick(); syncSound(); renderRemindMenu(); renderBanner(); tickCountdown(); renderAngelEntry(); renderDoors(); renderSolo(); renderTeamStatic(); renderTeam();
+    simTick(); syncSound(); renderRemindMenu(); renderReportMenu(); renderBanner(); tickCountdown(); renderAngelEntry(); renderDoors(); renderSolo(); renderTeamStatic(); renderTeam();
   }
   function renderBanner() {
     const b = $('banner'); b.classList.add('hidden');
@@ -604,6 +606,7 @@
     m.textContent = isSubscribed() ? `🔔 ${t('remindOn')}` : `🔔 ${t('remindBtn')}`; m.onclick = () => { setMenu?.(false); openSheet(); };
     $('iosTitle').textContent = t('iosTitle'); $('iosBody').textContent = t('iosBody'); $('ios1').textContent = t('ios1'); $('ios2').textContent = t('ios2'); $('ios3').textContent = t('ios3'); $('iosOk').textContent = t('gotIt');
   }
+  function renderReportMenu() { $('reportMenu').textContent = '🐞 ' + reportText(uiLang)[0]; $('reportMenu').onclick = () => { setMenu?.(false); const d = !$('playView').classList.contains('hidden') ? $('playView').dataset.door : ''; openReport({ where: `advent ${cal}${preview ? ' practice' : ''}${d ? ' door ' + d : ''}` }); }; }
   function renderAngelEntry() {
     const p = deedsFor(cal);
     $('angelMenu').textContent = `😇😈 ${p.title}`; $('angelMenu').onclick = () => { setMenu?.(false); openAngel(); };
@@ -632,6 +635,7 @@
   let stopGame = () => {}, skipPredict = false;
   const predictDoor = () => doorNums().find(n => doorType(n) === 'predict');
   async function openDoor(n) {
+    $('playView').dataset.door = n;
     stopGame(); stopGame = () => {}; $('playView').classList.remove('bingo-door', 'running', 'ended');
     let door, predictNote = '';
     try { door = await loadDoor(n); } catch { $('banner').innerHTML = `<span>🔒 ${esc(t('locked', { date: fmtDate(n) }))}</span>`; $('banner').classList.remove('hidden'); return; }

@@ -81,6 +81,7 @@
     @media (max-width:860px){.hero{margin:0 0 12px;padding:12px}.hero .premise{font-size:15px}.hero-actions{width:100%}.hero-actions .btn{flex:1;text-align:center}}
     .made-by{text-align:center;font-size:12px;opacity:.65;margin:18px 0 90px}.made-by a{color:inherit}
   #fsBtn.fs-on{background:#f2b84b;color:#132433}
+.linkish{background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer}
 </style>
 </head>
 <body>
@@ -180,13 +181,14 @@
   <div id="boss" class="boss" aria-hidden="true"><div class="boss-bar"><b id="bossFile"></b><span class="boss-menu"><span>File</span><span>Edit</span><span>View</span><span>Insert</span><span>Format</span><span>Data</span></span></div><div class="boss-fx">fx&nbsp;&nbsp;=SUM(B2:B8)</div><div class="boss-grid" id="bossGrid"></div><div class="boss-hint" id="bossHint"></div></div>
 
   <script>if ('serviceWorker' in navigator) addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));</script>
-  <footer class="made-by">© 2026 <a href="https://mohamedsahbi.com" rel="author">Mohamed Sahbi</a></footer>
+  <footer class="made-by">© 2026 <a href="https://mohamedsahbi.com" rel="author">Mohamed Sahbi</a> · <button type="button" id="reportLink" class="linkish"></button></footer>
 <script type="module">
   import { firebaseConfig } from './firebase-config.js';
   import { LANGUAGES, TOPIC_KEYS, translate, topicData, detectLanguage } from './languages/index.js';
   import { shareBar } from './share.js';
   import { canFullscreen, toggleFullscreen } from './fullscreen.js';
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
+  import { openReport, reportText } from './report.js';
   import { getAuth, signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
   import { getDatabase, ref, get, set, update, remove, onValue, onDisconnect, push, runTransaction, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js';
 
@@ -448,6 +450,10 @@
     claimingHost=true; try{ await update(ref(db,`rooms/${roomCode}/meta`),{hostId:uid,hostName:me.name}); await addActivity('act.nowHost',{name:me.name}) }catch{} finally{claimingHost=false}
   }
 
+  // ---- Report a problem (report.js: own texts, sheet and Firebase write) ----
+  { const rl = document.getElementById('reportLink'); const paint = () => { rl.textContent = '🐞 ' + reportText()[0]; };
+    paint(); addEventListener('storage', paint); document.addEventListener('visibilitychange', paint);
+    rl.onclick = () => openReport({ where: 'main page' }); }
   // ---- Phones: ☰ menu and bottom tabs ----
   const menuBtn = $('menuBtn'), topActions = $('topActions');
   function setMenu(open){ topActions.classList.toggle('open', open); menuBtn.setAttribute('aria-expanded', String(open)); menuBtn.textContent = open ? '✕' : '☰' }

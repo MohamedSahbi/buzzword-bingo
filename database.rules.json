@@ -86,6 +86,12 @@
         }
       }
     },
+    "feedback": {
+      "$id": {
+        ".write": "auth != null && !data.exists()",
+        ".validate": "newData.hasChildren(['text','at']) && newData.child('text').isString() && newData.child('text').val().length >= 1 && newData.child('text').val().length <= 1000 && (!newData.child('where').exists() || newData.child('where').val().length <= 120) && (!newData.child('lang').exists() || newData.child('lang').val().length <= 8) && (!newData.child('ua').exists() || newData.child('ua').val().length <= 20) && !newData.child('uid').exists() && newData.child('at').isNumber() && newData.child('at').val() <= now + 60000"
+      }
+    },
     "push": {
       "$uid": {
         ".write": "auth != null && auth.uid === $uid",
