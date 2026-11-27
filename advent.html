@@ -369,9 +369,15 @@
   const now = () => new Date();
   const seasonYear = (() => { const d = now(); return d.getMonth() === 0 ? d.getFullYear() - 1 : d.getFullYear(); })();
   const doorDate = n => { const [m, d] = C().dates[n]; return new Date(m === 1 ? seasonYear + 1 : seasonYear, m - 1, d); };
-  const releaseAt = n => seasonMode() ? C().release[n] : doorDate(n).getTime();
-  const unlocked = n => !seasonMode() || Date.now() >= releaseAt(n);
-  const isToday = n => seasonMode() && Date.now() >= releaseAt(n) && Date.now() < releaseAt(n) + 864e5;
+  // Practice is a day simulator: door 1 is open; the next door opens 3 minutes after today's door is played
+  // (or right away with ⏩). Locks, countdown, the bonus game and reminders then behave exactly as in the season.
+  const SIM_WAIT = 3 * 60e3, simKey = () => `bbSim:${cal}`;
+  const sim = () => { try { return JSON.parse(localStorage.getItem(simKey())) || { day: 1, next: 0, done: [] }; } catch { return { day: 1, next: 0, done: [] }; } };
+  const saveSim = st => localStorage.setItem(simKey(), JSON.stringify(st));
+  function simTick() { if (!preview) return; const st = sim(); if (st.next && Date.now() >= st.next && st.day < doorNums().length) { st.day++; st.next = 0; saveSim(st); } }
+  const releaseAt = n => seasonMode() ? C().release[n] : preview ? (n <= sim().day ? 0 : n === sim().day + 1 && sim().next ? sim().next : 9e15) : doorDate(n).getTime();
+  const unlocked = n => preview ? n <= sim().day : !seasonMode() || Date.now() >= releaseAt(n);
+  const isToday = n => preview ? n === sim().day : seasonMode() && Date.now() >= releaseAt(n) && Date.now() < releaseAt(n) + 864e5;
   const fmtDate = n => seasonMode()
     ? `${new Date(releaseAt(n)).toLocaleDateString(C().locale, { day: 'numeric', month: 'long', timeZone: C().timezone })}, 00:00 ${C().tzLabel}`
     : doorDate(n).toLocaleDateString(C().locale, { day: 'numeric', month: 'long' });
@@ -459,12 +465,15 @@
     $('title').innerHTML = `🎄 <span>${esc(t('title'))}</span>`;
     $('subtitle').textContent = C().tagline;
     $('navCal').textContent = t('nav_cal'); $('navScore').textContent = t('nav_score'); menuBtn.setAttribute('aria-label', t('menu')); $('practiceBtn').textContent = '🎯 ' + (preview ? t('previewExit') : t('previewBtn')); $('practiceBtn').classList.toggle('hidden', !metas[cal]);
-    syncSound(); renderRemindMenu(); renderBanner(); tickCountdown(); renderAngelEntry(); renderDoors(); renderSolo(); renderTeamStatic(); renderTeam();
+    simTick(); syncSound(); renderRemindMenu(); renderBanner(); tickCountdown(); renderAngelEntry(); renderDoors(); renderSolo(); renderTeamStatic(); renderTeam();
   }
   function renderBanner() {
     const b = $('banner'); b.classList.add('hidden');
     if (preview || !metas[cal]) {
-      b.innerHTML = `<span class="ic">🎯</span><span>${esc(t('previewOn').split(/(?<=[.!?。])\s*/)[0])}</span>${metas[cal] ? `<button class="pill" id="exitPreview">${esc(t('previewExit'))}</button>` : ''}`; b.classList.remove('hidden');
+      const st = sim(), canSkip = st.day < doorNums().length;
+      b.innerHTML = `<span class="ic">🎯</span><span>${esc(t('previewOn').split(/(?<=[.!?。])\s*/)[0])}</span><span class="cd" id="cdown"></span>${canSkip ? `<button class="pill" id="simSkip">⏩ ${esc(t('skipNext'))}</button>` : ''}${st.day > 1 || st.done.length ? `<button class="pill" id="simReset">↺ ${esc(t('restartSim'))}</button>` : ''}${metas[cal] ? `<button class="pill" id="exitPreview">${esc(t('previewExit'))}</button>` : ''}`; b.classList.remove('hidden');
+      if ($('simSkip')) $('simSkip').onclick = () => { const s2 = sim(); s2.next = Date.now() - 1; saveSim(s2); renderAll(); };
+      if ($('simReset')) $('simReset').onclick = () => { localStorage.removeItem(simKey()); renderAll(); };
       if (metas[cal]) $('exitPreview').onclick = () => { preview = false; history.replaceState(null, '', location.pathname); renderAll(); };
     }
     else if (predictDoor() && Date.now() >= releaseAt(predictDoor()) - 5 * 864e5 && Date.now() < releaseAt(predictDoor()) + 864e5) {
@@ -478,7 +487,7 @@
   }
   // Spoiler-free daily hook: countdown to the next door (no hint of its game) and the on-the-day streak.
   let cdTimer = null;
-  function nextRelease() { return seasonMode() ? doorNums().map(releaseAt).filter(x => x > Date.now()).sort((a, b) => a - b)[0] : null; }
+  function nextRelease() { if (preview) { const nx = sim().next; return nx > Date.now() ? nx : null; } return seasonMode() ? doorNums().map(releaseAt).filter(x => x > Date.now()).sort((a, b) => a - b)[0] : null; }
   function streakNow() { const sc = loadScores(); let k = doorNums().filter(n => unlocked(n)).pop(), d = 0; if (k && !sc[k]?.onDay) k--; for (; k && sc[k]?.onDay; k--) d++; return d; }
   function tickCountdown() {
     clearInterval(cdTimer); const at = nextRelease(); if (!at) return;
@@ -508,8 +517,8 @@
   const shareTo = (el, text, card = null) => shareBar(el, { text, url: shareUrl(), card: card && { footer: footer(), ...card }, labels: { share: esc(t('shareNative')), copy: esc(t('share')), copied: esc(t('copied')), image: esc(t('shareImage')), attachText: t('shareAttach') } });
   // The side game is a reward, never a rival to today's door: in season its banner only shows once today's door
   // is played (the result screen unlocks it). It is always reachable, quietly, from the ☰ menu.
-  const todayDoor = () => seasonMode() ? doorNums().find(isToday) : null;
-  const todayDone = () => { const n = todayDoor(); return !!(n && loadScores()[n]); };
+  const todayDoor = () => (seasonMode() || preview) ? doorNums().find(isToday) : null;
+  const todayDone = () => { const n = todayDoor(); return !!(n && (preview ? sim().done.includes(n) : loadScores()[n])); };
   // ---- Daily door reminders (push, no email). Offered after a finished door and in the ☰ menu. ----
   const remindAvailable = () => !!vapidKey && (needsInstall() || pushSupported());
   const pushPrefs = () => ({ cal, lang: uiLang, tz: Intl.DateTimeFormat().resolvedOptions().timeZone || '' });
@@ -608,7 +617,7 @@
       onFinish: res => finishDoor(n, { parts: res.parts }, { shareLine: res.shareLine }),
     });
   }
-  function closeDoor() { stopGame(); stopGame = () => {}; leaveLive(); exitFullscreen(); document.body.classList.remove('playing'); $('playView').classList.add('hidden'); $('calendarView').classList.remove('hidden'); renderDoors(); renderSolo(); renderTeam(); }
+  function closeDoor() { stopGame(); stopGame = () => {}; leaveLive(); exitFullscreen(); document.body.classList.remove('playing'); $('playView').classList.add('hidden'); $('calendarView').classList.remove('hidden'); simTick(); renderBanner(); tickCountdown(); renderAngelEntry(); renderRemindMenu(); renderDoors(); renderSolo(); renderTeam(); }
   // Score = game parts + on-the-day bonus + streak bonus (10 per consecutive earlier door also played on its day, max 50).
   function finishDoor(n, res, door) {
     const onDay = isToday(n), parts = [...res.parts];
@@ -617,8 +626,9 @@
       const sc = loadScores(); let days = 0; for (let k = n - 1; sc[k]?.onDay; k--) days++;
       if (days) parts.push([t('b_streak', { days: days + 1 }), Math.min(250, days * 50)]);
     }
-    const total = Math.max(0, Math.min(500, parts.reduce((a, [, v]) => a + v, 0)));
+    const total = Math.max(0, Math.min(5000, parts.reduce((a, [, v]) => a + v, 0)));
     const first = seasonMode() && unlocked(n) && saveScore(n, total, onDay);
+    if (preview && isToday(n)) { const st = sim(); if (!st.done.includes(n)) st.done.push(n); if (!st.next && st.day < doorNums().length) st.next = Date.now() + SIM_WAIT; saveSim(st); }
     if (lastRun?.n === n && (first || !seasonMode())) saveGhost(n, lastRun);
     if (first) pushTeamScore(n, total);
     else if (!seasonMode()) pushPracticeScore(n, total);   // practice: test the team board before the season (best run counts)

@@ -18,6 +18,8 @@ export const ADVENT_UI = {
   ja, 'pt-BR': ptBR, 'pt-PT': ptPT, hi, fr, de, it, ar, fil, ko, nl, 'nl-BE': nlBE, es,
   en: {
     shareNative: 'Share',
+    skipNext: "Open next door now",
+    restartSim: "Start over",
     nextDoorIn: "Door {n} opens in {time}",
     sheetTitle: "Come back for the next door?",
     notNow: "Not now",
@@ -69,6 +71,8 @@ export const ADVENT_UI = {
   },
   cs: {
     shareNative: 'Sdílet',
+    skipNext: "Otevřít další okénko hned",
+    restartSim: "Začít znovu",
     nextDoorIn: "Okénko {n} se otevře za {time}",
     sheetTitle: "Vrátíte se k dalšímu okénku?",
     notNow: "Teď ne",

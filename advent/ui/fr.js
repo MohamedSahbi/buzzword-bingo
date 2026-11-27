@@ -49,4 +49,6 @@ export default {
   nextDoorIn: "La case {n} s’ouvre dans {time}",
   sheetTitle: "Vous revenez pour la prochaine case ?",
   notNow: "Pas maintenant",
+  skipNext: "Ouvrir la case suivante maintenant",
+  restartSim: "Recommencer",
 };

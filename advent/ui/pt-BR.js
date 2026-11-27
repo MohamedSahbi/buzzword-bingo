@@ -49,4 +49,6 @@ export default {
   nextDoorIn: "A janela {n} abre em {time}",
   sheetTitle: "Volta para a próxima janela?",
   notNow: "Agora não",
+  skipNext: "Abrir a próxima janela agora",
+  restartSim: "Recomeçar",
 };

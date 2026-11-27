@@ -49,4 +49,6 @@ export default {
   nextDoorIn: "النافذة {n} تُفتح بعد {time}",
   sheetTitle: "هل ستعود للنافذة التالية؟",
   notNow: "ليس الآن",
+  skipNext: "افتح النافذة التالية الآن",
+  restartSim: "ابدأ من جديد",
 };

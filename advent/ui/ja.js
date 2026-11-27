@@ -49,4 +49,6 @@ export default {
   nextDoorIn: "扉{n}が開くまで {time}",
   sheetTitle: "次の扉にも来ますか？",
   notNow: "あとで",
+  skipNext: "次の扉を今すぐ開ける",
+  restartSim: "最初から",
 };

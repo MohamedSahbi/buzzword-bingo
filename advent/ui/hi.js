@@ -49,4 +49,6 @@ export default {
   nextDoorIn: "दरवाज़ा {n} खुलने में {time}",
   sheetTitle: "अगले दरवाज़े के लिए फिर आएँगे?",
   notNow: "अभी नहीं",
+  skipNext: "अगला दरवाज़ा अभी खोलें",
+  restartSim: "फिर से शुरू करें",
 };

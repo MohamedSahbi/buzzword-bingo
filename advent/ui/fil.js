@@ -49,4 +49,6 @@ export default {
   nextDoorIn: "Bubukas ang pinto {n} sa loob ng {time}",
   sheetTitle: "Babalik ka ba para sa susunod na pinto?",
   notNow: "Mamaya na",
+  skipNext: "Buksan na ang susunod na pinto",
+  restartSim: "Magsimula ulit",
 };

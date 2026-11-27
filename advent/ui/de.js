@@ -49,4 +49,6 @@ export default {
   nextDoorIn: "Türchen {n} öffnet in {time}",
   sheetTitle: "Kommst du zum nächsten Türchen zurück?",
   notNow: "Jetzt nicht",
+  skipNext: "Nächstes Türchen jetzt öffnen",
+  restartSim: "Neu anfangen",
 };

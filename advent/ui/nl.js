@@ -49,4 +49,6 @@ export default {
   nextDoorIn: "Deurtje {n} gaat open over {time}",
   sheetTitle: "Kom je terug voor het volgende deurtje?",
   notNow: "Nu niet",
+  skipNext: "Volgend deurtje nu openen",
+  restartSim: "Opnieuw beginnen",
 };

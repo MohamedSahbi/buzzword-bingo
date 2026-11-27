@@ -49,4 +49,6 @@ export default {
   nextDoorIn: "La ventana {n} se abre en {time}",
   sheetTitle: "¿Vuelves para la próxima ventana?",
   notNow: "Ahora no",
+  skipNext: "Abrir ya la siguiente ventana",
+  restartSim: "Empezar de nuevo",
 };

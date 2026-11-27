@@ -49,4 +49,6 @@ export default {
   nextDoorIn: "{n}번 칸 열리기까지 {time}",
   sheetTitle: "다음 칸도 열어 볼래요?",
   notNow: "나중에",
+  skipNext: "다음 칸 지금 열기",
+  restartSim: "처음부터",
 };
