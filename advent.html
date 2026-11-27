@@ -264,7 +264,11 @@
 <script>
   // Before the app module runs: show the spinner, and recover once if a stale cached module breaks loading.
   document.body.classList.add('is-loading');
-  addEventListener('error', e => { if (/module|export|import/i.test(String(e.message)) && !sessionStorage.getItem('bbReloaded')) { sessionStorage.setItem('bbReloaded', '1'); location.reload(); } });
+  // A half-updated cache (new page, old module) or a stalled request must never leave a blank screen:
+  // refetch this site's scripts fresh and reload once; if that fails too, offer a reload button.
+  const bbFresh = async () => { const urls = [location.pathname, ...performance.getEntriesByType('resource').map(r => r.name).filter(u => u.startsWith(location.origin) && /\.(js|html|json)(\?|$)/.test(u))]; await Promise.all(urls.map(u => fetch(u, { cache: 'reload' }).catch(() => {}))); location.reload(); };
+  addEventListener('error', e => { if (/module|export|import/i.test(String(e.message)) && !sessionStorage.getItem('bbReloaded')) { sessionStorage.setItem('bbReloaded', '1'); bbFresh(); } });
+  setTimeout(() => { if (!document.body.classList.contains('is-loading')) return; if (!sessionStorage.getItem('bbReloaded')) { sessionStorage.setItem('bbReloaded', '1'); bbFresh(); return; } const l = document.querySelector('.loading'); if (l) { l.style.animation = 'none'; l.innerHTML = '<button class="btn primary" type="button" style="font-size:18px">↻ Reload</button>'; l.querySelector('button').onclick = bbFresh; } }, 9000);
   setTimeout(() => sessionStorage.removeItem('bbReloaded'), 15000);
 </script>
 <div class="snow" id="snow" aria-hidden="true"></div>
@@ -405,7 +409,7 @@
   }
   async function loadMetas() {
     const codes = [...new Set([...Object.keys(CALENDARS), ...SEASON_CODES])];
-    await Promise.all(codes.map(async c => { try { const r = await fetch(`${DB}/advent/${c}/${seasonYear}/meta.json`); const m = r.ok ? await r.json() : null; if (m?.release) metas[c] = m; } catch {} }));
+    await Promise.all(codes.map(async c => { try { const r = await fetch(`${DB}/advent/${c}/${seasonYear}/meta.json`, { signal: AbortSignal.timeout?.(5000) }); const m = r.ok ? await r.json() : null; if (m?.release) metas[c] = m; } catch {} }));
   }
 
   // ---------- scores (browser) ----------

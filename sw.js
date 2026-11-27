@@ -1,8 +1,14 @@
 // Service worker: makes the site installable and shows the daily door reminders (Firebase Cloud Messaging push).
-// It caches nothing: every request goes straight to the network, so players always get the latest game.
+// It caches nothing. The site's own pages and scripts are always revalidated with the server, so a new page
+// never meets an old module (which left a blank loading screen).
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', e => e.waitUntil(self.clients.claim()));
-self.addEventListener('fetch', () => {});
+self.addEventListener('fetch', e => {
+  const r = e.request, u = new URL(r.url);
+  if (r.method !== 'GET' || u.origin !== self.location.origin || !/\.(js|html|json|webmanifest)$|\/$/.test(u.pathname)) return;
+  // A navigation request can't be copied with options, so refetch its URL instead.
+  e.respondWith((r.mode === 'navigate' ? fetch(r.url, { cache: 'no-cache' }) : fetch(r, { cache: 'no-cache' })).catch(() => fetch(r)));
+});
 self.addEventListener('push', e => {
   let p = {}; try { p = e.data ? e.data.json() : {}; } catch {}
   const d = p.data || p.notification || p;
