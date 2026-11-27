@@ -68,6 +68,11 @@
                 ".validate": "$door.matches(/^([1-9]|[12][0-9]|3[01])$/) && newData.isNumber() && newData.val() >= 0 && newData.val() <= 5000"
               }
             },
+            "practice": {
+              "$door": {
+                ".validate": "$door.matches(/^([1-9]|[12][0-9]|3[01])$/) && newData.isNumber() && newData.val() >= 0 && newData.val() <= 5000"
+              }
+            },
             "ghosts": {
               "$door": {
                 ".validate": "$door.matches(/^p?([1-9]|[12][0-9]|3[01])$/) && newData.isString() && newData.val().length <= 1500 && newData.val().matches(/^[0-9:,-]*$/)"

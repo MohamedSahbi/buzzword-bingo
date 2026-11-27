@@ -552,6 +552,7 @@
     const first = seasonMode() && unlocked(n) && saveScore(n, total, onDay);
     if (lastRun?.n === n && (first || !seasonMode())) saveGhost(n, lastRun);
     if (first) pushTeamScore(n, total);
+    else if (!seasonMode()) pushPracticeScore(n, total);   // practice: test the team board before the season (best run counts)
     sfx.bell();
     const share = `🎄 ${t('title')} · ${C().label} · ${n}.\n${door.shareLine}\n⭐ ${total}`;
     $('result').innerHTML = `<div class="result"><b style="font-size:18px">${esc(t('result', { n, pts: total }))}</b><table class="bd">${parts.filter(([, v]) => v).map(([k, v]) => `<tr><td>${esc(k)}</td><td>${v > 0 ? '+' : ''}${v}</td></tr>`).join('')}<tr class="tot"><td>${esc(t('total'))}</td><td>${total}</td></tr></table>${!first && seasonMode() ? `<div class="muted">${esc(t('firstOnly'))}</div>` : ''}<pre>${esc(share)}</pre><div id="shareBox"></div>${onDay ? `<button class="btn gold unlock" id="bonusGame">🎁 ${esc(deedsFor(cal).title)} ▶</button>` : ''}<div class="row"><button class="btn" id="again">${esc(t('replay'))}</button><button class="btn" id="back2">${esc(t('backToCal'))}</button></div></div>`;
@@ -809,8 +810,9 @@
   function renderTeam() {
     const has = !!team?.meta; $('teamNone').classList.toggle('hidden', has); $('teamSome').classList.toggle('hidden', !has);
     if (!has) return;
-    $('teamHead').textContent = `${team.meta.name} · ${team.code}`;
-    const rows = Object.entries(team.members || {}).map(([id, m]) => ({ id, name: m.name, total: Object.values(m.doors || {}).reduce((a, b) => a + b, 0), doors: Object.keys(m.doors || {}).length })).sort((a, b) => b.total - a.total);
+    const practice = !seasonMode(), key = practice ? 'practice' : 'doors';
+    $('teamHead').textContent = `${practice ? '🎯 ' : ''}${team.meta.name} · ${team.code}`;
+    const rows = Object.entries(team.members || {}).map(([id, m]) => ({ id, name: m.name, total: Object.values(m[key] || {}).reduce((a, b) => a + b, 0), doors: Object.keys(m[key] || {}).length })).sort((a, b) => b.total - a.total);
     $('teamBoard').innerHTML = rows.map((r, i) => `<li class="${r.id === fb?.uid ? 'me' : ''}"><span>${i === 0 && r.total ? '👑 ' : `${i + 1}. `}${esc(r.name)}${r.id === fb?.uid ? ` (${esc(t('you'))})` : ''}</span><span>${r.total} · ${r.doors}🚪</span></li>`).join('');
   }
   const teamError = e => { $('teamErr').textContent = t('teamErr', { err: e?.code || e?.message || e }); };
@@ -862,6 +864,10 @@
     } catch {}
   }
   function myName() { const n = ($('pName').value || localStorage.getItem('bingoName') || 'Elf').trim().slice(0, 24); localStorage.setItem('bingoName', n); return n; }
+  async function pushPracticeScore(n, pts) {
+    if (!team?.code) return;
+    try { const { D, db, uid } = await firebase(); const prev = team.members?.[uid]?.practice?.[n] || 0; if (pts > prev) await D.set(D.ref(db, `teams/${team.code}/members/${uid}/practice/${n}`), pts); } catch (e) { teamError(e); }
+  }
   async function pushTeamScore(n, pts) { if (!team?.code) return; try { const { D, db, uid } = await firebase(); await D.set(D.ref(db, `teams/${team.code}/members/${uid}/doors/${n}`), pts); } catch (e) { teamError(e); } }
   $('createTeam').onclick = async () => {
     $('teamErr').textContent = '';
