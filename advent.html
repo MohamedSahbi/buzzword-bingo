@@ -479,12 +479,21 @@
   let flurries = 0, lastFlurry = 0;
   function blizzard() {
     if (matchMedia('(prefers-reduced-motion: reduce)').matches || Date.now() - lastFlurry < 1500) return; lastFlurry = Date.now(); flurries++;
-    $('snow').classList.add('blizzard'); setTimeout(() => $('snow').classList.remove('blizzard'), 4000);
+    // A real blizzard: 160 extra flakes for a few seconds, plus a tiny buzz where the phone supports it (Android; no permission).
+    const sn = $('snow'), extra = [];
+    for (let i = 0; i < 160; i++) { const f = document.createElement('i'), z = 3 + Math.random() * 7; f.style.cssText = `left:${Math.random() * 110 - 5}%;width:${z}px;height:${z}px;--dx:${(Math.random() * 160 - 80).toFixed(0)}px;animation-duration:${(1.2 + Math.random() * 1.6).toFixed(1)}s;animation-delay:-${(Math.random() * 1.5).toFixed(1)}s`; sn.appendChild(f); extra.push(f); }
+    sn.classList.add('blizzard'); setTimeout(() => { sn.classList.remove('blizzard'); extra.forEach(f => f.remove()); }, 4000);
+    try { navigator.vibrate?.([12, 60, 12]); } catch {}
     const eve = new Date().getMonth() === 11 && new Date().getDate() === 24;
     if (flurries % 5 === 0 || (eve && flurries === 1)) {
-      const s = document.createElement('div'); s.className = 'sleigh'; s.textContent = '🦌🦌🛷🎅'; s.style.direction = 'ltr'; document.body.appendChild(s); setTimeout(() => s.remove(), 4700); try { sfx.bell(); } catch {}
+      const s = document.createElement('div'); s.className = 'sleigh'; s.textContent = '🦌🦌🛷🎅'; s.style.direction = 'ltr'; document.body.appendChild(s); setTimeout(() => s.remove(), 4700); jingle();
       const j = document.createElement('div'); j.className = 'snow-joke'; j.textContent = t('snowJoke'); document.body.appendChild(j); setTimeout(() => j.remove(), 2600);
     }
+  }
+  // "Jingle Bells" refrain (Pierpont, 1857, public domain), played with simple tones: no audio file, no permission.
+  function jingle() {
+    const E = 659, G = 784, C = 523, D = 587, b = 0.2;
+    [[E,1],[E,1],[E,2],[E,1],[E,1],[E,2],[E,1],[G,1],[C,1.5],[D,.5],[E,4]].reduce((at, [f, len]) => { tone(f, len * b * 0.9, at, 'sine', 0.09); tone(f * 2, 0.05, at, 'triangle', 0.03); return at + len * b; }, 0);
   }
   let shakeAt = 0, lastMag = 0;
   addEventListener('devicemotion', e => { const a = e.accelerationIncludingGravity; if (!a) return; const m = Math.abs(a.x) + Math.abs(a.y) + Math.abs(a.z); if (Math.abs(m - lastMag) > 28 && Date.now() - shakeAt > 250) { shakeAt = Date.now(); blizzard(); } lastMag = m; });
