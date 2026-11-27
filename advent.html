@@ -85,6 +85,15 @@
   .play{background:var(--card);color:var(--ink);border-radius:18px;padding:18px;box-shadow:0 10px 30px #0005}
   .play h2{font-family:Georgia,serif;margin:0;font-size:24px}
   .unlock{display:block;width:100%;margin:12px 0 4px;font-size:16px;padding:12px;animation:pop .4s ease}
+  .back-chip{display:inline-flex;align-items:center;gap:8px;border:0;background:#eef3f8;color:#132433;border-radius:999px;padding:6px 14px 6px 6px;font:inherit;font-weight:700;cursor:pointer;transition:background .15s}
+  .back-chip:hover{background:#e2eaf2}.back-chip .arr{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#fff;font-size:22px;line-height:1;box-shadow:0 1px 3px #0d22361f}
+  .result-actions{display:grid;grid-template-columns:1.4fr 1fr;gap:10px;margin-top:14px}
+  .act-primary,.act-secondary{border-radius:14px;padding:14px 12px;font:inherit;font-size:16px;font-weight:800;cursor:pointer;transition:transform .1s,filter .15s}
+  .act-primary{border:0;background:var(--berry);color:#fff;box-shadow:0 6px 16px #b3261e40}.act-primary:hover{filter:brightness(1.07)}
+  .act-secondary{background:#fff;color:#132433;border:1.5px solid #cdd8e3}.act-secondary:hover{background:#f4f7fa}
+  .act-primary:active,.act-secondary:active,.back-chip:active{transform:scale(.97)}
+  .act-primary:focus-visible,.act-secondary:focus-visible,.back-chip:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+  @media (max-width:420px){.result-actions{grid-template-columns:1fr}}
   .next-line{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:10px 0 4px;padding:10px 12px;border-radius:12px;background:#fff;border:1px solid #f2d48b;font-weight:700;color:#3a2500}
   .sheet{position:fixed;inset:0;background:#0d1f3666;display:none;align-items:flex-end;justify-content:center;z-index:70}.sheet.show{display:flex}
   .sheet-card{width:min(520px,100%);background:#fff;color:#132433;border-radius:22px 22px 0 0;padding:10px 22px max(20px,env(safe-area-inset-bottom));display:grid;gap:10px;text-align:center;animation:sheetUp .28s ease-out}
@@ -548,7 +557,7 @@
   function openAngel() {
     stopGame(); stopGame = () => {}; $('playView').classList.remove('bingo-door', 'running', 'ended');
     const p = deedsFor(cal), v = $('playView'); $('calendarView').classList.add('hidden'); v.classList.remove('hidden'); document.body.classList.add('playing');
-    v.innerHTML = `<div class="row" style="margin:0 0 10px"><button class="btn" id="backCal">${esc(t('backToCal'))}</button></div>
+    v.innerHTML = `<div class="row" style="margin:0 0 10px"><button class="back-chip" id="backCal" type="button"><span class="arr" aria-hidden="true">‹</span>${esc(t('backToCal').replace(/^\s*[←‹<]\s*/, ''))}</button></div>
       <span class="kind">😇😈 ${esc(p.ui.angel)} / ${esc(p.ui.devil)}</span><h2>${esc(p.title)}</h2><div id="game"></div>`;
     $('backCal').onclick = closeDoor; window.scrollTo({ top: 0, behavior: 'smooth' });
     stopGame = mountAngel($('game'), { pack: p, esc, magic, sfx, bestKey: `bingoAngelBest2:${cal}`, onExit: closeDoor, share: shareTo });
@@ -572,7 +581,7 @@
     skipPredict = false;
     const v = $('playView'); $('calendarView').classList.add('hidden'); v.classList.remove('hidden'); document.body.classList.add('playing');
     const played = seasonMode() && loadScores()[n];
-    v.innerHTML = `<div class="row" style="margin:0 0 10px"><button class="btn" id="backCal">${esc(t('backToCal'))}</button><div class="grow"></div><span class="muted">${esc(fmtDate(n))}</span></div>
+    v.innerHTML = `<div class="row" style="margin:0 0 10px"><button class="back-chip" id="backCal" type="button"><span class="arr" aria-hidden="true">‹</span>${esc(t('backToCal').replace(/^\s*[←‹<]\s*/, ''))}</button><div class="grow"></div><span class="muted">${esc(fmtDate(n))}</span></div>
       <span class="kind">${n}. · ${esc(t('t_' + door.type))}</span><h2>${esc(door.title)}</h2><p class="muted" style="margin-top:6px">${esc(t('h_' + door.type))}</p>${predictNote}
       ${played ? `<p class="note">${esc(t('firstOnly'))}</p>` : ''}<div id="game"></div><div id="result"></div>`;
     $('backCal').onclick = closeDoor;
@@ -587,7 +596,7 @@
   function openPredict(n, door = null, startCode = '') {
     stopGame(); stopGame = () => {}; $('playView').classList.remove('bingo-door', 'running', 'ended');
     const v = $('playView'); $('calendarView').classList.add('hidden'); v.classList.remove('hidden'); document.body.classList.add('playing');
-    v.innerHTML = `<div class="row" style="margin:0 0 10px"><button class="btn" id="backCal">${esc(t('backToCal'))}</button><div class="grow"></div><span class="muted">${esc(fmtDate(n))}</span></div>
+    v.innerHTML = `<div class="row" style="margin:0 0 10px"><button class="back-chip" id="backCal" type="button"><span class="arr" aria-hidden="true">‹</span>${esc(t('backToCal').replace(/^\s*[←‹<]\s*/, ''))}</button><div class="grow"></div><span class="muted">${esc(fmtDate(n))}</span></div>
       <span class="kind">${n}. · ⭐ ${esc(t('t_predict'))}</span><h2>${esc(door?.title || t('t_predict'))}</h2><div id="game" style="margin-top:8px"></div><div id="result"></div>`;
     $('backCal').onclick = closeDoor; window.scrollTo({ top: 0, behavior: 'smooth' });
     stopGame = mountPredict($('game'), {
@@ -615,7 +624,7 @@
     else if (!seasonMode()) pushPracticeScore(n, total);   // practice: test the team board before the season (best run counts)
     sfx.bell();
     const share = `🎄 ${t('title')} · ${C().label} · ${n}.\n${door.shareLine}\n⭐ ${total}`;
-    $('result').innerHTML = `<div class="result"><b style="font-size:18px">${esc(t('result', { n, pts: total }))}</b><table class="bd">${parts.filter(([, v]) => v).map(([k, v]) => `<tr><td>${esc(k)}</td><td>${v > 0 ? '+' : ''}${v}</td></tr>`).join('')}<tr class="tot"><td>${esc(t('total'))}</td><td>${total}</td></tr></table>${nextLineHtml()}${!first && seasonMode() ? `<div class="muted">${esc(t('firstOnly'))}</div>` : ''}<pre>${esc(share)}</pre><div id="shareBox"></div>${remindCardHtml()}${onDay ? `<button class="btn gold unlock" id="bonusGame">🎁 ${esc(deedsFor(cal).title)} ▶</button>` : ''}<div class="row"><button class="btn" id="again">${esc(t('replay'))}</button><button class="btn" id="back2">${esc(t('backToCal'))}</button></div></div>`;
+    $('result').innerHTML = `<div class="result"><b style="font-size:18px">${esc(t('result', { n, pts: total }))}</b><table class="bd">${parts.filter(([, v]) => v).map(([k, v]) => `<tr><td>${esc(k)}</td><td>${v > 0 ? '+' : ''}${v}</td></tr>`).join('')}<tr class="tot"><td>${esc(t('total'))}</td><td>${total}</td></tr></table>${nextLineHtml()}${!first && seasonMode() ? `<div class="muted">${esc(t('firstOnly'))}</div>` : ''}<pre>${esc(share)}</pre><div id="shareBox"></div>${remindCardHtml()}${onDay ? `<button class="btn gold unlock" id="bonusGame">🎁 ${esc(deedsFor(cal).title)} ▶</button>` : ''}<div class="result-actions"><button class="act-primary" id="back2" type="button">🎄 ${esc(t('backToCal').replace(/^\s*[←‹<]\s*/, ''))}</button><button class="act-secondary" id="again" type="button">↻ ${esc(t('replay'))}</button></div></div>`;
     shareTo($('shareBox'), share, { kicker: `🎄 ${t('title')} · ${C().label}`, title: `${n}. · ${t('t_' + (door.type || 'predict'))}`, big: String(total), bigLabel: '⭐', lines: String(door.shareLine || '').split('\n').slice(0, 7) });
     $('again').onclick = () => openDoor(n); $('back2').onclick = closeDoor; wireRemind(); maybeAskSheet(); if ($('bonusGame')) $('bonusGame').onclick = openAngel;
     $('result').scrollIntoView({ behavior: 'smooth', block: 'center' });
