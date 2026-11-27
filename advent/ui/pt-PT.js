@@ -52,4 +52,8 @@ export default {
   skipNext: "Abrir já a próxima janela",
   restartSim: "Recomeçar",
   simOn: "Ensaio: uma janela por dia, acelerado. A próxima abre 3 minutos depois de jogares.",
+  remindOnBody: "Recebes uma notificação quando abre uma nova janela. Mais nada.",
+  keepOn: "Manter ligados",
+  turnOff: "🔕 Desligar",
+  remindOffDone: "Lembretes desligados",
 };

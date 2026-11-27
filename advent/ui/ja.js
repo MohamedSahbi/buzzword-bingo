@@ -52,4 +52,8 @@ export default {
   skipNext: "次の扉を今すぐ開ける",
   restartSim: "最初から",
   simOn: "お試し：1日1扉を早回しで。プレイの3分後に次の扉が開きます。",
+  remindOnBody: "新しい扉が開いたときに1回だけ通知します。それ以外は送りません。",
+  keepOn: "オンのままにする",
+  turnOff: "🔕 オフにする",
+  remindOffDone: "リマインダーはオフです",
 };

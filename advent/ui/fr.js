@@ -52,4 +52,8 @@ export default {
   skipNext: "Ouvrir la case suivante maintenant",
   restartSim: "Recommencer",
   simOn: "Essai : une case par jour, en accéléré. La suivante s’ouvre 3 minutes après votre partie.",
+  remindOnBody: "Vous recevez une notification quand une nouvelle case s’ouvre. Rien d’autre.",
+  keepOn: "Les garder",
+  turnOff: "🔕 Désactiver",
+  remindOffDone: "Rappels désactivés",
 };

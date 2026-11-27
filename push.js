@@ -25,3 +25,9 @@ export async function updatePrefs({ D, db, uid, prefs }) {
   if (!isSubscribed()) return;
   try { await D.update(D.ref(db, `push/${uid}`), prefs); } catch {}
 }
+// Turn reminders off on this device: forget the token here and on the server.
+export async function unsubscribe({ app, D, db, uid }) {
+  localStorage.setItem('bingoPush', 'off');
+  try { await D.remove(D.ref(db, `push/${uid}`)); } catch {}
+  try { const M = await import('https://www.gstatic.com/firebasejs/10.14.1/firebase-messaging.js'); await M.deleteToken(M.getMessaging(app)); } catch {}
+}

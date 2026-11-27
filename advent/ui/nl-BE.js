@@ -52,4 +52,8 @@ export default {
   skipNext: "Volgend deurtje nu openen",
   restartSim: "Opnieuw beginnen",
   simOn: "Proefrit: één deurtje per dag, versneld. Het volgende gaat 3 minuten na het spelen open.",
+  remindOnBody: "Je krijgt één melding als er een nieuw deurtje opengaat. Verder niets.",
+  keepOn: "Aan laten",
+  turnOff: "🔕 Uitzetten",
+  remindOffDone: "Herinneringen uit",
 };

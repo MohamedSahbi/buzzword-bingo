@@ -52,4 +52,8 @@ export default {
   skipNext: "Apri subito la prossima finestrella",
   restartSim: "Ricomincia",
   simOn: "Prova: una finestrella al giorno, accelerata. La prossima si apre 3 minuti dopo aver giocato.",
+  remindOnBody: "Ricevi una notifica quando si apre una nuova finestrella. Nient’altro.",
+  keepOn: "Lasciali attivi",
+  turnOff: "🔕 Disattiva",
+  remindOffDone: "Promemoria disattivati",
 };

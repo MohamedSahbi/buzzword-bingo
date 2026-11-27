@@ -52,4 +52,8 @@ export default {
   skipNext: "Abrir ya la siguiente ventana",
   restartSim: "Empezar de nuevo",
   simOn: "Prueba: una ventana al día, a cámara rápida. La siguiente se abre 3 minutos después de jugar.",
+  remindOnBody: "Recibes un aviso cuando se abre una ventana nueva. Nada más.",
+  keepOn: "Mantenerlos",
+  turnOff: "🔕 Desactivar",
+  remindOffDone: "Recordatorios desactivados",
 };

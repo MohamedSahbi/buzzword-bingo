@@ -52,4 +52,8 @@ export default {
   skipNext: "Buksan na ang susunod na pinto",
   restartSim: "Magsimula ulit",
   simOn: "Practice: isang pinto kada araw, pinabilis. Bubukas ang susunod 3 minuto pagkatapos mong maglaro.",
+  remindOnBody: "Isang notification lang kapag may bagong pintong bumukas. Wala nang iba.",
+  keepOn: "Panatilihing naka-on",
+  turnOff: "🔕 I-off",
+  remindOffDone: "Naka-off ang paalala",
 };

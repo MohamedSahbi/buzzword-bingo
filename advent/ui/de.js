@@ -52,4 +52,8 @@ export default {
   skipNext: "Nächstes Türchen jetzt öffnen",
   restartSim: "Neu anfangen",
   simOn: "Probelauf: ein Türchen pro Tag, im Zeitraffer. Das nächste öffnet 3 Minuten nach dem Spielen.",
+  remindOnBody: "Du bekommst eine Benachrichtigung, wenn ein neues Türchen aufgeht. Sonst nichts.",
+  keepOn: "Anlassen",
+  turnOff: "🔕 Ausschalten",
+  remindOffDone: "Erinnerungen aus",
 };

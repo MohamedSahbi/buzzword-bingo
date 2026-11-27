@@ -338,7 +338,7 @@
   // A cached older module may lack SEASON_CODES for a few minutes after a deploy.
   const SEASON_CODES = ADVENT_INDEX.SEASON_CODES || ['en', 'cs'];
   import { firebaseConfig, vapidKey } from './firebase-config.js';
-  import { needsInstall, pushSupported, isSubscribed, isBlocked, subscribe, updatePrefs } from './push.js';
+  import { needsInstall, pushSupported, isSubscribed, isBlocked, subscribe, updatePrefs, unsubscribe } from './push.js';
   import { mountPredict } from './advent/predict.js';
   import { PREDICT_IDEAS } from './advent/predict-ideas.js';
   import { LANGUAGES, translate } from './languages/index.js';
@@ -538,7 +538,17 @@
     if (needsInstall()) { $('iosSheet').classList.add('show'); return; }
     try { const f = await firebase(); if (await subscribe({ ...f, vapidKey, prefs: { ...pushPrefs(), sample: t('pushDoor', { n: doorNums().find(isToday) || 1 }) } })) { if (btn?.isConnected) { btn.outerHTML = `<b class="ok-txt">${esc(t('remindOn'))}</b>`; } renderRemindMenu(); } else if (isBlocked()) { const c = $('remindCard'); if (c) c.outerHTML = remindCardHtml(); } } catch (e) { console.warn('reminders', e); }
   }
-  function openSheet() { $('rsTitle').textContent = t('sheetTitle'); $('rsBody').textContent = t('remindBody'); $('rsYes').textContent = '🔔 ' + t('remindBtn'); $('rsNo').textContent = t('notNow'); $('remindSheet').classList.add('show'); }
+  // One sheet for every reminder state: ask, manage (keep / turn off) or explain a browser block.
+  function openSheet() {
+    const on = isSubscribed(), blocked = !on && isBlocked(), sh = $('remindSheet');
+    sh.dataset.mode = on ? 'on' : blocked ? 'blocked' : 'ask';
+    $('rsTitle').textContent = on ? `🔔 ${t('remindOn')}` : t('sheetTitle');
+    $('rsBody').textContent = on ? t('remindOnBody') : blocked ? t('remindDenied') : t('remindBody');
+    $('rsYes').textContent = on ? t('keepOn') : blocked ? t('gotIt') : '🔔 ' + t('remindBtn');
+    $('rsNo').textContent = on ? t('turnOff') : t('notNow'); $('rsNo').classList.toggle('hidden', blocked);
+    sh.classList.add('show');
+  }
+  async function turnOffReminders() { try { const f = await firebase(); await unsubscribe(f); } catch (e) { console.warn('reminders off', e); } renderRemindMenu(); renderSolo(); }
   // Asked once after a finished door, at most twice in total and 3 days apart.
   function maybeAskSheet() {
     if (!remindAvailable() || isSubscribed() || isBlocked()) return;
@@ -551,7 +561,7 @@
   function renderRemindMenu() {
     const bb = $('bellBtn'); if (bb) { bb.classList.toggle('hidden', !remindAvailable()); bb.classList.toggle('on', isSubscribed()); bb.title = isSubscribed() ? t('remindOn') : t('remindBtn'); }
     const m = $('remindMenu'); if (!m) return; m.classList.toggle('hidden', !remindAvailable());
-    m.textContent = isSubscribed() ? `🔔 ${t('remindOn')}` : `🔔 ${t('remindBtn')}`; m.onclick = () => { if (!isSubscribed()) askReminders(null); };
+    m.textContent = isSubscribed() ? `🔔 ${t('remindOn')}` : `🔔 ${t('remindBtn')}`; m.onclick = () => { setMenu?.(false); openSheet(); };
     $('iosTitle').textContent = t('iosTitle'); $('iosBody').textContent = t('iosBody'); $('ios1').textContent = t('ios1'); $('ios2').textContent = t('ios2'); $('ios3').textContent = t('ios3'); $('iosOk').textContent = t('gotIt');
   }
   function renderAngelEntry() {
@@ -1018,9 +1028,9 @@
   }
   $('iosOk').onclick = () => $('iosSheet').classList.remove('show');
   const closeSheet = () => $('remindSheet').classList.remove('show');
-  $('rsNo').onclick = closeSheet; $('remindSheet').onclick = e => { if (e.target.id === 'remindSheet') closeSheet(); };
-  $('rsYes').onclick = () => { closeSheet(); askReminders($('remindBtn')); };
-  $('bellBtn').onclick = () => { if (!isSubscribed()) openSheet(); };
+  $('rsNo').onclick = () => { const mode = $('remindSheet').dataset.mode; closeSheet(); if (mode === 'on') turnOffReminders(); }; $('remindSheet').onclick = e => { if (e.target.id === 'remindSheet') closeSheet(); };
+  $('rsYes').onclick = () => { const mode = $('remindSheet').dataset.mode; closeSheet(); if (mode === 'ask') askReminders($('remindBtn')); };
+  $('bellBtn').onclick = () => openSheet();
   $('iosSheet').onclick = e => { if (e.target.id === 'iosSheet') $('iosSheet').classList.remove('show'); };
   $('langBtn').onclick = () => { fillLangModal(); $('langModal').classList.add('show'); };
   $('siteLang').onchange = () => { const keep = $('cardLang').value; uiLang = $('siteLang').value; fillLangModal(); $('siteLang').value = uiLang; $('cardLang').value = keep; };

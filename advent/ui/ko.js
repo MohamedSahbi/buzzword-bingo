@@ -52,4 +52,8 @@ export default {
   skipNext: "다음 칸 지금 열기",
   restartSim: "처음부터",
   simOn: "연습: 하루 한 칸을 빠르게. 플레이하고 3분 뒤에 다음 칸이 열려요.",
+  remindOnBody: "새 칸이 열릴 때 알림을 한 번 보내요. 그 외에는 없어요.",
+  keepOn: "계속 받기",
+  turnOff: "🔕 끄기",
+  remindOffDone: "알림 꺼짐",
 };
