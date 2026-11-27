@@ -471,7 +471,7 @@
     const b = $('banner'); b.classList.add('hidden');
     if (preview || !metas[cal]) {
       const st = sim(), canSkip = st.day < doorNums().length;
-      b.innerHTML = `<span class="ic">🎯</span><span>${esc(t('previewOn').split(/(?<=[.!?。])\s*/)[0])}</span><span class="cd" id="cdown"></span>${canSkip ? `<button class="pill" id="simSkip">⏩ ${esc(t('skipNext'))}</button>` : ''}${st.day > 1 || st.done.length ? `<button class="pill" id="simReset">↺ ${esc(t('restartSim'))}</button>` : ''}${metas[cal] ? `<button class="pill" id="exitPreview">${esc(t('previewExit'))}</button>` : ''}`; b.classList.remove('hidden');
+      b.innerHTML = `<span class="ic">🎯</span><span>${esc(t('simOn'))}</span><span class="cd" id="cdown"></span>${canSkip ? `<button class="pill" id="simSkip">⏩ ${esc(t('skipNext'))}</button>` : ''}${st.day > 1 || st.done.length ? `<button class="pill" id="simReset">↺ ${esc(t('restartSim'))}</button>` : ''}${metas[cal] ? `<button class="pill" id="exitPreview">${esc(t('previewExit'))}</button>` : ''}`; b.classList.remove('hidden');
       if ($('simSkip')) $('simSkip').onclick = () => { const s2 = sim(); s2.next = Date.now() - 1; saveSim(s2); renderAll(); };
       if ($('simReset')) $('simReset').onclick = () => { localStorage.removeItem(simKey()); renderAll(); };
       if (metas[cal]) $('exitPreview').onclick = () => { preview = false; history.replaceState(null, '', location.pathname); renderAll(); };

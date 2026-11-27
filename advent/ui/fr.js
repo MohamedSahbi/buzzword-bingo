@@ -51,4 +51,5 @@ export default {
   notNow: "Pas maintenant",
   skipNext: "Ouvrir la case suivante maintenant",
   restartSim: "Recommencer",
+  simOn: "Essai : une case par jour, en accéléré. La suivante s’ouvre 3 minutes après votre partie.",
 };

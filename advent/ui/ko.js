@@ -51,4 +51,5 @@ export default {
   notNow: "나중에",
   skipNext: "다음 칸 지금 열기",
   restartSim: "처음부터",
+  simOn: "연습: 하루 한 칸을 빠르게. 플레이하고 3분 뒤에 다음 칸이 열려요.",
 };

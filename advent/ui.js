@@ -18,6 +18,7 @@ export const ADVENT_UI = {
   ja, 'pt-BR': ptBR, 'pt-PT': ptPT, hi, fr, de, it, ar, fil, ko, nl, 'nl-BE': nlBE, es,
   en: {
     shareNative: 'Share',
+    simOn: "Practice run: one door a day, sped up. The next door opens 3 minutes after you play.",
     skipNext: "Open next door now",
     restartSim: "Start over",
     nextDoorIn: "Door {n} opens in {time}",
@@ -71,6 +72,7 @@ export const ADVENT_UI = {
   },
   cs: {
     shareNative: 'Sdílet',
+    simOn: "Zkušební běh: jedno okénko denně, zrychleně. Další se otevře 3 minuty po odehrání.",
     skipNext: "Otevřít další okénko hned",
     restartSim: "Začít znovu",
     nextDoorIn: "Okénko {n} se otevře za {time}",

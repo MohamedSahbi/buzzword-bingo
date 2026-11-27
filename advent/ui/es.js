@@ -51,4 +51,5 @@ export default {
   notNow: "Ahora no",
   skipNext: "Abrir ya la siguiente ventana",
   restartSim: "Empezar de nuevo",
+  simOn: "Prueba: una ventana al día, a cámara rápida. La siguiente se abre 3 minutos después de jugar.",
 };

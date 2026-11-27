@@ -51,4 +51,5 @@ export default {
   notNow: "Jetzt nicht",
   skipNext: "Nächstes Türchen jetzt öffnen",
   restartSim: "Neu anfangen",
+  simOn: "Probelauf: ein Türchen pro Tag, im Zeitraffer. Das nächste öffnet 3 Minuten nach dem Spielen.",
 };

@@ -51,4 +51,5 @@ export default {
   notNow: "Agora não",
   skipNext: "Abrir já a próxima janela",
   restartSim: "Recomeçar",
+  simOn: "Ensaio: uma janela por dia, acelerado. A próxima abre 3 minutos depois de jogares.",
 };

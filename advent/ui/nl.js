@@ -51,4 +51,5 @@ export default {
   notNow: "Nu niet",
   skipNext: "Volgend deurtje nu openen",
   restartSim: "Opnieuw beginnen",
+  simOn: "Proefrit: één deurtje per dag, versneld. Het volgende gaat 3 minuten na het spelen open.",
 };

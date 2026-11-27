@@ -51,4 +51,5 @@ export default {
   notNow: "Mamaya na",
   skipNext: "Buksan na ang susunod na pinto",
   restartSim: "Magsimula ulit",
+  simOn: "Practice: isang pinto kada araw, pinabilis. Bubukas ang susunod 3 minuto pagkatapos mong maglaro.",
 };

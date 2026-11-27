@@ -51,4 +51,5 @@ export default {
   notNow: "あとで",
   skipNext: "次の扉を今すぐ開ける",
   restartSim: "最初から",
+  simOn: "お試し：1日1扉を早回しで。プレイの3分後に次の扉が開きます。",
 };

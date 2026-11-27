@@ -51,4 +51,5 @@ export default {
   notNow: "Non ora",
   skipNext: "Apri subito la prossima finestrella",
   restartSim: "Ricomincia",
+  simOn: "Prova: una finestrella al giorno, accelerata. La prossima si apre 3 minuti dopo aver giocato.",
 };
