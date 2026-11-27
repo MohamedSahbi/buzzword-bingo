@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Advent calendar · Buzzword Bingo</title>
   <meta name="description" content="A little game behind every door, alone or with your team. Real calendars for 15 cultures.">
   <meta property="og:type" content="website">
@@ -188,7 +189,7 @@
     /* Phones: chat (left) and card (right) side by side, filling the screen; the card stays 4×4 so lines still mean bingo. */
     .bingo-door h2{font-size:19px;margin:4px 0}.bingo-door > p.muted{font-size:13px;margin:4px 0 0!important}.bingo-door.running > p.muted,.bingo-door.running > .note{display:none}
     /* Upright: chat strip on top (latest messages, like subtitles), full-width card below, all within the screen. */
-    .bingo-door .split{grid-template-columns:1fr;grid-template-rows:minmax(0,.34fr) minmax(0,1fr);gap:6px;height:var(--fitH,calc(100dvh - 215px));min-height:420px;margin-top:8px}
+    .bingo-door .split{grid-template-columns:1fr;grid-template-rows:minmax(120px,.34fr) minmax(0,1fr);gap:6px;height:var(--fitH,calc(100dvh - 215px));min-height:420px;margin-top:8px}
     .bingo-door.running > .kind{display:none}.bingo-door.running h2{font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.bingo-door.running > .row{margin:0 0 4px!important}.bingo-door.running > .row .btn{padding:6px 10px}
     .bingo-door .sq{overflow-wrap:normal}
     .bingo-door .feed{height:100%;padding:6px;gap:5px;font-size:12.5px}
@@ -202,26 +203,31 @@
   }
   .fs-btn{border:0;background:#0d2236;color:#fff;width:38px;height:38px;border-radius:10px;font-size:20px;cursor:pointer;flex:none}
   .card.veiled .sq{color:transparent;text-shadow:0 0 9px #13243388;pointer-events:none}
-  .study{margin:auto;text-align:center;display:grid;justify-items:center;gap:8px}.study p{margin:0;font-weight:800;color:var(--ink)}
+  .study{margin:auto;text-align:center;display:grid;justify-items:center;gap:8px}
+  @media (max-width:860px){.bingo-door .study{grid-auto-flow:column;align-items:center;gap:10px}.bingo-door .study .ring{width:52px;height:52px}.bingo-door .study .ring b{width:40px;height:40px;font-size:18px}.bingo-door .study p{font-size:14px;max-width:9em}.bingo-door .study .btn{padding:8px 12px;white-space:nowrap}}.study p{margin:0;font-weight:800;color:var(--ink)}
   .study .ring{--p:1;width:74px;height:74px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--berry) calc(var(--p)*360deg),#e3e9ef 0);transition:background .2s}
   .study .ring b{display:grid;place-items:center;width:58px;height:58px;border-radius:50%;background:#fff;font-size:24px}
   .race{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 0}.race:empty{display:none}.race .chip{background:#fff;border:1px solid var(--line);border-radius:999px;padding:3px 10px;font-size:13px;color:#132433}.race .chip b{font-variant-numeric:tabular-nums}
   .lobby{margin:auto;display:grid;gap:8px;max-width:340px;text-align:center;color:#132433}.lobby p{margin:0}.lobby input{width:100%;border:1px solid #bcc8d5;border-radius:10px;padding:8px 10px;font:inherit}.lobby .row{display:flex;gap:6px}.lobby .err{color:var(--berry);font-size:13px}
   .live-btn{padding:6px 10px;font-size:13px}@media (max-width:560px){.live-btn span{display:none}}
-  .rotate-tip{font-size:12px;color:var(--muted);flex:1 1 140px;min-width:0}
-  @media (max-width:860px){body.playing #title,body.playing #subtitle,body.playing #banner,body.playing #angelEntry{display:none}.layout{grid-template-columns:1fr}.split{grid-template-columns:1fr}.feed{height:clamp(170px,30vh,260px)}.gbar{position:sticky;top:66px;box-shadow:0 6px 16px #0003}}
+  .rotate-tip{display:flex;align-items:center;gap:6px;margin:6px 2px 0;font-size:12px;color:var(--muted)}.rotate-tip span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rotate-tip button{border:0;background:none;color:inherit;font-size:14px;cursor:pointer;padding:2px 6px}
+  @media (max-width:860px){.bingo-door{padding-left:max(14px,env(safe-area-inset-left));padding-right:max(14px,env(safe-area-inset-right))}body.playing #title,body.playing #subtitle,body.playing #banner,body.playing #angelEntry{display:none}.layout{grid-template-columns:1fr}.split{grid-template-columns:1fr}.feed{height:clamp(170px,30vh,260px)}.gbar{position:sticky;top:66px;box-shadow:0 6px 16px #0003}}
   @media (max-width:520px){.doors{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.door .num{width:40px;height:40px;font-size:18px}.door .lab{display:none}.items,.boxes{grid-template-columns:repeat(2,minmax(0,1fr))}}
   @media (orientation:landscape) and (max-height:560px){
     body.playing .appbar,body.playing #title,body.playing #subtitle,body.playing #banner,body.playing #angelEntry{display:none}
-    .bingo-door{padding:8px 12px 74px}
-    .bingo-door > .kind,.bingo-door > p.muted,.bingo-door > .note{display:none}
-    .bingo-door > .row{margin:0 0 6px!important}.bingo-door > .row .btn{padding:5px 10px}
-    .bingo-door h2{font-size:16px;margin:0 0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .bingo-door .gbar{position:fixed;left:12px;right:12px;bottom:max(8px,env(safe-area-inset-bottom));top:auto;margin:0;box-shadow:0 -4px 18px #0003;z-index:20}
-    .bingo-door .split{grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);grid-template-rows:none;margin-top:0;height:var(--fitH,calc(100dvh - 140px));min-height:200px}
-    .bingo-door .feed{height:100%}.bingo-door .cardwrap{height:100%;display:flex;flex-direction:column}.bingo-door .card{flex:1;grid-template-rows:repeat(4,minmax(0,1fr));gap:5px}.bingo-door .sq{aspect-ratio:auto}
-    .bingo-door .sq{font-size:13px}
+    .bingo-door{position:relative;padding:8px max(12px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))}
+    .bingo-door > .kind,.bingo-door > p.muted,.bingo-door > .note,.bingo-door > h2,.bingo-door > .row .muted{display:none}
+    .bingo-door > .row{margin:0 0 6px!important;min-height:36px}.bingo-door > .row .btn{padding:5px 10px}
+    /* Slim stats on the same line as the back button, like a native top bar */
+    .bingo-door .gbar{position:absolute;top:8px;right:max(12px,env(safe-area-inset-right));left:auto;margin:0;padding:2px 4px 2px 10px;gap:8px;height:36px;border-radius:999px;box-shadow:none;background:#f4f7fa;flex-wrap:nowrap;z-index:5}
+    .bingo-door .gbar .stat{display:flex;align-items:baseline;gap:4px;padding:0 6px;background:none}.bingo-door .gbar .stat small{font-size:11px}.bingo-door .gbar .stat b{font-size:15px}
+    .bingo-door .gbar .grow{display:none}.bingo-door .fs-btn{width:30px;height:30px;font-size:16px;border-radius:50%}.bingo-door .live-btn{padding:4px 8px}.bingo-door .live-btn span{display:none}
+    .bingo-door .race{margin:0 0 6px}
+    .bingo-door .split{grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);grid-template-rows:none;margin-top:0;height:var(--fitH,calc(100dvh - 70px));min-height:200px}
+    .bingo-door .feed{height:100%}.bingo-door .cardwrap{height:100%;display:flex;flex-direction:column}.bingo-door .card{flex:1;grid-template-rows:repeat(4,minmax(0,1fr));gap:5px}.bingo-door .sq{aspect-ratio:auto;font-size:13px}
+    .bingo-door .study{grid-auto-flow:row}
   }
+
   .made-by{text-align:center;font-size:12px;opacity:.65;margin:18px 0 90px}.made-by a{color:inherit}
   /* Language pop-up: identical to the main page's */
   .modal{position:fixed;inset:0;background:#0d1f36aa;display:none;place-items:center;padding:20px;z-index:60}.modal.show{display:grid}
@@ -390,7 +396,7 @@
     const sp = document.querySelector('.bingo-door .split'); if (!sp) return;
     const land = matchMedia('(orientation:landscape) and (max-height:560px)').matches;
     if (land || matchMedia('(max-width:860px)').matches) {
-      const bar = document.querySelector('.bingo-door .gbar'), below = land && bar ? bar.offsetHeight + 18 : 10;
+      const below = land ? 8 : 10;
       sp.style.setProperty('--fitH', Math.max(land ? 200 : 330, window.innerHeight - sp.getBoundingClientRect().top - below) + 'px');
     }
     const c = sp.querySelector('.card'); if (c) fitSquares(c);
@@ -579,14 +585,16 @@
     const voiceOk = door.type === 'listen' && 'speechSynthesis' in window;
     // One control bar (live status + score, pinned on phones); before the start the feed area IS the Start button.
     const upright = matchMedia('(max-width:860px) and (orientation:portrait) and (pointer:coarse)').matches;
-    root.innerHTML = `<div class="gbar"><span class="live" id="live"></span>${upright ? `<span class="rotate-tip" id="rotTip">🔄 ${esc(t('rotateTip'))}</span>` : ''}<span class="muted" id="status"></span><div class="grow"></div>
+    root.innerHTML = `<div class="gbar"><span class="live" id="live"></span><span class="muted" id="status"></span><div class="grow"></div>
         ${door.type === 'listen' ? `<label class="toggle"><input type="checkbox" id="useVoice" ${voiceOk ? 'checked' : 'disabled'}> ${esc(t('voice'))}</label>` : ''}
         <button class="btn live-btn" id="liveBtn" type="button" title="${esc(t('liveBtn'))}">👥 <span>${esc(t('liveBtn'))}</span></button>${canFullscreen() ? `<button class="fs-btn" id="fsBtn" type="button" title="${esc(t('fullscreen'))}" aria-label="${esc(t('fullscreen'))}">⛶</button>` : ''}<div class="stat"><small>${esc(t('points'))}</small><b id="pts">0</b></div><div class="stat"><small>${esc(t('found'))}</small><b id="fnd">0/${appearing.length}</b></div></div>
+      ${upright && !sessionStorage.getItem('bbRotTip') ? `<p class="rotate-tip" id="rotTip"><span>🔄 ${esc(t('rotateTip'))}</span><button type="button" aria-label="OK" id="rotX">✕</button></p>` : ''}
       <div class="race" id="race"></div>
       <div class="split"><div class="feed" id="feed"><button class="go-big" id="go" type="button"><span>▶</span>${esc(t('start'))}</button></div>
         <div class="cardwrap"><div class="card" id="card"></div><p class="note" id="note"></p></div></div>`;
     const card = $('card'), feed = $('feed'), note = msg => { $('note').textContent = msg; };
-    if ($('fsBtn')) $('fsBtn').onclick = () => toggleFullscreen({ landscape: true });
+    if ($('fsBtn')) $('fsBtn').onclick = () => toggleFullscreen();
+    if ($('rotX')) $('rotX').onclick = () => { sessionStorage.setItem('bbRotTip', '1'); $('rotTip').remove(); requestAnimationFrame(fitGame); };
     $('liveBtn').onclick = () => { onLive = () => liveChanged(); lobby(); };
     function drawCard() {
       card.replaceChildren();
