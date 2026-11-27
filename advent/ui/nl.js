@@ -56,4 +56,5 @@ export default {
   keepOn: "Aan laten",
   turnOff: "🔕 Uitzetten",
   remindOffDone: "Herinneringen uit",
+  liveMissed: "Deze live ronde is al begonnen. Speel alleen of start een nieuwe.",
 };

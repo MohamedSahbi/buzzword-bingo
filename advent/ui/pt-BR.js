@@ -56,4 +56,5 @@ export default {
   keepOn: "Manter ligados",
   turnOff: "🔕 Desligar",
   remindOffDone: "Lembretes desligados",
+  liveMissed: "Essa rodada ao vivo já começou. Jogue sozinho ou crie uma nova.",
 };

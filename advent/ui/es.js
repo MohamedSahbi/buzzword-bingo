@@ -56,4 +56,5 @@ export default {
   keepOn: "Mantenerlos",
   turnOff: "🔕 Desactivar",
   remindOffDone: "Recordatorios desactivados",
+  liveMissed: "Esa ronda en directo ya empezó. Juega solo o crea una nueva.",
 };

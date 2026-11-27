@@ -56,4 +56,5 @@ export default {
   keepOn: "계속 받기",
   turnOff: "🔕 끄기",
   remindOffDone: "알림 꺼짐",
+  liveMissed: "이 라이브 판은 이미 시작됐어요. 혼자 하거나 새 판을 열어 보세요.",
 };

@@ -56,4 +56,5 @@ export default {
   keepOn: "Anlassen",
   turnOff: "🔕 Ausschalten",
   remindOffDone: "Erinnerungen aus",
+  liveMissed: "Diese Live-Runde läuft schon. Spiel allein oder starte eine neue.",
 };

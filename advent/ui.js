@@ -18,6 +18,7 @@ export const ADVENT_UI = {
   ja, 'pt-BR': ptBR, 'pt-PT': ptPT, hi, fr, de, it, ar, fil, ko, nl, 'nl-BE': nlBE, es,
   en: {
     shareNative: 'Share',
+    liveMissed: "That live round already started. Play solo, or start a new live round.",
     remindOnBody: "You get one notification when a new door opens. Nothing else.",
     keepOn: "Keep them on",
     turnOff: "🔕 Turn off",
@@ -76,6 +77,7 @@ export const ADVENT_UI = {
   },
   cs: {
     shareNative: 'Sdílet',
+    liveMissed: "Tohle živé kolo už začalo. Hrajte sami, nebo založte nové.",
     remindOnBody: "Dostanete jedno oznámení, když se otevře nové okénko. Nic jiného.",
     keepOn: "Nechat zapnuté",
     turnOff: "🔕 Vypnout",

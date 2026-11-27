@@ -802,7 +802,8 @@
       if ($('stReady')) $('stReady').onclick = fin; stopStudy = () => clearInterval(iv);
     }
     let stopStudy = () => {};
-    $('go').onclick = () => { if (running || ended) return; $('go').remove(); $('liveBtn')?.remove(); leaveLive(); requestAnimationFrame(fitGame); study(begin); };
+    const goSolo = () => { if (running || ended) return; $('go')?.remove(); $('liveBtn')?.remove(); leaveLive(); requestAnimationFrame(fitGame); study(begin); };
+    $('go').onclick = goSolo;
     // ---- race strip: live players and teammates' ghosts (points and finds only, never which squares) ----
     const ghosts = ghostsFor(n), tl = []; let beganAt = 0, raceTimer = null;
     function renderRace() {
@@ -831,12 +832,15 @@
       if ($('lvJoin')) $('lvJoin').onclick = async () => { nameOk(); try { await joinLive(cleanCode($('lvCode').value)); onLive = liveChanged; lobby(); } catch (e) { lobby(e.message); } };
       if ($('lvTell')) $('lvTell').onclick = async () => { const text = t('liveInviteMsg', { n }), url = liveLink(); try { if (navigator.share) await navigator.share({ text, url }); else { await navigator.clipboard.writeText(`${text}\n${url}`); $('lvTell').textContent = t('copied'); } } catch {} };
       if ($('lvCopy')) $('lvCopy').onclick = async () => { try { await navigator.clipboard.writeText(liveLink()); $('lvCopy').textContent = t('copied'); } catch {} };
-      if ($('lvStart')) $('lvStart').onclick = async () => { const { D, db } = await firebase(); await D.update(D.ref(db, `live/${live.code}/meta`), { startAt: liveNow() + 4000 }); };
+      if ($('lvStart')) $('lvStart').onclick = async () => { endTeamLive(true); const { D, db } = await firebase(); await D.update(D.ref(db, `live/${live.code}/meta`), { startAt: liveNow() + 4000 }); };
     }
     // A start time from the host: count down, then the same study time and round for everyone.
     let liveScheduled = false;
     function liveChanged() {
       if (!live || live.meta?.door !== n) return;
+      if (live.meta.startAt && !liveScheduled && !running && !ended && liveNow() - live.meta.startAt > 3000) {
+        leaveLive(); feed.innerHTML = `<div class="go-wrap"><p class="muted">🔴 ${esc(t('liveMissed'))}</p><button class="go-big" id="go" type="button"><span>▶</span>${esc(t('start'))}</button></div>`; $('go').onclick = goSolo; renderRace(); return;
+      }
       if (live.meta.startAt && !liveScheduled && !running && !ended) {
         liveScheduled = true; $('go')?.remove(); $('liveBtn')?.remove();
         const tick = () => { const left = Math.ceil((live.meta.startAt - liveNow()) / 1000); if (left > 0) { feed.innerHTML = `<div class="study"><div class="ring"><b>${left}</b></div></div>`; setTimeout(tick, 250); } else study(begin, true); };
@@ -944,12 +948,17 @@
     await D.set(D.ref(db, `live/${code}/meta`), { host: uid, cal, door: n, practice: !seasonMode(), createdAt: Date.now() });
     await joinLive(code);
     // In a team, the room belongs to the team: everyone sees it on their calendar and joins with one tap.
-    if (team?.code) await D.set(D.ref(db, `teams/${team.code}/live`), { code, door: n, cal, practice: !seasonMode(), by: myName(), at: Date.now() }).catch(() => {});
+    if (team?.code) await D.set(D.ref(db, `teams/${team.code}/live`), { code, door: n, cal, practice: !seasonMode(), by: myName(), uid, at: Date.now() }).catch(() => {});
   }
   // A teammate's open live room (less than 2 hours old, same calendar and mode): show it on the calendar.
-  const teamLive = () => { const l = team?.live; return l && l.code && Date.now() - l.at < 72e5 && l.cal === cal && !!l.practice === !seasonMode() && l.by !== undefined ? l : null; };
+  const teamLive = () => { const l = team?.live; return l && l.code && !l.started && l.uid !== fb?.uid && Date.now() - l.at < 12e5 && l.cal === cal && !!l.practice === !seasonMode() && l.by !== undefined ? l : null; };
   async function joinTeamLive() { const l = teamLive(); if (!l) return; try { await joinLive(l.code); for (let i = 0; i < 30 && !live?.meta; i++) await new Promise(r => setTimeout(r, 100)); openDoor(l.door); } catch (e) { teamError(e); } }
-  function leaveLive() { live?.unsub?.(); live = null; onLive = null; }
+  // Close the team announcement for my room: marked started when the round begins, removed if I leave before.
+  function endTeamLive(started) {
+    const l = team?.live, code = live?.code; if (!l || !code || l.code !== code || live.meta?.host !== live.uid) return;
+    firebase().then(({ D, db }) => started ? D.update(D.ref(db, `teams/${team.code}/live`), { started: true }) : D.remove(D.ref(db, `teams/${team.code}/live`))).catch(() => {});
+  }
+  function leaveLive() { if (live && !live.meta?.startAt) endTeamLive(false); live?.unsub?.(); live = null; onLive = null; }
   function pushLive(data) { if (!live) return; firebase().then(({ D, db, uid }) => D.update(D.ref(db, `live/${live.code}/players/${uid}`), data)).catch(() => {}); }
   const liveLink = () => { const u = new URL(location.origin + location.pathname); u.searchParams.set('live', live.code); u.searchParams.set('lang', cal); if (!seasonMode()) u.searchParams.set('preview', '1'); return u.href; };
   // Teammates' ghosts for this door: up to 3, best first, parsed to [[ms, pts, found], …].

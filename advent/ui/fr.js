@@ -56,4 +56,5 @@ export default {
   keepOn: "Les garder",
   turnOff: "🔕 Désactiver",
   remindOffDone: "Rappels désactivés",
+  liveMissed: "Cette partie en direct a déjà commencé. Jouez en solo ou lancez-en une nouvelle.",
 };

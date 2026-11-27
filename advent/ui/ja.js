@@ -56,4 +56,5 @@ export default {
   keepOn: "オンのままにする",
   turnOff: "🔕 オフにする",
   remindOffDone: "リマインダーはオフです",
+  liveMissed: "このライブはもう始まっています。ひとりで遊ぶか、新しいライブを始めましょう。",
 };

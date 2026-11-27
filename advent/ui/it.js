@@ -56,4 +56,5 @@ export default {
   keepOn: "Lasciali attivi",
   turnOff: "🔕 Disattiva",
   remindOffDone: "Promemoria disattivati",
+  liveMissed: "Questo turno dal vivo è già iniziato. Gioca da solo o avviane uno nuovo.",
 };

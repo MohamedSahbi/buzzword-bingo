@@ -56,4 +56,5 @@ export default {
   keepOn: "Panatilihing naka-on",
   turnOff: "🔕 I-off",
   remindOffDone: "Naka-off ang paalala",
+  liveMissed: "Nagsimula na ang live round na ito. Maglaro mag-isa o magsimula ng bago.",
 };
